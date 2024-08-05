@@ -1,0 +1,173 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "prolific-blocks/carousel-content",
+  "version": "0.1.0",
+  "title": "Carousel Content",
+  "category": "media",
+  "icon": "gallery",
+  "description": "A robust and flexible carousel block.",
+  "example": {},
+  "supports": {
+    "align": true,
+    "anchor": true,
+    "alignWide": true,
+    "ariaLabel": true,
+    "className": true,
+    "customClassName": true,
+    "html": false
+  },
+  "attributes": {
+    "slideCount": {
+      "type": "number",
+      "default": 1
+    },
+    "anchor": {
+      "type": "string"
+    },
+    "className": {
+      "type": "string"
+    },
+    "align": {
+      "type": "string"
+    },
+    "blockId": {
+      "type": "string",
+      "default": ""
+    },
+    "spaceBetween": {
+      "type": "number",
+      "default": 50
+    },
+    "slidesPerView": {
+      "type": "number",
+      "default": 1
+    },
+    "spaceBetweenTablet": {
+      "type": "number",
+      "default": 30
+    },
+    "slidesPerViewTablet": {
+      "type": "number",
+      "default": 1
+    },
+    "spaceBetweenMobile": {
+      "type": "number",
+      "default": 20
+    },
+    "slidesPerViewMobile": {
+      "type": "number",
+      "default": 1
+    },
+    "navigation": {
+      "type": "boolean",
+      "default": true
+    },
+    "pagination": {
+      "type": "boolean",
+      "default": true
+    },
+    "scrollbar": {
+      "type": "boolean",
+      "default": false
+    },
+    "allowTouchMove": {
+      "type": "boolean",
+      "default": false
+    },
+    "keyboard": {
+      "type": "boolean",
+      "default": false
+    },
+    "grabCursor": {
+      "type": "boolean",
+      "default": true
+    },
+    "autoplay": {
+      "type": "boolean",
+      "default": false
+    },
+    "delay": {
+      "type": "number",
+      "default": 3000
+    },
+    "loop": {
+      "type": "boolean",
+      "default": false
+    },
+    "draggable": {
+      "type": "boolean",
+      "default": true
+    },
+    "pauseOnHover": {
+      "type": "boolean",
+      "default": true
+    },
+    "transitionSpeed": {
+      "type": "number",
+      "default": 300
+    },
+    "a11yEnabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "thumbs": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoHeight": {
+      "type": "boolean",
+      "default": false
+    },
+    "centeredSlides": {
+      "type": "boolean",
+      "default": false
+    },
+    "direction": {
+      "type": "string",
+      "default": "horizontal"
+    },
+    "freeMode": {
+      "type": "boolean",
+      "default": false
+    },
+    "effect": {
+      "type": "string",
+      "default": "slider"
+    },
+    "customNav": {
+      "type": "boolean",
+      "default": false
+    },
+    "customNavPrev": {
+      "type": "string",
+      "default": ""
+    },
+    "customNavNext": {
+      "type": "string",
+      "default": ""
+    },
+    "navigationNextEl": {
+      "type": "string",
+      "default": ""
+    },
+    "navigationPrevEl": {
+      "type": "string",
+      "default": ""
+    },
+    "customNavPrevSvg": {
+      "type": "string",
+      "default": ""
+    },
+    "customNavNextSvg": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "textdomain": "prolific-blocks",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "viewScript": "file:./view.js",
+  "render": "file:./render.php"
+}
