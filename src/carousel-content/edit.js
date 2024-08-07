@@ -1,3 +1,5 @@
+import classnames from "classnames";
+
 /**
  * Retrieves the translation of text.
  *
@@ -9,16 +11,6 @@
 import { __ } from "@wordpress/i18n";
 
 import { v4 as uuidv4 } from "uuid";
-
-/**
- * Import the useBlockProps hook from the WordPress block editor.
- *
- * useBlockProps standardizes and manages the properties applied to a block's wrapper element,
- * ensuring consistent class names, styles, and attributes.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
- */
-import { useBlockProps } from "@wordpress/block-editor";
 
 /**
  * Import necessary React hooks from the WordPress element package.
@@ -41,6 +33,7 @@ import { useEffect, useRef, useState, useCallback } from "@wordpress/element";
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/
  */
 import {
+  useBlockProps,
   useInnerBlocksProps,
   InspectorControls,
   MediaUpload,
@@ -75,6 +68,7 @@ import {
 import { useSelect } from "@wordpress/data";
 
 import "./editor.scss";
+import { button } from "@wordpress/icons";
 
 const sanitizeSvg = (svgContent) => {
   // Remove comments
@@ -139,9 +133,11 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 
   const swiperElRef = useRef(null);
   const uniqueId = uuidv4();
-  const blockProps = useBlockProps();
   const [innerBlocksCount, setInnerBlocksCount] = useState(0);
   const [renderSwiper, setRenderSwiper] = useState(true);
+
+  // console.log("attributes", attributes);
+  // console.log("attributes", attributes.style.elements.button.color.background);
 
   /**
    * Debounced function to reinitialize the Swiper component.
@@ -166,10 +162,10 @@ export default function Edit({ attributes, setAttributes, clientId }) {
     {},
     {
       template: [
-        ["prolific-blocks/single-slide"],
-        ["prolific-blocks/single-slide"],
-        ["prolific-blocks/single-slide"],
-        ["prolific-blocks/single-slide"],
+        ["prolific/single-slide"],
+        ["prolific/single-slide"],
+        ["prolific/single-slide"],
+        ["prolific/single-slide"],
       ],
     }
   );
@@ -215,7 +211,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
    * @function useEffect
    */
   useEffect(() => {
-    if (swiperElRef.current) {
+    if (swiperElRef.current && swiperElRef.current.swiper) {
       swiperElRef.current.swiper.update();
     }
   }, [innerBlocksCount]);
@@ -283,11 +279,21 @@ export default function Edit({ attributes, setAttributes, clientId }) {
     setAttributes({ customNavNext: "", customNavNextSvg: "" });
   };
 
-  setAttributes({ navigationNextEl: `.custom-next-${uniqueId}` });
-  setAttributes({ navigationPrevEl: `.custom-prev-${uniqueId}` });
+  // Gotta figure out how to set these attributes us current useref, thing, go back to gpt
+  // https://chatgpt.com/c/b63e7523-93a4-4653-9096-2cf4a5900367
+
+  useEffect(() => {
+    setAttributes({ navigationNextEl: `.custom-next-${uniqueId}` });
+    setAttributes({ navigationPrevEl: `.custom-prev-${uniqueId}` });
+  }, []);
+
+  // Look into colors
+  // https://github.com/WordPress/gutenberg/discussions/60798
+
+  const blockProps = useBlockProps();
 
   return (
-    <div>
+    <>
       <div {...blockProps}>
         {renderSwiper && (
           // Need to work on a solution for vertical slides, setting slideperview auto seems to work on the frontend but not the editor
@@ -302,8 +308,8 @@ export default function Edit({ attributes, setAttributes, clientId }) {
             space-between={spaceBetween}
             navigation={navigation}
             {...(customNav && {
-              "navigation-next-el": { navigationNextEl },
-              "navigation-prev-el": { navigationPrevEl },
+              "navigation-next-el": navigationNextEl,
+              "navigation-prev-el": navigationPrevEl,
             })}
             pagination={pagination}
             scrollbar={scrollbar}
@@ -709,6 +715,6 @@ export default function Edit({ attributes, setAttributes, clientId }) {
           />
         </PanelBody>
       </InspectorControls>
-    </div>
+    </>
   );
 }

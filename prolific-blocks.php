@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name:       Prolific Blocks
- * Description:       Example block scaffolded with Create Block tool.
+ * Description:       Prolific Blocks is a collection of custom Gutenberg blocks.
  * Requires at least: 6.1
  * Requires PHP:      7.0
  * Version:           0.1.0
@@ -33,7 +33,6 @@ add_action('enqueue_block_assets', 'enqueue_swiper_scripts');
  * @see https://developer.wordpress.org/reference/functions/register_block_type/
  */
 function create_block_prolific_blocks_block_init() {
-	// register_block_type(__DIR__ . '/build/carousel');
 	register_block_type(__DIR__ . '/build/carousel-content');
 	register_block_type(__DIR__ . '/build/single-slide');
 }

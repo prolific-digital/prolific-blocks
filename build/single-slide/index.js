@@ -121,15 +121,12 @@ function Edit({
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
-/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style.scss */ "./src/single-slide/style.scss");
-/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./edit */ "./src/single-slide/edit.js");
-/* harmony import */ var _save__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./save */ "./src/single-slide/save.js");
-/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./block.json */ "./src/single-slide/block.json");
-
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./style.scss */ "./src/single-slide/style.scss");
+/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./edit */ "./src/single-slide/edit.js");
+/* harmony import */ var _save__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./save */ "./src/single-slide/save.js");
+/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./block.json */ "./src/single-slide/block.json");
 /**
  * Registers a new block provided a unique name and an object defining its behavior.
  *
@@ -158,23 +155,15 @@ __webpack_require__.r(__webpack_exports__);
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
  */
-(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_5__.name, {
-  icon: {
-    src: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
-      xmlns: "http://www.w3.org/2000/svg",
-      viewBox: "0 0 576 512"
-    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-      d: "M256 32c-17.7 0-32 14.3-32 32l0 384c0 17.7 14.3 32 32 32l256 0c17.7 0 32-14.3 32-32l0-384c0-17.7-14.3-32-32-32L256 32zM192 64c0-35.3 28.7-64 64-64L512 0c35.3 0 64 28.7 64 64l0 384c0 35.3-28.7 64-64 64l-256 0c-35.3 0-64-28.7-64-64l0-384zM96 64c0-8.8 7.2-16 16-16s16 7.2 16 16l0 384c0 8.8-7.2 16-16 16s-16-7.2-16-16L96 64zM0 112c0-8.8 7.2-16 16-16s16 7.2 16 16l0 288c0 8.8-7.2 16-16 16s-16-7.2-16-16L0 112z"
-    }))
-  },
+(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_4__.name, {
   /**
    * @see ./edit.js
    */
-  edit: _edit__WEBPACK_IMPORTED_MODULE_3__["default"],
+  edit: _edit__WEBPACK_IMPORTED_MODULE_2__["default"],
   /**
    * @see ./save.js
    */
-  save: _save__WEBPACK_IMPORTED_MODULE_4__["default"]
+  save: _save__WEBPACK_IMPORTED_MODULE_3__["default"]
 });
 
 /***/ }),
@@ -11481,7 +11470,7 @@ SwiperSlide.displayName = 'SwiperSlide';
   \*************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"prolific-blocks/single-slide","version":"0.1.0","title":"Single Slide","category":"media","icon":"slides","parent":["prolific-blocks/carousel-content"],"description":"A robust and flexible carousel block.","example":{},"supports":{"align":true,"anchor":true,"alignWide":true,"ariaLabel":true,"className":true,"customClassName":true,"html":false},"attributes":{"anchor":{"type":"string"},"className":{"type":"string"},"align":{"type":"string"},"blockId":{"type":"string","default":""},"spaceBetween":{"type":"number","default":50},"slidesPerView":{"type":"number","default":1},"spaceBetweenTablet":{"type":"number","default":30},"slidesPerViewTablet":{"type":"number","default":1},"spaceBetweenMobile":{"type":"number","default":20},"slidesPerViewMobile":{"type":"number","default":1},"navigation":{"type":"boolean","default":true},"pagination":{"type":"boolean","default":true},"scrollbar":{"type":"boolean","default":false},"allowTouchMove":{"type":"boolean","default":true},"keyboard":{"type":"boolean","default":true},"grabCursor":{"type":"boolean","default":true},"autoplay":{"type":"boolean","default":false},"delay":{"type":"number","default":3000},"loop":{"type":"boolean","default":false},"draggable":{"type":"boolean","default":true},"pauseOnHover":{"type":"boolean","default":true},"transitionSpeed":{"type":"number","default":300},"a11yEnabled":{"type":"boolean","default":true},"thumbs":{"type":"boolean","default":false},"autoHeight":{"type":"boolean","default":false},"centeredSlides":{"type":"boolean","default":false},"direction":{"type":"string","default":"horizontal"},"freeMode":{"type":"boolean","default":false},"images":{"type":"array","default":[],"items":{"type":"object","properties":{"id":{"type":"number"},"url":{"type":"string"}}}}},"textdomain":"prolific-blocks","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js","render":"file:./render.php"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"prolific/single-slide","version":"0.1.0","title":"Slide","category":"media","icon":"format-aside","parent":["prolific/carousel"],"description":"A single slide for the carousel block.","example":{},"supports":{"ariaLabel":true,"className":true,"customClassName":true,"html":false},"textdomain":"prolific-blocks","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js","render":"file:./render.php"}');
 
 /***/ })
 

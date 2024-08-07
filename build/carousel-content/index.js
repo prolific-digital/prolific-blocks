@@ -1,5 +1,4 @@
 /******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./node_modules/@wordpress/icons/build-module/icon/index.js":
@@ -8,6 +7,7 @@
   \******************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -54,6 +54,7 @@ function Icon({
   \***********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
@@ -87,24 +88,29 @@ const gallery = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.j
   \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Edit)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! uuid */ "./node_modules/uuid/dist/esm-browser/v4.js");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! uuid */ "./node_modules/uuid/dist/esm-browser/v4.js");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./editor.scss */ "./src/carousel-content/editor.scss");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./editor.scss */ "./src/carousel-content/editor.scss");
+
+
 
 /**
  * Retrieves the translation of text.
@@ -115,16 +121,6 @@ __webpack_require__.r(__webpack_exports__);
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
  */
 
-
-
-/**
- * Import the useBlockProps hook from the WordPress block editor.
- *
- * useBlockProps standardizes and manages the properties applied to a block's wrapper element,
- * ensuring consistent class names, styles, and attributes.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
- */
 
 
 /**
@@ -168,6 +164,7 @@ __webpack_require__.r(__webpack_exports__);
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-data/#useselect
  */
+
 
 
 const sanitizeSvg = svgContent => {
@@ -233,10 +230,12 @@ function Edit({
     navigationPrevEl
   } = attributes;
   const swiperElRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useRef)(null);
-  const uniqueId = (0,uuid__WEBPACK_IMPORTED_MODULE_7__["default"])();
-  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)();
+  const uniqueId = (0,uuid__WEBPACK_IMPORTED_MODULE_8__["default"])();
   const [innerBlocksCount, setInnerBlocksCount] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(0);
   const [renderSwiper, setRenderSwiper] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(true);
+
+  // console.log("attributes", attributes);
+  // console.log("attributes", attributes.style.elements.button.color.background);
 
   /**
    * Debounced function to reinitialize the Swiper component.
@@ -253,8 +252,8 @@ function Edit({
       setRenderSwiper(true);
     }, 300);
   }, 300), []);
-  const innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useInnerBlocksProps)({}, {
-    template: [["prolific-blocks/single-slide"], ["prolific-blocks/single-slide"], ["prolific-blocks/single-slide"], ["prolific-blocks/single-slide"]]
+  const innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.useInnerBlocksProps)({}, {
+    template: [["prolific/single-slide"], ["prolific/single-slide"], ["prolific/single-slide"], ["prolific/single-slide"]]
   });
 
   /**
@@ -269,7 +268,7 @@ function Edit({
    */
   const {
     innerBlocks
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_5__.useSelect)(select => ({
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_6__.useSelect)(select => ({
     innerBlocks: select("core/block-editor").getBlocks(clientId)
   }), [clientId]);
 
@@ -297,7 +296,7 @@ function Edit({
    * @function useEffect
    */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useEffect)(() => {
-    if (swiperElRef.current) {
+    if (swiperElRef.current && swiperElRef.current.swiper) {
       swiperElRef.current.swiper.update();
     }
   }, [innerBlocksCount]);
@@ -355,13 +354,24 @@ function Edit({
       customNavNextSvg: ""
     });
   };
-  setAttributes({
-    navigationNextEl: `.custom-next-${uniqueId}`
-  });
-  setAttributes({
-    navigationPrevEl: `.custom-prev-${uniqueId}`
-  });
-  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+
+  // Gotta figure out how to set these attributes us current useref, thing, go back to gpt
+  // https://chatgpt.com/c/b63e7523-93a4-4653-9096-2cf4a5900367
+
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useEffect)(() => {
+    setAttributes({
+      navigationNextEl: `.custom-next-${uniqueId}`
+    });
+    setAttributes({
+      navigationPrevEl: `.custom-prev-${uniqueId}`
+    });
+  }, []);
+
+  // Look into colors
+  // https://github.com/WordPress/gutenberg/discussions/60798
+
+  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.useBlockProps)();
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...blockProps
   }, renderSwiper &&
   // Need to work on a solution for vertical slides, setting slideperview auto seems to work on the frontend but not the editor
@@ -376,12 +386,8 @@ function Edit({
     "space-between": spaceBetween,
     navigation: navigation,
     ...(customNav && {
-      "navigation-next-el": {
-        navigationNextEl
-      },
-      "navigation-prev-el": {
-        navigationPrevEl
-      }
+      "navigation-next-el": navigationNextEl,
+      "navigation-prev-el": navigationPrevEl
     }),
     pagination: pagination,
     scrollbar: scrollbar,
@@ -433,287 +439,287 @@ function Edit({
     }
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "screen-reader-text"
-  }, "Next")))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
-    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Slider Settings", "prolific-blocks"),
+  }, "Next")))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.InspectorControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Slider Settings", "prolific-blocks"),
     initialOpen: true
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Custom Navigation", "prolific-blocks"),
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Custom Navigation", "prolific-blocks"),
     checked: customNav,
     onChange: value => setAttributes({
       customNav: value
     }),
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Enable custom navigation arrows on the sides of the slider.", "prolific-blocks")
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Enable custom navigation arrows on the sides of the slider.", "prolific-blocks")
   }), customNav && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     style: {
       display: "block",
       marginBottom: "20px"
     }
-  }, !customNavPrev && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.MediaUpload, {
+  }, !customNavPrev && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.MediaUpload, {
     onSelect: onSelectPrevSvg,
     allowedTypes: ["image/svg+xml"],
     render: ({
       open
-    }) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Button, {
+    }) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Button, {
       onClick: open,
       isPrimary: true,
       style: {
         marginRight: "5px",
         marginBottom: "10px"
       }
-    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Add Previous SVG", "prolific-blocks"))
-  }), customNavPrev && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Button, {
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Add Previous SVG", "prolific-blocks"))
+  }), customNavPrev && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Button, {
     onClick: clearPrevSvg,
     isSecondary: true,
     style: {
       display: "block",
       marginTop: "10px"
     }
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Remove Previous SVG", "prolific-blocks")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Remove Previous SVG", "prolific-blocks")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
     src: customNavPrev,
-    alt: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Custom Previous Button", "prolific-blocks"),
+    alt: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Custom Previous Button", "prolific-blocks"),
     style: {
       display: "block",
       marginTop: "10px",
       maxWidth: "50px",
       maxHeight: "50px"
     }
-  })), !customNavNext && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.MediaUpload, {
+  })), !customNavNext && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.MediaUpload, {
     onSelect: onSelectNextSvg,
     allowedTypes: ["image/svg+xml"],
     render: ({
       open
-    }) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Button, {
+    }) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Button, {
       onClick: open,
       isPrimary: true
-    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Add Next SVG", "prolific-blocks"))
-  }), customNavNext && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Button, {
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Add Next SVG", "prolific-blocks"))
+  }), customNavNext && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Button, {
     onClick: clearNextSvg,
     isSecondary: true,
     style: {
       display: "block",
       marginTop: "10px"
     }
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Remove Next SVG", "prolific-blocks")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Remove Next SVG", "prolific-blocks")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
     src: customNavNext,
-    alt: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Custom Next Button", "prolific-blocks"),
+    alt: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Custom Next Button", "prolific-blocks"),
     style: {
       display: "block",
       marginTop: "10px",
       maxWidth: "50px",
       maxHeight: "50px"
     }
-  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Space Between Slides", "prolific-blocks"),
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.RangeControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Space Between Slides", "prolific-blocks"),
     value: spaceBetween,
     onChange: value => setAttributes({
       spaceBetween: value
     }),
     min: 0,
     max: 100,
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Set the space between slides in pixels.", "prolific-blocks")
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Slides Per View", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Set the space between slides in pixels.", "prolific-blocks")
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.RangeControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Slides Per View", "prolific-blocks"),
     value: slidesPerView,
     onChange: value => setAttributes({
       slidesPerView: value
     }),
     min: 1,
     max: 5,
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Define the number of slides visible at once.", "prolific-blocks")
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Navigation", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Define the number of slides visible at once.", "prolific-blocks")
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Navigation", "prolific-blocks"),
     checked: navigation,
     onChange: value => setAttributes({
       navigation: value
     }),
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Enable navigation arrows on the sides of the slider.", "prolific-blocks")
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Pagination", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Enable navigation arrows on the sides of the slider.", "prolific-blocks")
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Pagination", "prolific-blocks"),
     checked: pagination,
     onChange: value => setAttributes({
       pagination: value
     }),
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Show pagination dots below the slider.", "prolific-blocks")
-  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
-    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Advanced Settings", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Show pagination dots below the slider.", "prolific-blocks")
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Advanced Settings", "prolific-blocks"),
     initialOpen: false
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Direction", "prolific-blocks"),
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Direction", "prolific-blocks"),
     value: direction,
     options: [{
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Horizontal", "prolific-blocks"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Horizontal", "prolific-blocks"),
       value: "horizontal"
     }, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Vertical", "prolific-blocks"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Vertical", "prolific-blocks"),
       value: "vertical"
     }],
     onChange: value => setAttributes({
       direction: value
     }),
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Choose the direction of the slider.", "prolific-blocks")
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Effect", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Choose the direction of the slider.", "prolific-blocks")
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Effect", "prolific-blocks"),
     value: effect,
     options: [{
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Slide", "prolific-blocks"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Slide", "prolific-blocks"),
       value: "slide"
     }, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Fade", "prolific-blocks"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Fade", "prolific-blocks"),
       value: "fade"
     }, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Cube", "prolific-blocks"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Cube", "prolific-blocks"),
       value: "cube"
     }, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Cover Flow", "prolific-blocks"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Cover Flow", "prolific-blocks"),
       value: "coverflow"
     }, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Flip", "prolific-blocks"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Flip", "prolific-blocks"),
       value: "flip"
     }, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Cards", "prolific-blocks"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Cards", "prolific-blocks"),
       value: "cards"
     }],
     onChange: value => setAttributes({
       effect: value
     }),
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Choose the effect for your slider.", "prolific-blocks")
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Free Mode", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Choose the effect for your slider.", "prolific-blocks")
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Free Mode", "prolific-blocks"),
     checked: freeMode,
     onChange: value => setAttributes({
       freeMode: value
     }),
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Enable free mode to allow slides to move freely.", "prolific-blocks")
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Centered Slides", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Enable free mode to allow slides to move freely.", "prolific-blocks")
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Centered Slides", "prolific-blocks"),
     checked: centeredSlides,
     onChange: value => setAttributes({
       centeredSlides: value
     }),
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Center the active slide in the carousel.", "prolific-blocks")
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Auto Height", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Center the active slide in the carousel.", "prolific-blocks")
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Auto Height", "prolific-blocks"),
     checked: autoHeight,
     onChange: value => setAttributes({
       autoHeight: value
     }),
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Allow heigh of each slide to determine height of carousel.", "prolific-blocks")
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Scrollbar", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Allow heigh of each slide to determine height of carousel.", "prolific-blocks")
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Scrollbar", "prolific-blocks"),
     checked: scrollbar,
     onChange: value => setAttributes({
       scrollbar: value
     }),
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Display a draggable scrollbar below the slider.", "prolific-blocks")
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Allow Touch Move", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Display a draggable scrollbar below the slider.", "prolific-blocks")
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Allow Touch Move", "prolific-blocks"),
     checked: allowTouchMove,
     onChange: value => setAttributes({
       allowTouchMove: value
     }),
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Enable slide navigation by touch on mobile devices.", "prolific-blocks")
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Keyboard Control", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Enable slide navigation by touch on mobile devices.", "prolific-blocks")
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Keyboard Control", "prolific-blocks"),
     checked: keyboard,
     onChange: value => setAttributes({
       keyboard: value
     }),
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Allow navigation using keyboard arrow keys.", "prolific-blocks")
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Grab Cursor", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Allow navigation using keyboard arrow keys.", "prolific-blocks")
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Grab Cursor", "prolific-blocks"),
     checked: grabCursor,
     onChange: value => setAttributes({
       grabCursor: value
     }),
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Change cursor to 'grab' style when hovering over the slider.", "prolific-blocks")
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Autoplay", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Change cursor to 'grab' style when hovering over the slider.", "prolific-blocks")
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Autoplay", "prolific-blocks"),
     checked: autoplay,
     onChange: value => setAttributes({
       autoplay: value
     }),
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Automatically transition between slides.", "prolific-blocks")
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Autoplay Delay (ms)", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Automatically transition between slides.", "prolific-blocks")
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.RangeControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Autoplay Delay (ms)", "prolific-blocks"),
     value: delay,
     onChange: value => setAttributes({
       delay: value
     }),
     min: 1000,
     max: 10000,
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Set the delay between autoplay transitions in milliseconds.", "prolific-blocks")
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Loop", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Set the delay between autoplay transitions in milliseconds.", "prolific-blocks")
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Loop", "prolific-blocks"),
     checked: loop,
     onChange: value => setAttributes({
       loop: value
     }),
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Enable continuous loop mode for the slider.", "prolific-blocks")
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Pause on Hover", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Enable continuous loop mode for the slider.", "prolific-blocks")
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Pause on Hover", "prolific-blocks"),
     checked: pauseOnHover,
     onChange: value => setAttributes({
       pauseOnHover: value
     }),
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Pause autoplay when the mouse hovers over the slider.", "prolific-blocks")
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Transition Speed (ms)", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Pause autoplay when the mouse hovers over the slider.", "prolific-blocks")
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.RangeControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Transition Speed (ms)", "prolific-blocks"),
     value: transitionSpeed,
     onChange: value => setAttributes({
       transitionSpeed: value
     }),
     min: 100,
     max: 2000,
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Set the speed of slide transitions in milliseconds.", "prolific-blocks")
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Accessibility", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Set the speed of slide transitions in milliseconds.", "prolific-blocks")
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Accessibility", "prolific-blocks"),
     checked: a11yEnabled,
     onChange: value => setAttributes({
       a11yEnabled: value
     }),
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Enable accessibility features for screen readers.", "prolific-blocks")
-  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
-    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Tablet Settings", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Enable accessibility features for screen readers.", "prolific-blocks")
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Tablet Settings", "prolific-blocks"),
     initialOpen: false
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Space Between Slides", "prolific-blocks"),
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.RangeControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Space Between Slides", "prolific-blocks"),
     value: spaceBetweenTablet,
     onChange: value => setAttributes({
       spaceBetweenTablet: value
     }),
     min: 0,
     max: 100,
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Set the space between slides in pixels for tablet devices.", "prolific-blocks")
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Slides Per View", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Set the space between slides in pixels for tablet devices.", "prolific-blocks")
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.RangeControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Slides Per View", "prolific-blocks"),
     value: slidesPerViewTablet,
     onChange: value => setAttributes({
       slidesPerViewTablet: value
     }),
     min: 1,
     max: 5,
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Define the number of slides visible at once on tablet screens.", "prolific-blocks")
-  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
-    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Mobile Settings", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Define the number of slides visible at once on tablet screens.", "prolific-blocks")
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Mobile Settings", "prolific-blocks"),
     initialOpen: false
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Space Between Slides", "prolific-blocks"),
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.RangeControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Space Between Slides", "prolific-blocks"),
     value: spaceBetweenMobile,
     onChange: value => setAttributes({
       spaceBetweenMobile: value
     }),
     min: 0,
     max: 100,
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Set the space between slides in pixels for mobile devices.", "prolific-blocks")
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Slides Per View", "prolific-blocks"),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Set the space between slides in pixels for mobile devices.", "prolific-blocks")
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.RangeControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Slides Per View", "prolific-blocks"),
     value: slidesPerViewMobile,
     onChange: value => setAttributes({
       slidesPerViewMobile: value
     }),
     min: 1,
     max: 5,
-    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Define the number of slides visible at once on mobile screens.", "prolific-blocks")
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Define the number of slides visible at once on mobile screens.", "prolific-blocks")
   }))));
 }
 
@@ -725,6 +731,7 @@ function Edit({
   \***************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
@@ -789,6 +796,7 @@ __webpack_require__.r(__webpack_exports__);
   \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ save)
@@ -811,6 +819,7 @@ function save() {
   \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
@@ -823,6 +832,7 @@ __webpack_require__.r(__webpack_exports__);
   \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
@@ -835,6 +845,7 @@ __webpack_require__.r(__webpack_exports__);
   \*****************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 /**
  * @license React
  * react-jsx-runtime.development.js
@@ -2178,6 +2189,7 @@ exports.jsxs = jsxs;
   \*******************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+"use strict";
 
 
 if (false) {} else {
@@ -2193,6 +2205,7 @@ if (false) {} else {
   \*****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -2207,6 +2220,7 @@ __webpack_require__.r(__webpack_exports__);
   \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ rng)
@@ -2239,6 +2253,7 @@ function rng() {
   \*********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -2283,6 +2298,7 @@ function stringify(arr) {
   \**************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -2322,6 +2338,7 @@ function v4(options, buf, offset) {
   \********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -2343,6 +2360,7 @@ function validate(uuid) {
   \************************/
 /***/ ((module) => {
 
+"use strict";
 module.exports = window["React"];
 
 /***/ }),
@@ -2353,6 +2371,7 @@ module.exports = window["React"];
   \*************************************/
 /***/ ((module) => {
 
+"use strict";
 module.exports = window["wp"]["blockEditor"];
 
 /***/ }),
@@ -2363,6 +2382,7 @@ module.exports = window["wp"]["blockEditor"];
   \********************************/
 /***/ ((module) => {
 
+"use strict";
 module.exports = window["wp"]["blocks"];
 
 /***/ }),
@@ -2373,6 +2393,7 @@ module.exports = window["wp"]["blocks"];
   \************************************/
 /***/ ((module) => {
 
+"use strict";
 module.exports = window["wp"]["components"];
 
 /***/ }),
@@ -2383,6 +2404,7 @@ module.exports = window["wp"]["components"];
   \******************************/
 /***/ ((module) => {
 
+"use strict";
 module.exports = window["wp"]["data"];
 
 /***/ }),
@@ -2393,6 +2415,7 @@ module.exports = window["wp"]["data"];
   \*********************************/
 /***/ ((module) => {
 
+"use strict";
 module.exports = window["wp"]["element"];
 
 /***/ }),
@@ -2403,6 +2426,7 @@ module.exports = window["wp"]["element"];
   \******************************/
 /***/ ((module) => {
 
+"use strict";
 module.exports = window["wp"]["i18n"];
 
 /***/ }),
@@ -2413,7 +2437,94 @@ module.exports = window["wp"]["i18n"];
   \************************************/
 /***/ ((module) => {
 
+"use strict";
 module.exports = window["wp"]["primitives"];
+
+/***/ }),
+
+/***/ "./node_modules/classnames/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/classnames/index.js ***!
+  \******************************************/
+/***/ ((module, exports) => {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	Copyright (c) 2018 Jed Watson.
+	Licensed under the MIT License (MIT), see
+	http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = '';
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (arg) {
+				classes = appendClass(classes, parseValue(arg));
+			}
+		}
+
+		return classes;
+	}
+
+	function parseValue (arg) {
+		if (typeof arg === 'string' || typeof arg === 'number') {
+			return arg;
+		}
+
+		if (typeof arg !== 'object') {
+			return '';
+		}
+
+		if (Array.isArray(arg)) {
+			return classNames.apply(null, arg);
+		}
+
+		if (arg.toString !== Object.prototype.toString && !arg.toString.toString().includes('[native code]')) {
+			return arg.toString();
+		}
+
+		var classes = '';
+
+		for (var key in arg) {
+			if (hasOwn.call(arg, key) && arg[key]) {
+				classes = appendClass(classes, key);
+			}
+		}
+
+		return classes;
+	}
+
+	function appendClass (value, newClass) {
+		if (!newClass) {
+			return value;
+		}
+	
+		if (value) {
+			return value + ' ' + newClass;
+		}
+	
+		return value + newClass;
+	}
+
+	if ( true && module.exports) {
+		classNames.default = classNames;
+		module.exports = classNames;
+	} else if (true) {
+		// register as 'classnames', consistent with npm package name
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
+			return classNames;
+		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {}
+}());
+
 
 /***/ }),
 
@@ -2423,7 +2534,8 @@ module.exports = window["wp"]["primitives"];
   \*****************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"prolific-blocks/carousel-content","version":"0.1.0","title":"Carousel Content","category":"media","icon":"gallery","description":"A robust and flexible carousel block.","example":{},"supports":{"align":true,"anchor":true,"alignWide":true,"ariaLabel":true,"className":true,"customClassName":true,"html":false},"attributes":{"slideCount":{"type":"number","default":1},"anchor":{"type":"string"},"className":{"type":"string"},"align":{"type":"string"},"blockId":{"type":"string","default":""},"spaceBetween":{"type":"number","default":50},"slidesPerView":{"type":"number","default":1},"spaceBetweenTablet":{"type":"number","default":30},"slidesPerViewTablet":{"type":"number","default":1},"spaceBetweenMobile":{"type":"number","default":20},"slidesPerViewMobile":{"type":"number","default":1},"navigation":{"type":"boolean","default":true},"pagination":{"type":"boolean","default":true},"scrollbar":{"type":"boolean","default":false},"allowTouchMove":{"type":"boolean","default":false},"keyboard":{"type":"boolean","default":false},"grabCursor":{"type":"boolean","default":true},"autoplay":{"type":"boolean","default":false},"delay":{"type":"number","default":3000},"loop":{"type":"boolean","default":false},"draggable":{"type":"boolean","default":true},"pauseOnHover":{"type":"boolean","default":true},"transitionSpeed":{"type":"number","default":300},"a11yEnabled":{"type":"boolean","default":true},"thumbs":{"type":"boolean","default":false},"autoHeight":{"type":"boolean","default":false},"centeredSlides":{"type":"boolean","default":false},"direction":{"type":"string","default":"horizontal"},"freeMode":{"type":"boolean","default":false},"effect":{"type":"string","default":"slider"},"customNav":{"type":"boolean","default":false},"customNavPrev":{"type":"string","default":""},"customNavNext":{"type":"string","default":""},"navigationNextEl":{"type":"string","default":""},"navigationPrevEl":{"type":"string","default":""},"customNavPrevSvg":{"type":"string","default":""},"customNavNextSvg":{"type":"string","default":""}},"textdomain":"prolific-blocks","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js","render":"file:./render.php"}');
+"use strict";
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"prolific/carousel","version":"0.1.0","title":"Carousel","category":"media","icon":"gallery","description":"A robust and flexible carousel block.","example":{},"supports":{"align":true,"anchor":true,"alignWide":true,"ariaLabel":true,"className":true,"customClassName":true,"html":false,"color":{"gradients":true,"text":false},"spacing":{"padding":true,"margin":true}},"attributes":{"slideCount":{"type":"number","default":1},"anchor":{"type":"string"},"className":{"type":"string"},"align":{"type":"string"},"blockId":{"type":"string","default":""},"spaceBetween":{"type":"number","default":50},"slidesPerView":{"type":"number","default":1},"spaceBetweenTablet":{"type":"number","default":30},"slidesPerViewTablet":{"type":"number","default":1},"spaceBetweenMobile":{"type":"number","default":20},"slidesPerViewMobile":{"type":"number","default":1},"navigation":{"type":"boolean","default":true},"pagination":{"type":"boolean","default":true},"scrollbar":{"type":"boolean","default":false},"allowTouchMove":{"type":"boolean","default":false},"keyboard":{"type":"boolean","default":false},"grabCursor":{"type":"boolean","default":true},"autoplay":{"type":"boolean","default":false},"delay":{"type":"number","default":3000},"loop":{"type":"boolean","default":false},"draggable":{"type":"boolean","default":true},"pauseOnHover":{"type":"boolean","default":true},"transitionSpeed":{"type":"number","default":300},"a11yEnabled":{"type":"boolean","default":true},"thumbs":{"type":"boolean","default":false},"autoHeight":{"type":"boolean","default":false},"centeredSlides":{"type":"boolean","default":false},"direction":{"type":"string","default":"horizontal"},"freeMode":{"type":"boolean","default":false},"effect":{"type":"string","default":"slider"},"customNav":{"type":"boolean","default":false},"customNavPrev":{"type":"string","default":""},"customNavNext":{"type":"string","default":""},"navigationNextEl":{"type":"string","default":""},"navigationPrevEl":{"type":"string","default":""},"customNavPrevSvg":{"type":"string","default":""},"customNavNextSvg":{"type":"string","default":""}},"textdomain":"prolific-blocks","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js","render":"file:./render.php"}');
 
 /***/ })
 

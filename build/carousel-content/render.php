@@ -54,25 +54,18 @@ $attributes_list = [
   'direction',
   'freeMode',
   'effect',
-  'customNav',
-  'customNavPrev',
-  'customNavNext',
 ];
+
+// Conditionally include 'navigationNextEl' and 'navigationPrevEl' based on 'customNav'
+if ($attributes['customNav']) {
+  $attributes_list[] = 'navigationNextEl';
+  $attributes_list[] = 'navigationPrevEl';
+}
 
 // Create id attribute allowing for custom "anchor" value.
 $id = 'swiper-' . $attributes['blockId'];
 if (!empty($attributes['anchor'])) {
   $id = $attributes['anchor'];
-}
-
-// Create class attribute allowing for custom "className" and "align" values.
-$classes = 'prolific-block-carousel';
-if (!empty($attributes['className'])) {
-  $classes .= ' ' . $attributes['className'];
-}
-
-if (!empty($attributes['align'])) {
-  $classes .= ' align' . $attributes['align'];
 }
 
 /**
@@ -129,10 +122,27 @@ $breakpoints = 'breakpoints=\'{
 
 // Combine swiper attributes and breakpoints into a single settings string
 $swiper_settings = $swiper_attributes . $breakpoints;
+
+// Strip the beginning . from the class
+$navigationNextClass = ltrim($attributes['navigationNextEl'], '.');
+$navigationPrevClass = ltrim($attributes['navigationPrevEl'], '.');
 ?>
 
-<section id="<?php echo esc_attr($id); ?>" class="<?php echo esc_attr($classes); ?>">
+
+<section id="<?php echo esc_attr($id); ?>" <?php echo get_block_wrapper_attributes(); ?>>
   <swiper-container <?php echo $swiper_settings; ?>>
     <?php echo $content; ?>
   </swiper-container>
+
+  <?php if ($attributes['customNav']) : ?>
+    <button class="custom-prev <?php echo esc_attr($navigationPrevClass); ?>">
+      <span><?php echo $attributes['customNavPrevSvg']; ?></span>
+      <span class="screen-reader-text">Previous</span>
+    </button>
+    <button class="custom-next <?php echo esc_attr($navigationNextClass); ?>">
+      <span><?php echo $attributes['customNavNextSvg']; ?></span>
+      <span class="screen-reader-text">Next</span>
+    </button>
+  <?php endif; ?>
+
 </section>
