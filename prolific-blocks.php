@@ -35,6 +35,7 @@ add_action('enqueue_block_assets', 'enqueue_swiper_scripts');
 function create_block_prolific_blocks_block_init() {
 	register_block_type(__DIR__ . '/build/carousel-content');
 	register_block_type(__DIR__ . '/build/single-slide');
+	register_block_type(__DIR__ . '/build/hamburger');
 }
 add_action('init', 'create_block_prolific_blocks_block_init');
 
