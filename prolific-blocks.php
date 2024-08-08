@@ -2,11 +2,11 @@
 
 /**
  * Plugin Name:       Prolific Blocks
- * Description:       Prolific Blocks is a collection of custom Gutenberg blocks.
- * Requires at least: 6.1
+ * Description:       A collection of advanced blocks to enhance your website's functionality and design.
+ * Requires at least: 6.3
  * Requires PHP:      7.0
  * Version:           0.1.0
- * Author:            The WordPress Contributors
+ * Author:            Prolific Digital
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       prolific-blocks
@@ -18,12 +18,7 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
-function enqueue_swiper_scripts() {
-	// wp_enqueue_style('swiper-styles', 'https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css');
-	// wp_enqueue_script('swiper-script', 'https://cdn.jsdelivr.net/npm/swiper@10/swiper-element-bundle.min.js', array(), null, true);
-	wp_enqueue_script('swiper-script', plugins_url('build/swiper/index.js', __FILE__), array(), null, true);
-}
-add_action('enqueue_block_assets', 'enqueue_swiper_scripts');
+require_once plugin_dir_path(__FILE__) . 'helpers.php';
 
 /**
  * Registers the block using the metadata loaded from the `block.json` file.
@@ -32,15 +27,22 @@ add_action('enqueue_block_assets', 'enqueue_swiper_scripts');
  *
  * @see https://developer.wordpress.org/reference/functions/register_block_type/
  */
-function create_block_prolific_blocks_block_init() {
-	register_block_type(__DIR__ . '/build/carousel-content');
-	register_block_type(__DIR__ . '/build/single-slide');
+function prolific_blocks_init() {
+	register_block_type(__DIR__ . '/build/carousel');
+	register_block_type(__DIR__ . '/build/carousel-slide');
 	register_block_type(__DIR__ . '/build/hamburger');
 }
-add_action('init', 'create_block_prolific_blocks_block_init');
+add_action('init', 'prolific_blocks_init');
 
-function add_svg_to_upload_mimes($upload_mimes) {
-	$upload_mimes['svg'] = 'image/svg+xml';
-	return $upload_mimes;
+/**
+ * Enqueue Swiper JS script for block assets.
+ *
+ * This function registers and enqueues the Swiper JS script, ensuring it is loaded
+ * when block assets are enqueued. The script is loaded from the plugin's build directory.
+ *
+ * @return void
+ */
+function enqueue_swiper_scripts() {
+	wp_enqueue_script('swiper-script', plugins_url('build/swiper/index.js', __FILE__), array(), null, true);
 }
-add_filter('upload_mimes', 'add_svg_to_upload_mimes');
+add_action('enqueue_block_assets', 'enqueue_swiper_scripts');

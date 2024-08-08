@@ -69,7 +69,18 @@ import { useSelect } from "@wordpress/data";
 
 import "./editor.scss";
 import { button } from "@wordpress/icons";
+import { set } from "lodash";
 
+/**
+ * Sanitize SVG content by removing comments and unwanted attributes.
+ *
+ * This function takes an SVG content string, removes all comments,
+ * and then parses the SVG content to remove unwanted attributes such as
+ * inline styles, width, and height attributes from the SVG tag.
+ *
+ * @param {string} svgContent - The raw SVG content as a string.
+ * @returns {string} - The sanitized SVG content as a string.
+ */
 const sanitizeSvg = (svgContent) => {
   // Remove comments
   svgContent = svgContent.replace(/<!--[\s\S]*?-->/g, "");
@@ -131,13 +142,13 @@ export default function Edit({ attributes, setAttributes, clientId }) {
     navigationPrevEl,
   } = attributes;
 
+  const blockProps = useBlockProps();
   const swiperElRef = useRef(null);
   const uniqueId = uuidv4();
   const [innerBlocksCount, setInnerBlocksCount] = useState(0);
   const [renderSwiper, setRenderSwiper] = useState(true);
 
-  // console.log("attributes", attributes);
-  // console.log("attributes", attributes.style.elements.button.color.background);
+  setAttributes({ blockId: blockProps.id });
 
   /**
    * Debounced function to reinitialize the Swiper component.
@@ -156,18 +167,6 @@ export default function Edit({ attributes, setAttributes, clientId }) {
       }, 300);
     }, 300),
     []
-  );
-
-  const innerBlocksProps = useInnerBlocksProps(
-    {},
-    {
-      template: [
-        ["prolific/single-slide"],
-        ["prolific/single-slide"],
-        ["prolific/single-slide"],
-        ["prolific/single-slide"],
-      ],
-    }
   );
 
   /**
@@ -279,27 +278,27 @@ export default function Edit({ attributes, setAttributes, clientId }) {
     setAttributes({ customNavNext: "", customNavNextSvg: "" });
   };
 
-  // Gotta figure out how to set these attributes us current useref, thing, go back to gpt
-  // https://chatgpt.com/c/b63e7523-93a4-4653-9096-2cf4a5900367
-
   useEffect(() => {
     setAttributes({ navigationNextEl: `.custom-next-${uniqueId}` });
     setAttributes({ navigationPrevEl: `.custom-prev-${uniqueId}` });
   }, []);
 
-  // Look into colors
-  // https://github.com/WordPress/gutenberg/discussions/60798
-
-  const blockProps = useBlockProps();
+  const innerBlocksProps = useInnerBlocksProps(
+    {},
+    {
+      template: [
+        ["prolific/carousel-slide"],
+        ["prolific/carousel-slide"],
+        ["prolific/carousel-slide"],
+        ["prolific/carousel-slide"],
+      ],
+    }
+  );
 
   return (
     <>
       <div {...blockProps}>
         {renderSwiper && (
-          // Need to work on a solution for vertical slides, setting slideperview auto seems to work on the frontend but not the editor
-          // https://github.com/nolimits4web/swiper/issues/4599#issuecomment-1805420811
-
-          // Need to look into parallax settings and how to apply data attributes to innerblocks
           <swiper-container
             {...innerBlocksProps}
             ref={swiperElRef}

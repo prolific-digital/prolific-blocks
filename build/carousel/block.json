@@ -2,24 +2,14 @@
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
   "name": "prolific/carousel",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "title": "Carousel",
   "category": "media",
   "icon": "gallery",
-  "description": "A robust and flexible carousel block.",
-  "example": {},
+  "description": "A robust and flexible carousel for showcasing media and content.",
   "supports": {
     "align": true,
     "anchor": true,
-    "alignWide": true,
-    "ariaLabel": true,
-    "className": true,
-    "customClassName": true,
-    "html": false,
-    "color": {
-      "gradients": true,
-      "text": false
-    },
     "spacing": {
       "padding": true,
       "margin": true
