@@ -36,6 +36,8 @@ function create_block_prolific_blocks_block_init() {
 	register_block_type(__DIR__ . '/build/carousel-content');
 	register_block_type(__DIR__ . '/build/single-slide');
 	register_block_type(__DIR__ . '/build/hamburger');
+	register_block_type(__DIR__ . '/build/timeline');
+	register_block_type(__DIR__ . '/build/timeline-item');
 }
 add_action('init', 'create_block_prolific_blocks_block_init');
 
