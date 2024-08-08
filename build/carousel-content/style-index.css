@@ -1,1 +1,33 @@
-.custom-next,.custom-prev{cursor:pointer;max-width:50px;position:absolute;top:50%;transform:translateY(-50%);z-index:1}.custom-next svg,.custom-prev svg{height:auto;width:100%}.custom-prev{left:0}.custom-next{right:0}
+/*!********************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/carousel-content/style.scss ***!
+  \********************************************************************************************************************************************************************************************************************************************************/
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+.custom-prev,
+.custom-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 50px;
+  cursor: pointer;
+  z-index: 1;
+}
+.custom-prev svg,
+.custom-next svg {
+  width: 100%;
+  height: auto;
+}
+
+.custom-prev {
+  left: 0;
+}
+
+.custom-next {
+  right: 0;
+}
+
+/*# sourceMappingURL=style-index.css.map*/
