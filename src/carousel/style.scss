@@ -1,0 +1,34 @@
+.wp-block-prolific-carousel {
+  .custom-prev,
+  .custom-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    max-width: 50px;
+    cursor: pointer;
+    z-index: 1;
+
+    svg {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .custom-prev {
+    left: 0;
+  }
+
+  .custom-next {
+    right: 0;
+  }
+
+  swiper-container {
+    &[direction="vertical"] {
+      height: 400px;
+    }
+
+    &::part(container) {
+      // write some styles here for the swiper container
+    }
+  }
+}

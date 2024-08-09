@@ -63,9 +63,9 @@ if ($attributes['customNav']) {
 }
 
 // Create id attribute allowing for custom "anchor" value.
-$id = 'swiper-' . $attributes['blockId'];
+$id = 'prolific-carousel-' . $attributes['blockId'];
 if (!empty($attributes['anchor'])) {
-  $id = $attributes['anchor'];
+  $id = 'prolific-carousel-' . $attributes['anchor'];
 }
 
 /**
