@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
-require_once plugin_dir_path(__FILE__) . 'helpers.php';
+require_once plugin_dir_path(__FILE__) . 'inc/helpers.php';
 
 /**
  * Registers the block using the metadata loaded from the `block.json` file.
