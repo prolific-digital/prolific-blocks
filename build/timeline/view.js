@@ -1,1 +1,0 @@
-(()=>{const e=document.querySelectorAll(".hamburger"),t=document.querySelector("body");e.forEach((e=>{e.addEventListener("click",(()=>{e.classList.toggle("is-active"),t.classList.toggle("menu-is-active")}))}))})();

@@ -33,6 +33,7 @@ function prolific_blocks_init() {
 	register_block_type(__DIR__ . '/build/hamburger');
 	register_block_type(__DIR__ . '/build/timeline');
 	register_block_type(__DIR__ . '/build/timeline-item');
+	register_block_type(__DIR__ . '/build/lottie-js');
 }
 add_action('init', 'prolific_blocks_init');
 
@@ -48,3 +49,15 @@ function enqueue_swiper_scripts() {
 	wp_enqueue_script('swiper-script', plugins_url('build/swiper/index.js', __FILE__), array(), null, true);
 }
 add_action('enqueue_block_assets', 'enqueue_swiper_scripts');
+
+function allow_json_uploads($mime_types) {
+	$mime_types['json'] = 'application/json'; // Adding .json extension to allowed mime types
+	return $mime_types;
+}
+add_filter('upload_mimes', 'allow_json_uploads');
+
+function allow_lottie_uploads($mime_types) {
+	$mime_types['lottie'] = 'application/json'; // Adding .lottie extension to allowed mime types
+	return $mime_types;
+}
+add_filter('upload_mimes', 'allow_lottie_uploads');
