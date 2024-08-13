@@ -1,1 +1,0 @@
-{"version":3,"file":"lottie-js/style-index.css","mappings":";;;AACE;EACE;EACA;AAAJ,C","sources":["webpack://prolific-blocks/./src/lottie-js/style.scss"],"sourcesContent":[".wp-block-prolific-lottie-js {\n  canvas {\n    width: 100%;\n    height: 100%;\n  }\n}\n"],"names":[],"sourceRoot":""}
