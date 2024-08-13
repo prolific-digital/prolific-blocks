@@ -106,6 +106,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
   // Destructure attributes and setAttributes from props for easier access
   const {
     spaceBetween,
+    enableAutoSlidesPerView,
     slidesPerView,
     spaceBetweenTablet,
     slidesPerViewTablet,
@@ -231,6 +232,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
   }, [
     reinitializeSwiper,
     effect,
+    enableAutoSlidesPerView,
     slidesPerViewMobile,
     spaceBetweenMobile,
     slidesPerViewTablet,
@@ -245,6 +247,10 @@ export default function Edit({ attributes, setAttributes, clientId }) {
     customNavPrev,
     customNavNext,
   ]);
+
+  const autoSlidesPerView = enableAutoSlidesPerView ? "auto" : slidesPerView;
+
+  console.log(autoSlidesPerView);
 
   const onSelectPrevSvg = async (media) => {
     if (media && media.url) {
@@ -302,7 +308,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
           <swiper-container
             {...innerBlocksProps}
             ref={swiperElRef}
-            slides-per-view={slidesPerView}
+            slides-per-view={autoSlidesPerView}
             direction={direction}
             space-between={spaceBetween}
             navigation={navigation}
@@ -326,16 +332,16 @@ export default function Edit({ attributes, setAttributes, clientId }) {
             {...(effect === "fade" && { "fade-effect-cross-fade": "true" })}
             breakpoints={`{
               "1024": {
-                "slidesPerView": ${slidesPerView},
-                "spaceBetween": ${spaceBetween}
+                "slidesPerView": "${autoSlidesPerView}",
+                "spaceBetween": "${spaceBetween}"
               },
               "768": {
-                "slidesPerView": ${slidesPerViewTablet},
-                "spaceBetween": ${spaceBetweenTablet}
+                "slidesPerView": "${slidesPerViewTablet}",
+                "spaceBetween": "${spaceBetweenTablet}"
               },
               "0": {
-                "slidesPerView": ${slidesPerViewMobile},
-                "spaceBetween": ${spaceBetweenMobile}
+                "slidesPerView": "${slidesPerViewMobile}",
+                "spaceBetween": "${spaceBetweenMobile}"
               }
             }`}
           >
@@ -457,7 +463,32 @@ export default function Edit({ attributes, setAttributes, clientId }) {
               "prolific-blocks"
             )}
           />
-          <RangeControl
+          <ToggleControl
+            label={__("Enable Auto Slides Per View", "prolific-blocks")}
+            checked={enableAutoSlidesPerView}
+            onChange={(value) =>
+              setAttributes({ enableAutoSlidesPerView: value })
+            }
+            help={__(
+              "Enable auto slides per view to style slide width using css.",
+              "prolific-blocks"
+            )}
+          />
+          {/* check if enableAutoSlidesPerView is true */}
+          {!enableAutoSlidesPerView && (
+            <RangeControl
+              label={__("Slides Per View", "prolific-blocks")}
+              value={slidesPerView}
+              onChange={(value) => setAttributes({ slidesPerView: value })}
+              min={1}
+              max={10}
+              help={__(
+                "Define the number of slides visible at once.",
+                "prolific-blocks"
+              )}
+            />
+          )}
+          {/* <RangeControl
             label={__("Slides Per View", "prolific-blocks")}
             value={slidesPerView}
             onChange={(value) => setAttributes({ slidesPerView: value })}
@@ -467,7 +498,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
               "Define the number of slides visible at once.",
               "prolific-blocks"
             )}
-          />
+          /> */}
           <ToggleControl
             label={__("Navigation", "prolific-blocks")}
             checked={navigation}

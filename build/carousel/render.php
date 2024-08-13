@@ -68,6 +68,11 @@ if (!empty($attributes['anchor'])) {
   $id = 'prolific-carousel-' . $attributes['anchor'];
 }
 
+// Before setting swiper attributes
+if (get_attribute($attributes, 'enableAutoSlidesPerView')) {
+  $attributes['slidesPerView'] = 'auto';
+}
+
 /**
  * Constructs a string of Swiper attributes in kebab-case format.
  *
@@ -104,6 +109,8 @@ if ($effect && $effect === 'fade') {
   $swiper_attributes .= 'fade-effect-cross-fade="true" ';
 }
 
+$slidesPerViewDesktop = get_attribute($attributes, 'enableAutoSlidesPerView') ? '"auto"' : (int) get_attribute($attributes, 'slidesPerView');
+
 // Define the breakpoints as a PHP variable
 $breakpoints = 'breakpoints=\'{
     "0": {
@@ -115,7 +122,7 @@ $breakpoints = 'breakpoints=\'{
         "spaceBetween": ' . (int) get_attribute($attributes, 'spaceBetweenTablet') . '
     }, 
     "1024": {
-        "slidesPerView": ' . (int) get_attribute($attributes, 'slidesPerView') . ',
+        "slidesPerView": ' . $slidesPerViewDesktop . ',
         "spaceBetween": ' . (int) get_attribute($attributes, 'spaceBetween') . '
     }
 }\'';
