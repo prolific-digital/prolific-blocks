@@ -1,12 +1,8 @@
 # Prolific Blocks - WordPress Plugin
 
----
-
 ## Overview
 
 Prolific Blocks is a WordPress plugin designed to expand the functionality of the block editor by introducing additional customizable blocks. Whether you want to integrate stylish hamburger menus, carousels, interactive Lottie animations, or dynamic timelines, Prolific Blocks has the tools you need to create engaging web experiences.
-
----
 
 ## Current Blocks
 
@@ -33,8 +29,6 @@ Prolific Blocks is a WordPress plugin designed to expand the functionality of th
 - Supports native scrolling animations for a smooth user experience.
 - Easily customize each timeline item’s appearance.
 
----
-
 ## Installation
 
 ### Step 1: Download the Plugin
@@ -50,8 +44,6 @@ Download the latest release of the Prolific Blocks plugin from the WordPress plu
 ### Step 3: Activate the Plugin
 
 Once installed, click **Activate Plugin** to start using Prolific Blocks.
-
----
 
 ## Usage
 
@@ -82,8 +74,6 @@ After activation, you can start using the available blocks in the WordPress bloc
 1. Add the Timeline Block to display a vertical timeline.
 2. Customize the content and appearance of each timeline item.
 3. Enable scrolling animations to enhance the user experience.
-
----
 
 ## Upcoming Features
 
