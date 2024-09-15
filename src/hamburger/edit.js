@@ -28,7 +28,12 @@ import { useBlockProps, InspectorControls } from "@wordpress/block-editor";
  * These are pre-built components provided by WordPress for creating
  * control panels and UI elements within the block editor.
  */
-import { PanelBody, ToggleControl, SelectControl } from "@wordpress/components";
+import {
+  PanelBody,
+  ToggleControl,
+  SelectControl,
+  TextControl,
+} from "@wordpress/components";
 
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
@@ -55,7 +60,7 @@ import "./editor.scss";
 import { useState } from "@wordpress/element";
 
 export default function Edit({ attributes, setAttributes }) {
-  const { hamburgerClass } = attributes;
+  const { hamburgerClass, ariaControls } = attributes;
   const blockProps = useBlockProps();
   const [isActive, setIsActive] = useState(false);
 
@@ -107,6 +112,15 @@ export default function Edit({ attributes, setAttributes }) {
             options={hamburgerOptions}
             onChange={(value) => setAttributes({ hamburgerClass: value })}
           />
+          <TextControl
+            label={__("Aria Controls ID", "text-domain")}
+            value={ariaControls}
+            onChange={(value) => setAttributes({ ariaControls: value })}
+            help={__(
+              "Enter the ID of the element this button controls.",
+              "text-domain"
+            )}
+          />
         </PanelBody>
       </InspectorControls>
       <div {...blockProps}>
@@ -116,6 +130,7 @@ export default function Edit({ attributes, setAttributes }) {
           }`}
           type="button"
           onClick={toggleActiveClass}
+          aria-controls={ariaControls || undefined}
         >
           <span className="hamburger-box">
             <span className="hamburger-inner"></span>

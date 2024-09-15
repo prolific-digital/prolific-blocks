@@ -26,6 +26,10 @@
     "hamburgerClass": {
       "type": "string",
       "default": "hamburger--boring"
+    },
+    "ariaControls": {
+      "type": "string",
+      "default": ""
     }
   },
   "textdomain": "prolific-blocks",

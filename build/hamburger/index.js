@@ -84,7 +84,8 @@ function Edit({
   setAttributes
 }) {
   const {
-    hamburgerClass
+    hamburgerClass,
+    ariaControls
   } = attributes;
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)();
   const [isActive, setIsActive] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)(false);
@@ -194,12 +195,20 @@ function Edit({
     onChange: value => setAttributes({
       hamburgerClass: value
     })
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Aria Controls ID", "text-domain"),
+    value: ariaControls,
+    onChange: value => setAttributes({
+      ariaControls: value
+    }),
+    help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Enter the ID of the element this button controls.", "text-domain")
   }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...blockProps
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: `hamburger ${hamburgerClass} ${isActive ? "is-active" : ""}`,
     type: "button",
-    onClick: toggleActiveClass
+    onClick: toggleActiveClass,
+    "aria-controls": ariaControls || undefined
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "hamburger-box"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
@@ -369,7 +378,7 @@ module.exports = window["wp"]["i18n"];
   \**********************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"prolific/hamburger","version":"0.1.0","title":"Hamburger","category":"media","icon":"menu","description":"A hamburger icon that activate the main menu.","example":{},"supports":{"ariaLabel":true,"className":true,"customClassName":true,"html":false},"attributes":{"label":{"type":"string","default":"Menu"},"icon":{"type":"string","default":"menu"},"hamburgerClass":{"type":"string","default":"hamburger--boring"}},"textdomain":"prolific-blocks","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js","render":"file:./render.php"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"prolific/hamburger","version":"0.1.0","title":"Hamburger","category":"media","icon":"menu","description":"A hamburger icon that activate the main menu.","example":{},"supports":{"ariaLabel":true,"className":true,"customClassName":true,"html":false},"attributes":{"label":{"type":"string","default":"Menu"},"icon":{"type":"string","default":"menu"},"hamburgerClass":{"type":"string","default":"hamburger--boring"},"ariaControls":{"type":"string","default":""}},"textdomain":"prolific-blocks","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js","render":"file:./render.php"}');
 
 /***/ })
 
