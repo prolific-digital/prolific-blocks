@@ -70,7 +70,7 @@ import { DotLottie } from "@lottiefiles/dotlottie-web";
 import { BlockIcon } from "@wordpress/block-editor";
 
 export default function Edit({ attributes, setAttributes }) {
-  const { lottieFile, loop, autoplay, speed } = attributes;
+  const { lottieFile, loop, autoplay, speed, startOnView } = attributes;
 
   const blockProps = useBlockProps();
   const canvasRef = useRef(null);
@@ -78,14 +78,12 @@ export default function Edit({ attributes, setAttributes }) {
 
   setAttributes({ blockId: blockProps.id });
 
-  console.log(autoplay);
-
   // Initialize Lottie animation
   useEffect(() => {
     if (!canvasRef.current || !lottieFile) return;
 
     const dotLottie = new DotLottie({
-      autoplay,
+      autoplay: autoplay,
       loop,
       canvas: canvasRef.current,
       src: lottieFile,
@@ -108,12 +106,40 @@ export default function Edit({ attributes, setAttributes }) {
     dotLottieInstance.setSpeed(speed);
     dotLottieInstance.setLoop(loop);
 
-    if (autoplay) {
+    if (autoplay && !startOnView) {
       dotLottieInstance.play();
     } else {
       dotLottieInstance.pause();
     }
-  }, [dotLottieInstance, autoplay, loop, speed]);
+  }, [dotLottieInstance, autoplay, loop, speed, startOnView]);
+
+  useEffect(() => {
+    if (!canvasRef.current || !dotLottieInstance || !startOnView) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            dotLottieInstance.play();
+            observer.unobserve(canvasRef.current);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    // Pause the animation initially if autoplay is true
+    if (autoplay) {
+      dotLottieInstance.pause();
+    }
+
+    observer.observe(canvasRef.current);
+
+    // Cleanup on unmount
+    return () => {
+      if (canvasRef.current) observer.unobserve(canvasRef.current);
+    };
+  }, [dotLottieInstance, startOnView, autoplay]);
 
   return (
     <>
@@ -149,6 +175,11 @@ export default function Edit({ attributes, setAttributes }) {
             label={__("Loop", "prolific-blocks")}
             checked={loop}
             onChange={(value) => setAttributes({ loop: value })}
+          />
+          <ToggleControl
+            label={__("Start on View", "prolific-blocks")}
+            checked={startOnView}
+            onChange={(value) => setAttributes({ startOnView: value })}
           />
           <RangeControl
             label={__("Speed", "prolific-blocks")}

@@ -34,6 +34,8 @@ function prolific_blocks_init() {
 	register_block_type(__DIR__ . '/build/timeline');
 	register_block_type(__DIR__ . '/build/timeline-item');
 	register_block_type(__DIR__ . '/build/lottie-js');
+	register_block_type(__DIR__ . '/build/tabs');
+	register_block_type(__DIR__ . '/build/tabs-panel');
 }
 add_action('init', 'prolific_blocks_init');
 
