@@ -7,7 +7,7 @@
  * Description:       A collection of advanced blocks to enhance your website's functionality and design.
  * Requires at least: 6.3
  * Requires PHP:      7.4
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            Prolific Digital
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
-require 'plugin-update-checker/plugin-update-checker.php';
+require 'updater/plugin-update-checker.php';
 
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
