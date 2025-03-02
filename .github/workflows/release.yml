@@ -20,17 +20,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Get version
-        id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-
       - name: Create plugin zip
         run: npm run plugin-zip
-
-      - name: Rename zip file
-        run: mv prolific-blocks.zip release-${{ steps.get_version.outputs.VERSION }}-prolific-blocks.zip
 
       - name: Upload zip to release
         uses: softprops/action-gh-release@v1
         with:
-          files: ./release-${{ steps.get_version.outputs.VERSION }}-prolific-blocks.zip
+          files: ./prolific-blocks.zip
