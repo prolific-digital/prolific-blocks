@@ -4,8 +4,8 @@
   "name": "prolific/lottie-js",
   "version": "1.0.0",
   "title": "Lottie",
-  "category": "media",
-  "icon": "heart",
+  "category": "prolific",
+  "icon": "block-default",
   "description": "Animate with Lottie.",
   "example": {},
   "supports": {

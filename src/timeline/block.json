@@ -4,8 +4,8 @@
   "name": "prolific/timeline",
   "version": "0.1.0",
   "title": "Timeline",
-  "category": "media",
-  "icon": "menu",
+  "category": "prolific",
+  "icon": "block-default",
   "description": "A timeline.",
   "example": {},
   "supports": {

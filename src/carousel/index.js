@@ -27,10 +27,7 @@ import metadata from "./block.json";
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
  */
 
-import { Icon, gallery } from "@wordpress/icons";
-
 registerBlockType(metadata.name, {
-  icon: <Icon icon={gallery} />,
   /**
    * @see ./edit.js
    */

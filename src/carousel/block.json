@@ -4,8 +4,8 @@
   "name": "prolific/carousel",
   "version": "1.0.0",
   "title": "Carousel",
-  "category": "media",
-  "icon": "gallery",
+  "category": "prolific",
+  "icon": "block-default",
   "description": "A robust and flexible carousel for showcasing media and content.",
   "supports": {
     "align": true,
@@ -35,7 +35,7 @@
     },
     "spaceBetween": {
       "type": "number",
-      "default": 50
+      "default": 30
     },
     "enableAutoSlidesPerView": {
       "type": "boolean",
@@ -47,7 +47,7 @@
     },
     "spaceBetweenTablet": {
       "type": "number",
-      "default": 30
+      "default": 20
     },
     "slidesPerViewTablet": {
       "type": "number",
@@ -55,7 +55,7 @@
     },
     "spaceBetweenMobile": {
       "type": "number",
-      "default": 20
+      "default": 15
     },
     "slidesPerViewMobile": {
       "type": "number",
@@ -75,11 +75,11 @@
     },
     "allowTouchMove": {
       "type": "boolean",
-      "default": false
+      "default": true
     },
     "keyboard": {
       "type": "boolean",
-      "default": false
+      "default": true
     },
     "grabCursor": {
       "type": "boolean",
@@ -102,6 +102,10 @@
       "default": true
     },
     "pauseOnHover": {
+      "type": "boolean",
+      "default": true
+    },
+    "pauseButton": {
       "type": "boolean",
       "default": true
     },
@@ -135,7 +139,7 @@
     },
     "effect": {
       "type": "string",
-      "default": "slider"
+      "default": "slide"
     },
     "customNav": {
       "type": "boolean",
@@ -170,6 +174,6 @@
   "editorScript": "file:./index.js",
   "editorStyle": "file:./index.css",
   "style": "file:./style-index.css",
-  "viewScript": "file:./view.js",
+  "viewScript": ["file:./view.js", "swiper-script"],
   "render": "file:./render.php"
 }

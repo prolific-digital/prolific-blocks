@@ -1,34 +1,192 @@
+/**
+ * Frontend styles for the Carousel block
+ *
+ * These styles apply on the frontend display of the carousel.
+ */
+
 .wp-block-prolific-carousel {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  
+  // Style for the pause button
+  .carousel-pause-button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: background 0.3s ease;
+    
+    &:hover, &:focus {
+      background: rgba(0, 0, 0, 0.7);
+      outline: 2px solid #007cba;
+    }
+    
+    &:focus:not(:focus-visible) {
+      outline: none;
+    }
+    
+    &:focus-visible {
+      outline: 2px solid #007cba;
+    }
+    
+    .screen-reader-text {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+  }
+
+  // Style for custom navigation buttons
   .custom-prev,
   .custom-next {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
     max-width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    z-index: 1;
-
+    z-index: 10;
+    transition: background 0.3s ease;
+    
+    &:hover, &:focus {
+      background: rgba(0, 0, 0, 0.7);
+    }
+    
+    &:focus:not(:focus-visible) {
+      outline: none;
+    }
+    
+    &:focus-visible {
+      outline: 2px solid #007cba;
+    }
+    
+    .screen-reader-text {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+    
     svg {
       width: 100%;
       height: auto;
+      max-width: 20px;
+      fill: currentColor;
     }
   }
-
+  
   .custom-prev {
-    left: 0;
+    left: 10px;
   }
-
+  
   .custom-next {
-    right: 0;
+    right: 10px;
   }
-
-  swiper-container {
+  
+  // Basic styles for the swiper container
+  swiper-container.prolific-carousel-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    padding-bottom: 70px; // Add more space below for pagination
+    margin-bottom: 20px; // Add margin to prevent pagination from overlapping with content below
+    box-sizing: border-box;
+    display: block;
+    transition: height 0.3s ease; // Smooth height transitions when auto-height is enabled
+    
     &[direction="vertical"] {
       height: 400px;
     }
-
+    
+    // Style for pagination
+    &::part(pagination) {
+      bottom: 40px !important; // Ensure pagination stays at consistent position
+    }
+    
+    // Style for slides
+    swiper-slide {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      height: 100%;
+      position: relative;
+      
+      &:focus {
+        outline: none;
+      }
+      
+      &:focus-visible {
+        outline: 2px solid #007cba;
+      }
+      
+      // Style for slide inner content container
+      .prolific-carousel-slide-inner {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        width: 100%;
+        padding-bottom: 50px; // Make room for pagination
+      }
+    }
+    
     &::part(container) {
-      // write some styles here for the swiper container
+      // Base styles for the swiper container
+      overflow: hidden;
+    }
+  }
+  
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    .custom-prev,
+    .custom-next {
+      width: 32px;
+      height: 32px;
+    }
+    
+    .carousel-pause-button {
+      width: 28px;
+      height: 28px;
+    }
+  }
+  
+  // High contrast mode adjustments for accessibility
+  @media (forced-colors: active) {
+    .custom-prev,
+    .custom-next,
+    .carousel-pause-button {
+      border: 2px solid ButtonText;
     }
   }
 }

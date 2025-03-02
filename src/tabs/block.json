@@ -4,8 +4,8 @@
   "name": "prolific/tabs",
   "version": "1.0.0",
   "title": "Tabs",
-  "category": "media",
-  "icon": "heart",
+  "category": "prolific",
+  "icon": "block-default",
   "description": "A block that allows you to create a tabbed content.",
   "example": {},
   "supports": {

@@ -4,8 +4,8 @@
   "name": "prolific/carousel-slide",
   "version": "1.0.0",
   "title": "Slide",
-  "category": "media",
-  "icon": "format-aside",
+  "category": "prolific",
+  "icon": "block-default",
   "parent": ["prolific/carousel"],
   "description": "An individual slide for the Carousel block, used to display media content within the carousel.",
   "supports": {

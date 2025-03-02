@@ -4,8 +4,8 @@
   "name": "prolific/hamburger",
   "version": "0.1.0",
   "title": "Hamburger",
-  "category": "media",
-  "icon": "menu",
+  "category": "prolific",
+  "icon": "block-default",
   "description": "A hamburger icon that activate the main menu.",
   "example": {},
   "supports": {

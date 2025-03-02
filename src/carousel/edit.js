@@ -68,15 +68,17 @@ import {
 import { useSelect } from "@wordpress/data";
 
 import "./editor.scss";
-import { button } from "@wordpress/icons";
-import { set } from "lodash";
+import { debounce } from "lodash";
 
 /**
- * Sanitize SVG content by removing comments and unwanted attributes.
+ * Sanitize SVG content by removing potentially dangerous content.
  *
- * This function takes an SVG content string, removes all comments,
- * and then parses the SVG content to remove unwanted attributes such as
- * inline styles, width, and height attributes from the SVG tag.
+ * This function sanitizes SVG content by:
+ * 1. Removing comments
+ * 2. Removing script tags and their content
+ * 3. Removing event handlers (on* attributes)
+ * 4. Removing potentially dangerous attributes like href with javascript:
+ * 5. Removing unwanted presentation attributes (style, width, height)
  *
  * @param {string} svgContent - The raw SVG content as a string.
  * @returns {string} - The sanitized SVG content as a string.
@@ -85,21 +87,60 @@ const sanitizeSvg = (svgContent) => {
   // Remove comments
   svgContent = svgContent.replace(/<!--[\s\S]*?-->/g, "");
 
-  // Parse the SVG content
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(svgContent, "image/svg+xml");
+  try {
+    // Parse the SVG content
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(svgContent, "image/svg+xml");
 
-  // Remove unwanted attributes
-  const elements = doc.querySelectorAll("*");
-  elements.forEach((el) => {
-    el.removeAttribute("style"); // Remove style attribute
-    if (el.tagName.toLowerCase() === "svg") {
-      el.removeAttribute("width"); // Remove width attribute from svg tag
-      el.removeAttribute("height"); // Remove height attribute from svg tag
-    }
-  });
+    // Remove script elements
+    const scripts = doc.querySelectorAll("script");
+    scripts.forEach(script => script.remove());
 
-  return new XMLSerializer().serializeToString(doc);
+    // Remove potentially dangerous elements
+    const dangerousElements = doc.querySelectorAll("foreignObject, iframe");
+    dangerousElements.forEach(el => el.remove());
+
+    // Process all elements
+    const elements = doc.querySelectorAll("*");
+    elements.forEach((el) => {
+      // Remove all event handler attributes (on*)
+      Array.from(el.attributes).forEach(attr => {
+        if (attr.name.startsWith("on")) {
+          el.removeAttribute(attr.name);
+        }
+      });
+
+      // Remove href attributes that contain javascript:
+      if (el.hasAttribute("href")) {
+        const href = el.getAttribute("href");
+        if (href.toLowerCase().startsWith("javascript:")) {
+          el.removeAttribute("href");
+        }
+      }
+
+      // Remove xlink:href attributes that contain javascript:
+      if (el.hasAttributeNS("http://www.w3.org/1999/xlink", "href")) {
+        const xlinkHref = el.getAttributeNS("http://www.w3.org/1999/xlink", "href");
+        if (xlinkHref.toLowerCase().startsWith("javascript:")) {
+          el.removeAttributeNS("http://www.w3.org/1999/xlink", "href");
+        }
+      }
+
+      // Remove style attribute for all elements
+      el.removeAttribute("style");
+
+      // For SVG elements, remove width and height
+      if (el.tagName.toLowerCase() === "svg") {
+        el.removeAttribute("width");
+        el.removeAttribute("height");
+      }
+    });
+
+    return new XMLSerializer().serializeToString(doc);
+  } catch (e) {
+    // If there's an error processing the SVG, return an empty string
+    return "";
+  }
 };
 
 export default function Edit({ attributes, setAttributes, clientId }) {
@@ -123,6 +164,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
     loop,
     draggable,
     pauseOnHover,
+    pauseButton,
     transitionSpeed,
     a11yEnabled,
     autoHeight,
@@ -145,11 +187,18 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 
   const blockProps = useBlockProps();
   const swiperElRef = useRef(null);
-  const uniqueId = uuidv4();
+  const uniqueId = useRef(uuidv4());
   const [innerBlocksCount, setInnerBlocksCount] = useState(0);
   const [renderSwiper, setRenderSwiper] = useState(true);
+  const [hasSetBlockId, setHasSetBlockId] = useState(false);
 
-  setAttributes({ blockId: blockProps.id });
+  // Only set blockId once when component mounts
+  useEffect(() => {
+    if (!hasSetBlockId && blockProps.id) {
+      setAttributes({ blockId: blockProps.id });
+      setHasSetBlockId(true);
+    }
+  }, [blockProps.id, hasSetBlockId, setAttributes]);
 
   /**
    * Debounced function to reinitialize the Swiper component.
@@ -161,7 +210,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
    * @returns {void}
    */
   const reinitializeSwiper = useCallback(
-    _.debounce(() => {
+    debounce(() => {
       setRenderSwiper(false);
       setTimeout(() => {
         setRenderSwiper(true);
@@ -212,9 +261,81 @@ export default function Edit({ attributes, setAttributes, clientId }) {
    */
   useEffect(() => {
     if (swiperElRef.current && swiperElRef.current.swiper) {
-      swiperElRef.current.swiper.update();
+      // Use a small delay to ensure content is fully rendered
+      setTimeout(() => {
+        swiperElRef.current.swiper.update();
+        
+        // Special handling for autoHeight to force recalculation
+        if (autoHeight && swiperElRef.current.swiper.updateAutoHeight) {
+          swiperElRef.current.swiper.updateAutoHeight(0);
+        }
+      }, 100);
     }
-  }, [innerBlocksCount]);
+  }, [innerBlocksCount, autoHeight]);
+  
+  /**
+   * Effect hook to set up custom navigation in the editor
+   * 
+   * This hook creates direct click handlers for the custom navigation buttons
+   * instead of relying on Swiper's built-in navigation.
+   * 
+   * @function useEffect
+   */
+  useEffect(() => {
+    // Only run if custom navigation is enabled and after swiper is initialized
+    if (!customNav || !renderSwiper) return;
+    
+    // Use a timeout to ensure everything is properly rendered
+    const timeoutId = setTimeout(() => {
+      // Update reference to current swiper instance
+      const swiper = swiperElRef.current?.swiper;
+      if (!swiper) return;
+      
+      // Get buttons by class names (using document to ensure we find them)
+      const nextBtn = document.querySelector(`.custom-next-${uniqueId.current}`);
+      const prevBtn = document.querySelector(`.custom-prev-${uniqueId.current}`);
+      
+      // Set up click handler for next button
+      if (nextBtn) {
+        // Remove existing handlers by cloning and replacing
+        const nextBtnClone = nextBtn.cloneNode(true);
+        if (nextBtn.parentNode) {
+          nextBtn.parentNode.replaceChild(nextBtnClone, nextBtn);
+        }
+        
+        // Add the click handler using event delegation (more reliable)
+        nextBtnClone.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('Next button clicked');
+          if (swiper && typeof swiper.slideNext === 'function') {
+            swiper.slideNext();
+          }
+        };
+      }
+      
+      // Set up click handler for prev button
+      if (prevBtn) {
+        // Remove existing handlers by cloning and replacing
+        const prevBtnClone = prevBtn.cloneNode(true);
+        if (prevBtn.parentNode) {
+          prevBtn.parentNode.replaceChild(prevBtnClone, prevBtn);
+        }
+        
+        // Add the click handler using event delegation (more reliable)
+        prevBtnClone.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('Previous button clicked');
+          if (swiper && typeof swiper.slidePrev === 'function') {
+            swiper.slidePrev();
+          }
+        };
+      }
+    }, 500); // Longer timeout to ensure everything is initialized
+    
+    return () => clearTimeout(timeoutId);
+  }, [customNav, renderSwiper, uniqueId.current]);
 
   /**
    * Effect hook to reinitialize the Swiper component when specific dependencies change.
@@ -243,37 +364,78 @@ export default function Edit({ attributes, setAttributes, clientId }) {
     loop,
     direction,
     pauseOnHover,
+    pauseButton,
     customNav,
     customNavPrev,
     customNavNext,
+    autoHeight,
   ]);
+
+  // Set navigation element class names only once when component mounts
+  useEffect(() => {
+    if (!navigationNextEl || !navigationPrevEl) {
+      setAttributes({ 
+        navigationNextEl: `.custom-next-${uniqueId.current}`,
+        navigationPrevEl: `.custom-prev-${uniqueId.current}`
+      });
+    }
+  }, []);
 
   const autoSlidesPerView = enableAutoSlidesPerView ? "auto" : slidesPerView;
 
-  console.log(autoSlidesPerView);
-
   const onSelectPrevSvg = async (media) => {
     if (media && media.url) {
-      const svgContent = await fetchSvgContent(media.url);
-      setAttributes({ customNavPrev: media.url, customNavPrevSvg: svgContent });
+      try {
+        const svgContent = await fetchSvgContent(media.url);
+        setAttributes({ customNavPrev: media.url, customNavPrevSvg: svgContent });
+      } catch (error) {
+        // Silently handle error in production
+      }
     }
   };
 
   const onSelectNextSvg = async (media) => {
     if (media && media.url) {
-      const svgContent = await fetchSvgContent(media.url);
-      setAttributes({ customNavNext: media.url, customNavNextSvg: svgContent });
+      try {
+        const svgContent = await fetchSvgContent(media.url);
+        setAttributes({ customNavNext: media.url, customNavNextSvg: svgContent });
+      } catch (error) {
+        // Silently handle error in production
+      }
     }
   };
 
   const fetchSvgContent = async (url) => {
-    const response = await fetch(url);
-    if (response.ok) {
+    try {
+      // Add cache busting parameter to avoid browser caching issues
+      const cacheBustUrl = `${url}?_=${Date.now()}`;
+      const response = await fetch(cacheBustUrl, {
+        credentials: 'same-origin',
+        headers: {
+          'Accept': 'image/svg+xml, */*'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`SVG fetch failed: ${response.status} ${response.statusText}`);
+      }
+      
+      const contentType = response.headers.get('content-type');
+      if (contentType && !contentType.includes('svg')) {
+        throw new Error(`Invalid content type: ${contentType}`);
+      }
+      
       const text = await response.text();
-      const cleanSvg = sanitizeSvg(text);
-      return cleanSvg;
+      // Validate that the content looks like SVG
+      if (!text.includes('<svg') || !text.includes('</svg>')) {
+        throw new Error('Invalid SVG content');
+      }
+      
+      return sanitizeSvg(text);
+    } catch (error) {
+      // Silently handle error in production
+      return "";
     }
-    return "";
   };
 
   const clearPrevSvg = () => {
@@ -283,12 +445,6 @@ export default function Edit({ attributes, setAttributes, clientId }) {
   const clearNextSvg = () => {
     setAttributes({ customNavNext: "", customNavNextSvg: "" });
   };
-
-  useEffect(() => {
-    setAttributes({ navigationNextEl: `.custom-next-${uniqueId}` });
-    setAttributes({ navigationPrevEl: `.custom-prev-${uniqueId}` });
-  }, []);
-
   const innerBlocksProps = useInnerBlocksProps(
     {},
     {
@@ -303,7 +459,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 
   return (
     <>
-      <div {...blockProps}>
+      <div {...blockProps} className={classnames(blockProps.className, 'wp-block-prolific-carousel')}>
         {renderSwiper && (
           <swiper-container
             {...innerBlocksProps}
@@ -311,25 +467,20 @@ export default function Edit({ attributes, setAttributes, clientId }) {
             slides-per-view={autoSlidesPerView}
             direction={direction}
             space-between={spaceBetween}
-            navigation={navigation}
-            {...(customNav && {
-              "navigation-next-el": navigationNextEl,
-              "navigation-prev-el": navigationPrevEl,
-            })}
+            navigation={(!customNav).toString()} // Only use built-in navigation when customNav is false
             pagination={pagination}
             scrollbar={scrollbar}
             allow-touch-move="false"
-            keyboard="false"
-            grab-cursor={grabCursor}
-            autoplay={autoplay}
-            centered-slides={centeredSlides}
-            speed={transitionSpeed}
-            loop={loop}
-            draggable={draggable}
-            pause-on-hover={pauseOnHover}
-            {...(autoplay && { "autoplay-delay": delay })}
-            {...(effect !== "none" && { effect })}
-            {...(effect === "fade" && { "fade-effect-cross-fade": "true" })}
+            keyboard={keyboard.toString()}
+            grab-cursor="false"
+            autoplay="false"
+            centered-slides={centeredSlides.toString()}
+            speed={transitionSpeed.toString()}
+            loop="false"
+            draggable="false"
+            pause-on-hover={pauseOnHover.toString()}
+            a11y={a11yEnabled.toString()}
+            auto-height={autoHeight.toString()}
             breakpoints={`{
               "1024": {
                 "slidesPerView": "${autoSlidesPerView}",
@@ -344,21 +495,67 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                 "spaceBetween": "${spaceBetweenMobile}"
               }
             }`}
+            role="region"
+            aria-label={__("Carousel", "prolific-blocks")}
+            class="editor-carousel"
+            on-swiper-init="swiperInitialized"
           >
             {/* innerblock */}
           </swiper-container>
         )}
         {customNav && (
           <>
-            <button className={`custom-prev custom-prev-${uniqueId}`}>
-              <span dangerouslySetInnerHTML={{ __html: customNavPrevSvg }} />
-              <span className="screen-reader-text">Previous</span>
+            <button 
+              className={`custom-prev custom-prev-${uniqueId.current}`}
+              aria-label={__("Previous slide", "prolific-blocks")}
+              role="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (swiperElRef.current && swiperElRef.current.swiper) {
+                  swiperElRef.current.swiper.slidePrev();
+                  console.log("Previous slide clicked");
+                }
+              }}
+            >
+              {customNavPrevSvg ? (
+                <span dangerouslySetInnerHTML={{ __html: customNavPrevSvg }} />
+              ) : (
+                <span aria-hidden="true">&#10094;</span>
+              )}
+              <span className="screen-reader-text">{__("Previous", "prolific-blocks")}</span>
             </button>
-            <button className={`custom-next custom-next-${uniqueId}`}>
-              <span dangerouslySetInnerHTML={{ __html: customNavNextSvg }} />
-              <span className="screen-reader-text">Next</span>
+            <button 
+              className={`custom-next custom-next-${uniqueId.current}`}
+              aria-label={__("Next slide", "prolific-blocks")}
+              role="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (swiperElRef.current && swiperElRef.current.swiper) {
+                  swiperElRef.current.swiper.slideNext();
+                  console.log("Next slide clicked");
+                }
+              }}
+            >
+              {customNavNextSvg ? (
+                <span dangerouslySetInnerHTML={{ __html: customNavNextSvg }} />
+              ) : (
+                <span aria-hidden="true">&#10095;</span>
+              )}
+              <span className="screen-reader-text">{__("Next", "prolific-blocks")}</span>
             </button>
           </>
+        )}
+        {autoplay && pauseButton && (
+          <button 
+            className="carousel-pause-button"
+            aria-label={__("Pause carousel", "prolific-blocks")}
+            role="button"
+          >
+            <span aria-hidden="true">⏸</span>
+            <span className="screen-reader-text">{__("Pause", "prolific-blocks")}</span>
+          </button>
         )}
       </div>
 
@@ -591,7 +788,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
             checked={autoHeight}
             onChange={(value) => setAttributes({ autoHeight: value })}
             help={__(
-              "Allow heigh of each slide to determine height of carousel.",
+              "Allow height of each slide to determine height of carousel. May cause layout shifts during editing.",
               "prolific-blocks"
             )}
           />
@@ -640,32 +837,45 @@ export default function Edit({ attributes, setAttributes, clientId }) {
               "prolific-blocks"
             )}
           />
-          <RangeControl
-            label={__("Autoplay Delay (ms)", "prolific-blocks")}
-            value={delay}
-            onChange={(value) => setAttributes({ delay: value })}
-            min={1000}
-            max={10000}
-            help={__(
-              "Set the delay between autoplay transitions in milliseconds.",
-              "prolific-blocks"
-            )}
-          />
+          {autoplay && (
+            <>
+              <RangeControl
+                label={__("Autoplay Delay (ms)", "prolific-blocks")}
+                value={delay}
+                onChange={(value) => setAttributes({ delay: value })}
+                min={1000}
+                max={10000}
+                help={__(
+                  "Set the delay between autoplay transitions in milliseconds.",
+                  "prolific-blocks"
+                )}
+              />
+              <ToggleControl
+                label={__("Pause on Hover", "prolific-blocks")}
+                checked={pauseOnHover}
+                onChange={(value) => setAttributes({ pauseOnHover: value })}
+                help={__(
+                  "Pause autoplay when the mouse hovers over the slider.",
+                  "prolific-blocks"
+                )}
+              />
+              <ToggleControl
+                label={__("Show Pause Button", "prolific-blocks")}
+                checked={pauseButton}
+                onChange={(value) => setAttributes({ pauseButton: value })}
+                help={__(
+                  "Display a pause button for the carousel.",
+                  "prolific-blocks"
+                )}
+              />
+            </>
+          )}
           <ToggleControl
             label={__("Loop", "prolific-blocks")}
             checked={loop}
             onChange={(value) => setAttributes({ loop: value })}
             help={__(
               "Enable continuous loop mode for the slider.",
-              "prolific-blocks"
-            )}
-          />
-          <ToggleControl
-            label={__("Pause on Hover", "prolific-blocks")}
-            checked={pauseOnHover}
-            onChange={(value) => setAttributes({ pauseOnHover: value })}
-            help={__(
-              "Pause autoplay when the mouse hovers over the slider.",
               "prolific-blocks"
             )}
           />

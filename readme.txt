@@ -1,55 +1,98 @@
 === Prolific Blocks ===
-Contributors:      The WordPress Contributors
-Tags:              block
-Tested up to:      6.1
-Stable tag:        0.1.0
+Contributors:      Prolific Digital
+Tags:              block, gutenberg, carousel, hamburger, lottie, animation, timeline, tabs
+Tested up to:      6.7
+Stable tag:        1.0.0
+Requires at least: 6.3
+Requires PHP:      7.4
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
-Example block scaffolded with Create Block tool.
+A collection of advanced blocks to enhance your website's functionality and design.
 
 == Description ==
 
-This is the long description. No limit, and you can use Markdown (as well as in the following sections).
+Prolific Blocks is a WordPress plugin designed to expand the functionality of the block editor by introducing additional customizable blocks. Whether you want to integrate stylish hamburger menus, carousels, interactive Lottie animations, dynamic timelines, or tabbed content, Prolific Blocks has the tools you need to create engaging web experiences.
 
-For backwards compatibility, if this section is missing, the full length of the short description will be used, and
-Markdown parsed.
+= Current Blocks =
+
+**Hamburger Block**
+
+* Add a customizable hamburger button to your page
+* Clicking the button toggles an `active` class on the `<body>` tag
+* Supports various animation styles for the hamburger button
+* Manage ARIA controls for accessibility
+
+**Carousel Block**
+
+* Create responsive carousels with unlimited slides
+* Configure slides per view, spacing between slides, and device-specific settings
+* Built using the Swiper.js library for smooth performance
+
+**Lottie Block**
+
+* Upload Lottie animations (JSON files) directly to your WordPress media library
+* Customize playback options such as speed, autoplay, looping, and more
+* Enable "play on scroll" to trigger animations as users scroll through your page
+* Support for starting animation when it becomes visible in the viewport
+
+**Timeline Block**
+
+* Build vertical timelines with unlimited items
+* Supports native scrolling animations for a smooth user experience
+* Easily customize each timeline item's appearance
+
+**Tabs Block**
+
+* Create tabbed content sections with customizable appearance
+* Add any block content within each tab panel
+* Improve content organization and user experience
+
+= Automatic Updates =
+
+Prolific Blocks is configured to receive automatic update notifications in your WordPress dashboard when new versions are released on GitHub.
 
 == Installation ==
 
-This section describes how to install the plugin and get it working.
-
-e.g.
-
 1. Upload the plugin files to the `/wp-content/plugins/prolific-blocks` directory, or install the plugin through the WordPress plugins screen directly.
-1. Activate the plugin through the 'Plugins' screen in WordPress
-
+2. Activate the plugin through the 'Plugins' screen in WordPress
+3. Use the blocks in the WordPress block editor by searching for "Prolific" in the block inserter
 
 == Frequently Asked Questions ==
 
-= A question that someone might have =
+= Are these blocks compatible with any WordPress theme? =
 
-An answer to that question.
+Yes, all blocks are designed to work with any WordPress theme. However, for the best visual integration, you might need to adjust their styling to match your theme.
 
-= What about foo bar? =
+= Do I need to know coding to use these blocks? =
 
-Answer to foo bar dilemma.
+No coding knowledge is required. Our blocks come with intuitive controls that allow you to adjust settings and styling without writing any code.
+
+= Will this plugin slow down my website? =
+
+Prolific Blocks is optimized for performance. We load scripts only when needed and use modern web technologies to ensure a smooth experience.
+
+= How do I customize the appearance of these blocks? =
+
+Each block comes with its own set of controls in the block editor sidebar, allowing you to customize colors, sizes, animations, and more.
 
 == Screenshots ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
-(or jpg, jpeg, gif).
-2. This is the second screen shot
+1. Hamburger block with various animation styles
+2. Carousel block with multiple slides and navigation
+3. Lottie animation block with playback controls
+4. Timeline block with animated items
+5. Tabs block with customizable content panels
 
 == Changelog ==
 
-= 0.1.0 =
-* Release
+= 1.0.0 =
+* Initial release with Hamburger, Carousel, Lottie, Timeline, and Tabs blocks
+* Support for ARIA controls in hamburger block
+* Support for playing Lottie animations on scroll
+* Optimized block loading and rendering
 
-== Arbitrary section ==
+== Upgrade Notice ==
 
-You may provide arbitrary sections, in the same format as the ones above. This may be of use for extremely complicated
-plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or
-"installation." Arbitrary sections will be shown below the built-in sections outlined above.
+= 1.0.0 =
+Initial release of Prolific Blocks with multiple customizable blocks.

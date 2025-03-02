@@ -2,10 +2,12 @@
 
 /**
  * Plugin Name:       Prolific Blocks
+ * Plugin URI:				https://prolificdigital.com/
+ * Author URI:        https://prolificdigital.com/
  * Description:       A collection of advanced blocks to enhance your website's functionality and design.
  * Requires at least: 6.3
- * Requires PHP:      7.0
- * Version:           1.1
+ * Requires PHP:      7.4
+ * Version:           1.0.0
  * Author:            Prolific Digital
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -18,7 +20,38 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
+require 'plugin-update-checker/plugin-update-checker.php';
+
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
+$myUpdateChecker = PucFactory::buildUpdateChecker(
+	'https://github.com/prolific-digital/prolific-blocks/',
+	__FILE__,
+	'prolific-blocks'
+);
+
+$myUpdateChecker->getVcsApi()->enableReleaseAssets();
+
 require_once plugin_dir_path(__FILE__) . 'inc/helpers.php';
+
+/**
+ * Register custom block category for Prolific blocks
+ * 
+ * @param array $categories Existing block categories.
+ * @return array Modified block categories.
+ */
+function prolific_block_categories($categories) {
+	return array_merge(
+		[
+			[
+				'slug' => 'prolific',
+				'title' => 'Prolific',
+			]
+		],
+		$categories
+	);
+}
+add_filter('block_categories_all', 'prolific_block_categories', 10, 1);
 
 /**
  * Registers the block using the metadata loaded from the `block.json` file.
@@ -44,11 +77,36 @@ add_action('init', 'prolific_blocks_init');
  *
  * This function registers and enqueues the Swiper JS script, ensuring it is loaded
  * when block assets are enqueued. The script is loaded from the plugin's build directory.
+ * 
+ * We register the script with a version number based on the plugin version to avoid caching issues.
+ * We also conditionally load the script only when required blocks are on the page.
  *
  * @return void
  */
 function enqueue_swiper_scripts() {
-	wp_enqueue_script('swiper-script', plugins_url('build/swiper/index.js', __FILE__), array(), null, true);
+	$plugin_data = get_file_data(__FILE__, array('Version' => 'Version'), 'plugin');
+	$version = $plugin_data['Version'];
+
+	// Check if we should load Swiper - if running in admin, or if the page has carousel blocks
+	$should_load = is_admin();
+
+	if (!$should_load && has_block('prolific/carousel')) {
+		$should_load = true;
+	}
+
+	if ($should_load) {
+		// Register the script with proper dependencies
+		wp_register_script(
+			'swiper-script',
+			plugins_url('build/swiper/index.js', __FILE__),
+			array('wp-element', 'wp-blocks'),
+			$version,
+			true
+		);
+
+		// Enqueue the script
+		wp_enqueue_script('swiper-script');
+	}
 }
 add_action('enqueue_block_assets', 'enqueue_swiper_scripts');
 

@@ -38,7 +38,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 
   return (
     <swiper-slide>
-      <InnerBlocks template={TEMPLATE} />
+      <div className="prolific-carousel-slide-inner">
+        <InnerBlocks template={TEMPLATE} />
+      </div>
     </swiper-slide>
   );
 }
