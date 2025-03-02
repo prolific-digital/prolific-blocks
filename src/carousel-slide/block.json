@@ -1,0 +1,22 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "prolific/carousel-slide",
+  "version": "1.0.0",
+  "title": "Slide",
+  "category": "prolific",
+  "icon": "block-default",
+  "parent": ["prolific/carousel"],
+  "description": "An individual slide for the Carousel block, used to display media content within the carousel.",
+  "supports": {
+    "customClassName": true
+  },
+  "attributes": {
+    "blockId": {
+      "type": "string"
+    }
+  },
+  "textdomain": "prolific-blocks",
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

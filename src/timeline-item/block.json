@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "prolific/timeline-item",
+  "version": "0.1.0",
+  "title": "Timeline Item",
+  "category": "prolific",
+  "icon": "block-default",
+  "description": "A timeline item.",
+  "parent": ["prolific/timeline"],
+  "example": {},
+  "supports": {
+    "ariaLabel": true,
+    "className": true,
+    "customClassName": true,
+    "html": false
+  },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "default": "Menu"
+    }
+  },
+  "textdomain": "prolific-blocks",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "viewScript": "file:./view.js",
+  "render": "file:./render.php"
+}

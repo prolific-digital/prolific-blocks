@@ -1,0 +1,11 @@
+.wp-block-prolific-timeline {
+  max-width: 900px !important;
+  .block-editor-block-list__layout {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+}
