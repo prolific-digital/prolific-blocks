@@ -1,8 +1,8 @@
 {
   "name": "prolific-blocks",
-  "version": "0.1.0",
-  "description": "Example block scaffolded with Create Block tool.",
-  "author": "The WordPress Contributors",
+  "version": "1.0.0",
+  "description": "A collection of advanced blocks to enhance your website's functionality and design.",
+  "author": "Prolific Digital",
   "license": "GPL-2.0-or-later",
   "main": "build/index.js",
   "files": [
@@ -10,7 +10,8 @@
     "build",
     "prolific-blocks.php",
     "readme.txt",
-    "README.md"
+    "README.md",
+    "updater"
   ],
   "scripts": {
     "build": "wp-scripts build",
