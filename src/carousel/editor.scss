@@ -1,0 +1,157 @@
+/**
+ * Editor styles for the Carousel block
+ *
+ * These styles apply only in the editor.
+ */
+
+.wp-block-prolific-carousel {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  
+  // Style for the pause button
+  .carousel-pause-button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    
+    &:hover, &:focus {
+      background: rgba(0, 0, 0, 0.7);
+    }
+    
+    .screen-reader-text {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+  }
+
+  // Style for custom navigation buttons
+  .custom-prev,
+  .custom-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    
+    &:hover, &:focus {
+      background: rgba(0, 0, 0, 0.7);
+      outline: 2px solid #007cba; // Accessibility focus style
+    }
+    
+    .screen-reader-text {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+    
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+  }
+  
+  .custom-prev {
+    left: 10px;
+  }
+  
+  .custom-next {
+    right: 10px;
+  }
+  
+  // Make the editor view better represent the frontend
+  swiper-container {
+    overflow: hidden !important;
+    padding-bottom: 70px; // More space for pagination
+    margin-bottom: 20px; // Add margin to prevent pagination from overlapping with content below
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    
+    // Special styling for the editor to make blocks easily editable
+    &.editor-carousel {
+      cursor: auto !important;
+      transition: height 0.3s ease; // Smooth height transitions
+      overflow: visible !important; // Prevent content clipping when changing height
+      
+      swiper-slide {
+        cursor: auto !important;
+        
+        // Add a subtle outline to make slide boundaries visible
+        outline: 1px dashed #ddd;
+        
+        &:hover {
+          outline: 1px dashed #007cba;
+        }
+        
+        .prolific-carousel-slide-inner {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          padding-bottom: 50px; // Make room for pagination
+        }
+      }
+      
+      // Disable grab cursor styles that might be inherited 
+      &::after, * {
+        cursor: auto !important;
+      }
+    }
+    
+    // Add placeholder bullets when pagination is enabled
+    &[pagination="true"]::after {
+      content: "";
+      position: absolute;
+      bottom: 40px;
+      left: 0;
+      right: 0;
+      height: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      
+      &::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #ccc;
+        display: inline-block;
+      }
+    }
+  }
+}

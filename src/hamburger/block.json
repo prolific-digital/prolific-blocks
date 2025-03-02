@@ -1,0 +1,41 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "prolific/hamburger",
+  "version": "0.1.0",
+  "title": "Hamburger",
+  "category": "prolific",
+  "icon": "block-default",
+  "description": "A hamburger icon that activate the main menu.",
+  "example": {},
+  "supports": {
+    "ariaLabel": true,
+    "className": true,
+    "customClassName": true,
+    "html": false
+  },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "default": "Menu"
+    },
+    "icon": {
+      "type": "string",
+      "default": "menu"
+    },
+    "hamburgerClass": {
+      "type": "string",
+      "default": "hamburger--boring"
+    },
+    "ariaControls": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "textdomain": "prolific-blocks",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "viewScript": "file:./view.js",
+  "render": "file:./render.php"
+}
