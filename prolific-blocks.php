@@ -18,6 +18,18 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
+require 'plugin-update-checker/plugin-update-checker.php';
+
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
+$myUpdateChecker = PucFactory::buildUpdateChecker(
+	'https://github.com/prolific-digital/prolific-blocks/',
+	__FILE__,
+	'prolific-blocks'
+);
+
+$myUpdateChecker->getVcsApi()->enableReleaseAssets();
+
 require_once plugin_dir_path(__FILE__) . 'inc/helpers.php';
 
 /**
