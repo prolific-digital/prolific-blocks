@@ -164,6 +164,13 @@ if (pb_carousel_get_attribute($attributes, 'enableAutoSlidesPerView')) {
  * @param array $attributes The array of attributes.
  * @return string The constructed string of Swiper attributes in kebab-case format.
  */
+// Handle autoplay on hover feature - check before processing regular autoplay
+$autoplayOnHover = pb_carousel_get_attribute($attributes, 'autoplayOnHover');
+if ($autoplayOnHover) {
+  // Remove autoplay from the attributes list to prevent it from being processed
+  $attributes_list = array_diff($attributes_list, ['autoplay']);
+}
+
 $swiper_attributes = '';
 foreach ($attributes_list as $attr) {
   $value = pb_carousel_get_attribute($attributes, $attr);
@@ -176,9 +183,18 @@ foreach ($attributes_list as $attr) {
   }
 }
 
-// Handle special case for autoplay delay
-if (pb_carousel_get_attribute($attributes, 'autoplay') && $delay = pb_carousel_get_attribute($attributes, 'delay')) {
+// Handle special case for autoplay delay (only if regular autoplay is enabled)
+if (!$autoplayOnHover && pb_carousel_get_attribute($attributes, 'autoplay') && $delay = pb_carousel_get_attribute($attributes, 'delay')) {
   $swiper_attributes .= 'autoplay-delay="' . esc_attr($delay) . '" ';
+}
+
+// Add autoplay on hover data attributes if enabled
+if ($autoplayOnHover) {
+  $hoverTransitionSpeed = pb_carousel_get_attribute($attributes, 'hoverTransitionSpeed');
+  $swiper_attributes .= 'data-autoplay-on-hover="true" ';
+  if ($hoverTransitionSpeed) {
+    $swiper_attributes .= 'data-hover-transition-speed="' . esc_attr($hoverTransitionSpeed) . '" ';
+  }
 }
 
 // Handle special case for effect fade
@@ -189,21 +205,23 @@ if ($effect && $effect === 'fade') {
 
 $slidesPerViewDesktop = pb_carousel_get_attribute($attributes, 'enableAutoSlidesPerView') ? '"auto"' : (int) pb_carousel_get_attribute($attributes, 'slidesPerView');
 
-// Define the breakpoints as a PHP variable
-$breakpoints = 'breakpoints=\'{
-    "0": {
-        "slidesPerView": ' . (int) pb_carousel_get_attribute($attributes, 'slidesPerViewMobile') . ',
-        "spaceBetween": ' . (int) pb_carousel_get_attribute($attributes, 'spaceBetweenMobile') . '
-    },
-    "768": {
-        "slidesPerView": ' . (int) pb_carousel_get_attribute($attributes, 'slidesPerViewTablet') . ',
-        "spaceBetween": ' . (int) pb_carousel_get_attribute($attributes, 'spaceBetweenTablet') . '
-    }, 
-    "1024": {
-        "slidesPerView": ' . $slidesPerViewDesktop . ',
-        "spaceBetween": ' . (int) pb_carousel_get_attribute($attributes, 'spaceBetween') . '
-    }
-}\'';
+// Define the breakpoints as a properly escaped JSON string
+$breakpoints_json = json_encode(array(
+    "0" => array(
+        "slidesPerView" => (int) pb_carousel_get_attribute($attributes, 'slidesPerViewMobile'),
+        "spaceBetween" => (int) pb_carousel_get_attribute($attributes, 'spaceBetweenMobile')
+    ),
+    "768" => array(
+        "slidesPerView" => (int) pb_carousel_get_attribute($attributes, 'slidesPerViewTablet'),
+        "spaceBetween" => (int) pb_carousel_get_attribute($attributes, 'spaceBetweenTablet')
+    ),
+    "1024" => array(
+        "slidesPerView" => pb_carousel_get_attribute($attributes, 'enableAutoSlidesPerView') ? 'auto' : (int) pb_carousel_get_attribute($attributes, 'slidesPerView'),
+        "spaceBetween" => (int) pb_carousel_get_attribute($attributes, 'spaceBetween')
+    )
+));
+
+$breakpoints = 'breakpoints=\'' . esc_attr($breakpoints_json) . '\'';
 
 // Combine swiper attributes and breakpoints into a single settings string
 $swiper_settings = $swiper_attributes . $breakpoints;

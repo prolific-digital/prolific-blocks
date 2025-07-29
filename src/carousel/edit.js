@@ -164,6 +164,8 @@ export default function Edit({ attributes, setAttributes, clientId }) {
     loop,
     draggable,
     pauseOnHover,
+    autoplayOnHover,
+    hoverTransitionSpeed,
     pauseButton,
     transitionSpeed,
     a11yEnabled,
@@ -364,6 +366,8 @@ export default function Edit({ attributes, setAttributes, clientId }) {
     loop,
     direction,
     pauseOnHover,
+    autoplayOnHover,
+    hoverTransitionSpeed,
     pauseButton,
     customNav,
     customNavPrev,
@@ -380,6 +384,42 @@ export default function Edit({ attributes, setAttributes, clientId }) {
       });
     }
   }, []);
+
+  // Handle hover autoplay in editor preview
+  useEffect(() => {
+    if (!autoplayOnHover || !swiperElRef.current) return;
+    
+    const swiperElement = swiperElRef.current;
+    let hoverAutoplayInterval = null;
+    
+    const startHoverAutoplay = () => {
+      if (hoverAutoplayInterval) return;
+      
+      hoverAutoplayInterval = setInterval(() => {
+        if (swiperElement && swiperElement.swiper) {
+          swiperElement.swiper.slideNext();
+        }
+      }, hoverTransitionSpeed);
+    };
+    
+    const stopHoverAutoplay = () => {
+      if (hoverAutoplayInterval) {
+        clearInterval(hoverAutoplayInterval);
+        hoverAutoplayInterval = null;
+      }
+    };
+    
+    swiperElement.addEventListener('mouseenter', startHoverAutoplay);
+    swiperElement.addEventListener('mouseleave', stopHoverAutoplay);
+    
+    return () => {
+      stopHoverAutoplay();
+      if (swiperElement) {
+        swiperElement.removeEventListener('mouseenter', startHoverAutoplay);
+        swiperElement.removeEventListener('mouseleave', stopHoverAutoplay);
+      }
+    };
+  }, [autoplayOnHover, hoverTransitionSpeed]);
 
   const autoSlidesPerView = enableAutoSlidesPerView ? "auto" : slidesPerView;
 
@@ -474,6 +514,8 @@ export default function Edit({ attributes, setAttributes, clientId }) {
             keyboard={keyboard.toString()}
             grab-cursor="false"
             autoplay="false"
+            data-autoplay-on-hover={autoplayOnHover.toString()}
+            data-hover-transition-speed={hoverTransitionSpeed.toString()}
             centered-slides={centeredSlides.toString()}
             speed={transitionSpeed.toString()}
             loop="false"
@@ -831,6 +873,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
           <ToggleControl
             label={__("Autoplay", "prolific-blocks")}
             checked={autoplay}
+            disabled={autoplayOnHover}
             onChange={(value) => setAttributes({ autoplay: value })}
             help={__(
               "Automatically transition between slides.",
@@ -869,6 +912,31 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                 )}
               />
             </>
+          )}
+          <ToggleControl
+            label={__("Autoplay on Hover", "prolific-blocks")}
+            checked={autoplayOnHover}
+            onChange={(value) => setAttributes({ 
+              autoplayOnHover: value,
+              autoplay: value ? false : autoplay
+            })}
+            help={__(
+              "Start autoplay only when the mouse hovers over the slider.",
+              "prolific-blocks"
+            )}
+          />
+          {autoplayOnHover && (
+            <RangeControl
+              label={__("Hover Transition Speed (ms)", "prolific-blocks")}
+              value={hoverTransitionSpeed}
+              onChange={(value) => setAttributes({ hoverTransitionSpeed: value })}
+              min={500}
+              max={5000}
+              help={__(
+                "Set the delay between transitions when autoplay is triggered by hover.",
+                "prolific-blocks"
+              )}
+            />
           )}
           <ToggleControl
             label={__("Loop", "prolific-blocks")}

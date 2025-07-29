@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "title": "Carousel",
   "category": "prolific",
-  "icon": "block-default",
+  "icon": "slides",
   "description": "A robust and flexible carousel for showcasing media and content.",
   "supports": {
     "align": true,
@@ -104,6 +104,14 @@
     "pauseOnHover": {
       "type": "boolean",
       "default": true
+    },
+    "autoplayOnHover": {
+      "type": "boolean",
+      "default": false
+    },
+    "hoverTransitionSpeed": {
+      "type": "number",
+      "default": 2000
     },
     "pauseButton": {
       "type": "boolean",

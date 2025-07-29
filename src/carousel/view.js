@@ -30,7 +30,10 @@
     const swiperContainer = carousel.querySelector('swiper-container');
     if (!swiperContainer) return;
     
-    // Wait for swiper to be fully initialized
+    // Set up hover autoplay immediately (it has its own polling)
+    setupHoverAutoplay(carousel);
+    
+    // Wait for swiper to be fully initialized for other features
     swiperContainer.addEventListener('swiperready', function() {
       const swiper = this.swiper;
       if (!swiper) return;
@@ -68,6 +71,72 @@
         this.setAttribute('aria-label', 'Pause carousel');
       }
     });
+  }
+  
+  /**
+   * Set up hover autoplay functionality using polling approach
+   * @param {HTMLElement} carousel - The carousel container
+   */
+  function setupHoverAutoplay(carousel) {
+    const swiperContainer = carousel.querySelector('swiper-container');
+    if (!swiperContainer) return;
+    
+    const autoplayOnHover = swiperContainer.getAttribute('data-autoplay-on-hover') === 'true';
+    if (!autoplayOnHover) return;
+    
+    const hoverTransitionSpeed = parseInt(swiperContainer.getAttribute('data-hover-transition-speed')) || 2000;
+    let isHovering = false;
+    
+    // Wait for swiper to initialize using polling
+    const checkSwiper = setInterval(() => {
+      if (swiperContainer.swiper) {
+        clearInterval(checkSwiper);
+        
+        // Create custom autoplay object
+        const customAutoplay = {
+          running: false,
+          timeout: null,
+          start: function() {
+            if (!this.running && isHovering) {
+              this.running = true;
+              // Start autoplay immediately
+              if (swiperContainer.swiper) {
+                swiperContainer.swiper.slideNext();
+              }
+              // Continue with interval
+              this.timeout = setInterval(() => {
+                if (isHovering && swiperContainer.swiper) {
+                  swiperContainer.swiper.slideNext();
+                }
+              }, hoverTransitionSpeed);
+            }
+          },
+          stop: function() {
+            if (this.timeout) {
+              clearInterval(this.timeout);
+              this.timeout = null;
+            }
+            this.running = false;
+          }
+        };
+        
+        // Add hover listeners
+        carousel.addEventListener('mouseenter', function() {
+          isHovering = true;
+          customAutoplay.start();
+        });
+        
+        carousel.addEventListener('mouseleave', function() {
+          isHovering = false;
+          customAutoplay.stop();
+        });
+      }
+    }, 10);
+    
+    // Safety timeout to stop polling after 5 seconds
+    setTimeout(() => {
+      clearInterval(checkSwiper);
+    }, 5000);
   }
   
   /**
