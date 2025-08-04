@@ -203,22 +203,27 @@ export default function Edit({ attributes, setAttributes, clientId }) {
   }, [blockProps.id, hasSetBlockId, setAttributes]);
 
   /**
-   * Debounced function to reinitialize the Swiper component.
+   * Debounced function to update the Swiper component.
    *
-   * This function sets the renderSwiper state to false and then back to true after a delay,
-   * effectively re-rendering the Swiper component. It is debounced to prevent excessive re-renders.
+   * This function updates the existing Swiper instance instead of unmounting/remounting
+   * to prevent React lifecycle issues in the editor.
    *
-   * @function reinitializeSwiper
+   * @function updateSwiper
    * @returns {void}
    */
-  const reinitializeSwiper = useCallback(
+  const updateSwiper = useCallback(
     debounce(() => {
-      setRenderSwiper(false);
-      setTimeout(() => {
-        setRenderSwiper(true);
-      }, 300);
-    }, 300),
-    []
+      if (swiperElRef.current && swiperElRef.current.swiper) {
+        // Update swiper instance with new settings
+        swiperElRef.current.swiper.update();
+        
+        // Force re-initialization of autoHeight if enabled
+        if (autoHeight && swiperElRef.current.swiper.updateAutoHeight) {
+          swiperElRef.current.swiper.updateAutoHeight(0);
+        }
+      }
+    }, 100),
+    [autoHeight]
   );
 
   /**
@@ -340,40 +345,53 @@ export default function Edit({ attributes, setAttributes, clientId }) {
   }, [customNav, renderSwiper, uniqueId.current]);
 
   /**
-   * Effect hook to reinitialize the Swiper component when specific dependencies change.
+   * Effect hook to update the Swiper component when layout-related dependencies change.
    *
-   * This hook reinitializes the Swiper component by calling the debounced reinitializeSwiper function
-   * whenever any of the specified dependencies change, such as effect, slidesPerViewMobile, spaceBetweenMobile, etc.
-   * It handles reinitializing Swiper for properties that Swiper does not automatically update and require reinitialization.
+   * This hook updates the Swiper component by calling the debounced updateSwiper function
+   * for changes that don't require full reinitialization.
    *
    * @function useEffect
    */
   useEffect(() => {
-    if (swiperElRef.current) {
-      reinitializeSwiper();
+    if (swiperElRef.current && swiperElRef.current.swiper) {
+      updateSwiper();
     }
   }, [
-    reinitializeSwiper,
-    effect,
-    enableAutoSlidesPerView,
-    slidesPerViewMobile,
-    spaceBetweenMobile,
-    slidesPerViewTablet,
+    updateSwiper,
+    spaceBetween,
+    slidesPerView,
     spaceBetweenTablet,
+    slidesPerViewTablet,
+    spaceBetweenMobile,
+    slidesPerViewMobile,
     centeredSlides,
-    autoplay,
-    delay,
-    loop,
-    direction,
-    pauseOnHover,
-    autoplayOnHover,
-    hoverTransitionSpeed,
-    pauseButton,
-    customNav,
-    customNavPrev,
-    customNavNext,
     autoHeight,
   ]);
+
+  /**
+   * Effect hook for attributes that require careful handling in the editor.
+   * 
+   * For sensitive attributes like autoplayOnHover, loop, etc., we avoid
+   * reinitializing to prevent editor crashes and just update what we can.
+   */
+  useEffect(() => {
+    // Only update if swiper exists and we're not in a critical state
+    if (swiperElRef.current && swiperElRef.current.swiper && renderSwiper) {
+      const swiper = swiperElRef.current.swiper;
+      
+      // Handle loop changes by updating manually
+      if (swiper.loopDestroy && swiper.loopCreate) {
+        if (loop) {
+          swiper.loopCreate();
+        } else {
+          swiper.loopDestroy();
+        }
+      }
+      
+      // Update swiper
+      swiper.update();
+    }
+  }, [loop, autoplayOnHover, hoverTransitionSpeed, renderSwiper]);
 
   // Set navigation element class names only once when component mounts
   useEffect(() => {

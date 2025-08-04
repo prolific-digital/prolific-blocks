@@ -84,6 +84,10 @@
     const autoplayOnHover = swiperContainer.getAttribute('data-autoplay-on-hover') === 'true';
     if (!autoplayOnHover) return;
     
+    // Check if device is mobile/touch device - disable autoplay on hover for mobile
+    const isMobile = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
+    if (isMobile) return;
+    
     const hoverTransitionSpeed = parseInt(swiperContainer.getAttribute('data-hover-transition-speed')) || 2000;
     let isHovering = false;
     
