@@ -1,0 +1,3 @@
+1. On mobile, when a user touch the navigation buttons, when the option to autoplay on hover is active, the slider just continues to autoplay, this is not suppose to be so. On mobile, the feature should not work at all. Autoplay on hover is a desktop-only feature.
+
+2. On the WordPress gutenberg editor, when I activate or deactivate the 'Autoplay on hover' feature or even when i activate or deativate 'Loop' or when i interact with the 'Hover Transition Speed', an error occurs on the carousel, it says 'the block has encountered an error and cannot be previewed'. This needs to be resolved.
