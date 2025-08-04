@@ -124,13 +124,13 @@
           }
         };
         
-        // Add hover listeners
-        carousel.addEventListener('mouseenter', function() {
+        // Add hover listeners only to swiper-container to exclude navigation buttons
+        swiperContainer.addEventListener('mouseenter', function() {
           isHovering = true;
           customAutoplay.start();
         });
         
-        carousel.addEventListener('mouseleave', function() {
+        swiperContainer.addEventListener('mouseleave', function() {
           isHovering = false;
           customAutoplay.stop();
         });

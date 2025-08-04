@@ -1,3 +1,5 @@
-1. On mobile, when a user touch the navigation buttons, when the option to autoplay on hover is active, the slider just continues to autoplay, this is not suppose to be so. On mobile, the feature should not work at all. Autoplay on hover is a desktop-only feature.
+✅ RESOLVED: 1. Autoplay on hover should not happen when I hover on the swiper navigation buttons, i should be able to click on the previous or next buttons and control what i want to view. Autoplay on hover should only happen when I hover on the swiper-container.
+   - Fixed by changing hover event listeners from carousel element to swiper-container element in view.js
 
-2. On the WordPress gutenberg editor, when I activate or deactivate the 'Autoplay on hover' feature or even when i activate or deativate 'Loop' or when i interact with the 'Hover Transition Speed', an error occurs on the carousel, it says 'the block has encountered an error and cannot be previewed'. This needs to be resolved.
+✅ RESOLVED: 2. I noticed that when i select mulitple slides on the gutenberg editor, I get this error
+   - Fixed by wrapping setAttributes call in useEffect hook to avoid React state updates during render in carousel-slide/edit.js

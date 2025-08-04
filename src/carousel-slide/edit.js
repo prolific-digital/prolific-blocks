@@ -21,6 +21,7 @@ import { __ } from "@wordpress/i18n";
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
 import { useBlockProps, InnerBlocks } from "@wordpress/block-editor";
+import { useEffect } from "@wordpress/element";
 
 const TEMPLATE = [
   ["core/image"],
@@ -34,7 +35,12 @@ const TEMPLATE = [
 export default function Edit({ attributes, setAttributes, clientId }) {
   const blockProps = useBlockProps({ className: "swiper-slide" });
 
-  setAttributes({ blockId: blockProps.id });
+  // Set blockId in useEffect to avoid React rendering issues
+  useEffect(() => {
+    if (blockProps.id && (!attributes.blockId || attributes.blockId !== blockProps.id)) {
+      setAttributes({ blockId: blockProps.id });
+    }
+  }, [blockProps.id, attributes.blockId, setAttributes]);
 
   return (
     <swiper-slide>
