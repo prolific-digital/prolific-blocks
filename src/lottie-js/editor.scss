@@ -1,0 +1,91 @@
+/**
+ * Editor-specific styles for Lottie block.
+ */
+
+.wp-block-prolific-lottie-js {
+	// Placeholder state when no file is uploaded
+	.lottie-placeholder {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: #f0f0f0;
+		border: 2px dashed #ddd;
+		border-radius: 4px;
+		z-index: 1;
+
+		p {
+			margin: 0;
+			color: #757575;
+			font-size: 14px;
+			font-style: italic;
+			text-align: center;
+			padding: 20px;
+		}
+	}
+
+	// Loading state
+	.lottie-loading {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(255, 255, 255, 0.9);
+		z-index: 2;
+
+		p {
+			margin: 0;
+			color: #1e1e1e;
+			font-size: 14px;
+			font-weight: 500;
+
+			&::after {
+				content: '...';
+				animation: loading-dots 1.5s infinite;
+			}
+		}
+	}
+
+	// Canvas element
+	canvas {
+		display: block;
+		position: relative;
+		z-index: 0;
+	}
+}
+
+// Loading animation
+@keyframes loading-dots {
+	0%,
+	20% {
+		content: '.';
+	}
+	40% {
+		content: '..';
+	}
+	60%,
+	100% {
+		content: '...';
+	}
+}
+
+// Inspector panel improvements
+.components-panel__body {
+	// Color picker wrapper
+	.components-color-picker {
+		margin-bottom: 8px;
+	}
+
+	// Unit control spacing
+	.components-unit-control {
+		margin-bottom: 16px;
+	}
+}

@@ -9,6 +9,7 @@
   "description": "Animate with Lottie.",
   "example": {},
   "supports": {
+    "align": true,
     "ariaLabel": true,
     "className": true,
     "customClassName": true,
@@ -19,25 +20,65 @@
       "type": "string",
       "default": ""
     },
-    "startOnView": {
-      "type": "boolean",
-      "default": false
-    },
     "lottieFile": {
       "type": "string",
       "default": "https://lottie.host/4db68bbd-31f6-4cd8-84eb-189de081159a/IGmMCqhzpt.lottie"
     },
-    "loop": {
-      "type": "boolean",
-      "default": "false"
-    },
     "autoplay": {
       "type": "boolean",
-      "default": "false"
+      "default": false
+    },
+    "loop": {
+      "type": "boolean",
+      "default": false
     },
     "speed": {
       "type": "number",
       "default": 1
+    },
+    "direction": {
+      "type": "number",
+      "default": 1
+    },
+    "mode": {
+      "type": "string",
+      "default": "normal"
+    },
+    "startOnView": {
+      "type": "boolean",
+      "default": false
+    },
+    "intermission": {
+      "type": "number",
+      "default": 0
+    },
+    "width": {
+      "type": "string",
+      "default": "400px"
+    },
+    "height": {
+      "type": "string",
+      "default": "400px"
+    },
+    "backgroundColor": {
+      "type": "string",
+      "default": ""
+    },
+    "objectFit": {
+      "type": "string",
+      "default": "contain"
+    },
+    "useFrameInterpolation": {
+      "type": "boolean",
+      "default": true
+    },
+    "segment": {
+      "type": "array",
+      "default": []
+    },
+    "marker": {
+      "type": "string",
+      "default": ""
     }
   },
   "textdomain": "prolific-blocks",
