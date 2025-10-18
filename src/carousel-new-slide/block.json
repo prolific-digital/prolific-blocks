@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "prolific/carousel-new-slide",
+  "version": "1.0.0",
+  "title": "Carousel Slide",
+  "category": "prolific",
+  "icon": "slides",
+  "parent": ["prolific/carousel-new"],
+  "description": "An individual slide for the Carousel New block. Add any blocks you want inside each slide.",
+  "supports": {
+    "customClassName": true,
+    "spacing": {
+      "padding": true,
+      "margin": true
+    }
+  },
+  "attributes": {
+    "blockId": {
+      "type": "string"
+    }
+  },
+  "textdomain": "prolific-blocks",
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

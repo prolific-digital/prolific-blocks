@@ -1,0 +1,189 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "prolific/carousel-new",
+  "version": "1.0.0",
+  "title": "Carousel New",
+  "category": "prolific",
+  "icon": "images-alt2",
+  "description": "A modern, accessible carousel built with Swiper.js. Add slides and customize every aspect of the carousel behavior.",
+  "keywords": ["slider", "slideshow", "carousel", "swiper", "gallery"],
+  "supports": {
+    "align": ["left", "center", "right", "wide", "full"],
+    "anchor": true,
+    "spacing": {
+      "padding": true,
+      "margin": true
+    }
+  },
+  "attributes": {
+    "blockId": {
+      "type": "string",
+      "default": ""
+    },
+    "anchor": {
+      "type": "string"
+    },
+    "align": {
+      "type": "string"
+    },
+    "contentAlign": {
+      "type": "string",
+      "default": "center"
+    },
+    "slidesPerViewDesktop": {
+      "type": "number",
+      "default": 1
+    },
+    "slidesPerViewTablet": {
+      "type": "number",
+      "default": 1
+    },
+    "slidesPerViewMobile": {
+      "type": "number",
+      "default": 1
+    },
+    "spaceBetweenDesktop": {
+      "type": "number",
+      "default": 30
+    },
+    "spaceBetweenTablet": {
+      "type": "number",
+      "default": 20
+    },
+    "spaceBetweenMobile": {
+      "type": "number",
+      "default": 10
+    },
+    "centeredSlides": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoHeight": {
+      "type": "boolean",
+      "default": false
+    },
+    "direction": {
+      "type": "string",
+      "default": "horizontal"
+    },
+    "freeMode": {
+      "type": "boolean",
+      "default": false
+    },
+    "navigation": {
+      "type": "boolean",
+      "default": true
+    },
+    "pagination": {
+      "type": "boolean",
+      "default": true
+    },
+    "paginationType": {
+      "type": "string",
+      "default": "bullets"
+    },
+    "scrollbar": {
+      "type": "boolean",
+      "default": false
+    },
+    "customNavigation": {
+      "type": "boolean",
+      "default": false
+    },
+    "customNavPrev": {
+      "type": "string",
+      "default": ""
+    },
+    "customNavNext": {
+      "type": "string",
+      "default": ""
+    },
+    "customNavPrevSvg": {
+      "type": "string",
+      "default": ""
+    },
+    "customNavNextSvg": {
+      "type": "string",
+      "default": ""
+    },
+    "autoplay": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplayDelay": {
+      "type": "number",
+      "default": 3000
+    },
+    "pauseOnHover": {
+      "type": "boolean",
+      "default": true
+    },
+    "pauseOnInteraction": {
+      "type": "boolean",
+      "default": true
+    },
+    "autoplayReverseDirection": {
+      "type": "boolean",
+      "default": false
+    },
+    "stopOnLastSlide": {
+      "type": "boolean",
+      "default": false
+    },
+    "effect": {
+      "type": "string",
+      "default": "slide"
+    },
+    "speed": {
+      "type": "number",
+      "default": 300
+    },
+    "loop": {
+      "type": "boolean",
+      "default": false
+    },
+    "fadeEffect": {
+      "type": "boolean",
+      "default": false
+    },
+    "cubeEffect": {
+      "type": "boolean",
+      "default": false
+    },
+    "allowTouchMove": {
+      "type": "boolean",
+      "default": true
+    },
+    "grabCursor": {
+      "type": "boolean",
+      "default": true
+    },
+    "keyboard": {
+      "type": "boolean",
+      "default": true
+    },
+    "mousewheel": {
+      "type": "boolean",
+      "default": false
+    },
+    "resistanceRatio": {
+      "type": "number",
+      "default": 0.85
+    },
+    "a11yEnabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "pauseButton": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "textdomain": "prolific-blocks",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "viewScript": ["file:./view.js", "swiper-script"],
+  "render": "file:./render.php"
+}

@@ -63,6 +63,8 @@ add_filter('block_categories_all', 'prolific_block_categories', 10, 1);
 function prolific_blocks_init() {
 	register_block_type(__DIR__ . '/build/carousel');
 	register_block_type(__DIR__ . '/build/carousel-slide');
+	register_block_type(__DIR__ . '/build/carousel-new');
+	register_block_type(__DIR__ . '/build/carousel-new-slide');
 	register_block_type(__DIR__ . '/build/hamburger');
 	register_block_type(__DIR__ . '/build/timeline');
 	register_block_type(__DIR__ . '/build/timeline-item');
@@ -90,7 +92,7 @@ function enqueue_swiper_scripts() {
 	// Check if we should load Swiper - if running in admin, or if the page has carousel blocks
 	$should_load = is_admin();
 
-	if (!$should_load && has_block('prolific/carousel')) {
+	if (!$should_load && (has_block('prolific/carousel') || has_block('prolific/carousel-new'))) {
 		$should_load = true;
 	}
 

@@ -1,0 +1,326 @@
+/**
+ * Frontend styles for Carousel New block.
+ */
+
+// Screen reader only text
+.screen-reader-text {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border-width: 0;
+}
+
+// Main carousel container
+.wp-block-prolific-carousel-new {
+	position: relative;
+	width: 100%;
+	margin: 0 auto;
+
+	// Swiper container
+	.carousel-new-swiper-container {
+		width: 100%;
+		height: 100%;
+		position: relative;
+		overflow: hidden;
+		list-style: none;
+		padding: 0;
+		z-index: 1;
+	}
+
+	// Individual slide
+	swiper-slide,
+	.swiper-slide {
+		display: flex;
+		flex-direction: column;
+		height: auto;
+		position: relative;
+
+		// Inner content wrapper
+		.carousel-new-slide-inner {
+			display: flex;
+			flex-direction: column;
+			width: 100%;
+			height: 100%;
+			padding: 1rem;
+			box-sizing: border-box;
+		}
+	}
+
+	// Custom navigation buttons
+	.carousel-new-nav-prev,
+	.carousel-new-nav-next {
+		position: absolute;
+		z-index: 10;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+		background: rgba(255, 255, 255, 0.9);
+		border: 2px solid rgba(0, 0, 0, 0.1);
+		border-radius: 50%;
+		transition: all 0.3s ease;
+		padding: 0;
+
+		&:hover:not(:disabled) {
+			background: rgba(255, 255, 255, 1);
+			border-color: rgba(0, 0, 0, 0.2);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+		}
+
+		&:focus {
+			outline: 2px solid #007cba;
+			outline-offset: 2px;
+		}
+
+		&:disabled {
+			opacity: 0.3;
+			cursor: not-allowed;
+		}
+
+		.carousel-new-nav-icon {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 24px;
+			line-height: 1;
+			color: #000;
+
+			svg {
+				width: 24px;
+				height: 24px;
+				display: block;
+			}
+		}
+	}
+
+	// Default navigation position: sides center
+	.carousel-new-nav-prev,
+	swiper-container .swiper-button-prev {
+		left: 10px;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	.carousel-new-nav-next,
+	swiper-container .swiper-button-next {
+		right: 10px;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	// Pause button for autoplay
+	.carousel-new-pause-button {
+		position: absolute;
+		bottom: 20px;
+		right: 20px;
+		z-index: 10;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+		background: rgba(0, 0, 0, 0.6);
+		border: none;
+		border-radius: 50%;
+		transition: all 0.3s ease;
+		padding: 0;
+		color: #fff;
+		font-size: 18px;
+
+		&:hover {
+			background: rgba(0, 0, 0, 0.8);
+			transform: scale(1.1);
+		}
+
+		&:focus {
+			outline: 2px solid #007cba;
+			outline-offset: 2px;
+		}
+
+		&[aria-pressed="true"] {
+			background: rgba(0, 124, 186, 0.8);
+
+			&:hover {
+				background: rgba(0, 124, 186, 1);
+			}
+		}
+	}
+
+	// Swiper pagination styles (default position: bottom center)
+	.swiper-pagination {
+		position: relative;
+		margin-top: 20px;
+		margin-bottom: 0;
+		text-align: center;
+
+		.swiper-pagination-bullet {
+			width: 10px;
+			height: 10px;
+			display: inline-block;
+			border-radius: 50%;
+			background: rgba(0, 0, 0, 0.2);
+			opacity: 1;
+			margin: 0 4px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+
+			&:hover {
+				background: rgba(0, 0, 0, 0.4);
+			}
+
+			&.swiper-pagination-bullet-active {
+				background: #007cba;
+				width: 12px;
+				height: 12px;
+			}
+		}
+
+		&.swiper-pagination-fraction,
+		&.swiper-pagination-custom {
+			font-size: 14px;
+			color: #000;
+		}
+	}
+
+	// Scrollbar styles
+	.swiper-scrollbar {
+		position: relative;
+		margin-top: 20px;
+		height: 4px;
+		background: rgba(0, 0, 0, 0.1);
+		border-radius: 2px;
+
+		.swiper-scrollbar-drag {
+			background: #007cba;
+			border-radius: 2px;
+			cursor: grab;
+
+			&:active {
+				cursor: grabbing;
+			}
+		}
+	}
+
+	// Vertical direction specific styles
+	&.direction-vertical {
+		.carousel-new-nav-prev,
+		.carousel-new-nav-next {
+			left: 50%;
+			transform: translateX(-50%);
+		}
+
+		.carousel-new-nav-prev {
+			top: 10px;
+		}
+
+		.carousel-new-nav-next {
+			top: auto;
+			bottom: 10px;
+		}
+	}
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+	.wp-block-prolific-carousel-new {
+		.carousel-new-nav-prev {
+			left: 5px;
+		}
+
+		.carousel-new-nav-next {
+			right: 5px;
+		}
+
+		.carousel-new-nav-prev,
+		.carousel-new-nav-next {
+			width: 36px;
+			height: 36px;
+
+			.carousel-new-nav-icon {
+				font-size: 20px;
+
+				svg {
+					width: 20px;
+					height: 20px;
+				}
+			}
+		}
+
+		.carousel-new-pause-button {
+			width: 36px;
+			height: 36px;
+			bottom: 10px;
+			right: 10px;
+			font-size: 16px;
+		}
+	}
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+	.wp-block-prolific-carousel-new {
+		.carousel-new-nav-prev,
+		.carousel-new-nav-next {
+			border-width: 3px;
+			border-color: #000;
+		}
+
+		.swiper-pagination-bullet {
+			border: 2px solid #000;
+
+			&.swiper-pagination-bullet-active {
+				background: #000;
+			}
+		}
+	}
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+	.wp-block-prolific-carousel-new {
+		.carousel-new-nav-prev,
+		.carousel-new-nav-next,
+		.carousel-new-pause-button,
+		.swiper-pagination-bullet {
+			transition: none;
+		}
+	}
+}
+
+// Content Alignment Styles (controls content within the carousel)
+.wp-block-prolific-carousel-new {
+	// Left align content
+	&.has-content-align-left {
+		swiper-container,
+		.swiper-slide,
+		.carousel-new-slide-inner {
+			text-align: left;
+		}
+	}
+
+	// Center align content (default)
+	&.has-content-align-center {
+		swiper-container,
+		.swiper-slide,
+		.carousel-new-slide-inner {
+			text-align: center;
+		}
+	}
+
+	// Right align content
+	&.has-content-align-right {
+		swiper-container,
+		.swiper-slide,
+		.carousel-new-slide-inner {
+			text-align: right;
+		}
+	}
+}

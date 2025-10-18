@@ -1,0 +1,615 @@
+/**
+ * Editor-only styles for Carousel New block.
+ * This implementation uses REAL React Swiper in the editor for full carousel functionality
+ * while maintaining complete editing capability through BlockList integration.
+ */
+
+// Main block editor wrapper
+.wp-block-prolific-carousel-new {
+	.carousel-new-editor-wrapper {
+		position: relative;
+		width: 100%;
+		padding: 20px;
+		background: #f9f9f9;
+		border: 2px solid #ddd;
+		border-radius: 8px;
+	}
+
+	// Hidden InnerBlocks manager (handles block creation/deletion only)
+	.carousel-new-slides-manager {
+		// This is hidden because BlockList renders the actual slides inside Swiper
+		display: none;
+	}
+
+	// Header with slide counter and info badges
+	.carousel-new-editor-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: 15px;
+		margin-bottom: 20px;
+		padding: 15px 20px;
+		background: #fff;
+		border-radius: 8px;
+		border: 1px solid #ddd;
+
+		.carousel-new-info {
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+
+		.carousel-slide-count {
+			color: #1e1e1e;
+			font-size: 14px;
+			font-weight: 600;
+			padding: 6px 14px;
+			background: #f0f0f0;
+			border-radius: 16px;
+		}
+
+		.carousel-feature-indicator {
+			color: #007cba;
+			font-size: 12px;
+			font-weight: 500;
+			padding: 4px 10px;
+			background: rgba(0, 124, 186, 0.1);
+			border-radius: 12px;
+			text-transform: capitalize;
+		}
+
+		.carousel-swiper-notice {
+			color: #2271b1;
+			font-size: 13px;
+			font-weight: 500;
+			padding: 6px 12px;
+			background: rgba(34, 113, 177, 0.1);
+			border-radius: 16px;
+			border: 1px solid rgba(34, 113, 177, 0.2);
+		}
+	}
+
+	// Swiper container in editor
+	.carousel-new-swiper-container {
+		position: relative;
+		background: #fff;
+		border-radius: 8px;
+		padding: 20px;
+		margin-bottom: 20px;
+
+		// Swiper wrapper
+		.swiper {
+			position: relative;
+			width: 100%;
+			min-height: 300px;
+
+			// Swiper wrapper containing slides
+			.swiper-wrapper {
+				display: flex;
+				align-items: stretch;
+			}
+
+			// Individual Swiper slides
+			.swiper-slide {
+				height: auto;
+				display: flex;
+				flex-direction: column;
+
+				// Wrapper for slide content with editing capability
+				.carousel-slide-editor-wrapper {
+					flex: 1;
+					display: flex;
+					flex-direction: column;
+					width: 100%;
+
+					// BlockList renders the actual blocks here
+					.block-editor-block-list__layout {
+						flex: 1;
+						display: flex;
+						flex-direction: column;
+
+						// Each slide block
+						> .wp-block {
+							flex: 1;
+						}
+					}
+				}
+			}
+
+			// Swiper navigation buttons
+			.swiper-button-next,
+			.swiper-button-prev {
+				color: #007cba;
+				background: rgba(255, 255, 255, 0.95);
+				width: 44px;
+				height: 44px;
+				border-radius: 50%;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+				transition: all 0.2s ease;
+
+				&:after {
+					font-size: 20px;
+					font-weight: 700;
+				}
+
+				&:hover {
+					background: #007cba;
+					color: #fff;
+					transform: scale(1.1);
+				}
+
+				&.swiper-button-disabled {
+					opacity: 0.3;
+					cursor: not-allowed;
+					&:hover {
+						background: rgba(255, 255, 255, 0.95);
+						color: #007cba;
+						transform: none;
+					}
+				}
+			}
+
+			// Swiper pagination
+			.swiper-pagination {
+				position: relative;
+				margin-top: 20px;
+				bottom: auto;
+
+				.swiper-pagination-bullet {
+					width: 12px;
+					height: 12px;
+					background: rgba(0, 124, 186, 0.3);
+					opacity: 1;
+					transition: all 0.2s ease;
+
+					&:hover {
+						background: rgba(0, 124, 186, 0.6);
+						transform: scale(1.2);
+					}
+
+					&.swiper-pagination-bullet-active {
+						background: #007cba;
+						width: 14px;
+						height: 14px;
+					}
+				}
+
+				// Fraction pagination
+				&.swiper-pagination-fraction {
+					color: #1e1e1e;
+					font-weight: 600;
+					font-size: 14px;
+				}
+
+				// Progress bar pagination
+				&.swiper-pagination-progressbar {
+					background: rgba(0, 124, 186, 0.2);
+					height: 6px;
+					border-radius: 3px;
+
+					.swiper-pagination-progressbar-fill {
+						background: #007cba;
+						border-radius: 3px;
+					}
+				}
+			}
+
+			// Swiper scrollbar
+			.swiper-scrollbar {
+				background: rgba(0, 124, 186, 0.1);
+				height: 8px;
+				border-radius: 4px;
+				margin-top: 15px;
+
+				.swiper-scrollbar-drag {
+					background: #007cba;
+					border-radius: 4px;
+					cursor: grab;
+
+					&:active {
+						cursor: grabbing;
+					}
+				}
+			}
+		}
+	}
+
+	// Empty state when no slides exist
+	.carousel-new-empty-state {
+		background: #fff;
+		border: 2px dashed #ddd;
+		border-radius: 8px;
+		padding: 60px 20px;
+		text-align: center;
+		margin-bottom: 20px;
+
+		p {
+			color: #757575;
+			font-size: 14px;
+			font-style: italic;
+			margin: 0;
+		}
+	}
+
+	// Footer with help text
+	.carousel-new-editor-footer {
+		margin-top: 20px;
+		padding: 12px 20px;
+		background: #fff;
+		border-radius: 8px;
+		border: 1px solid #ddd;
+
+		.carousel-help-text {
+			margin: 0;
+			font-size: 13px;
+			color: #757575;
+			font-style: italic;
+			text-align: center;
+		}
+	}
+}
+
+// Slide block editor styles - works inside Swiper
+.wp-block[data-type="prolific/carousel-new-slide"] {
+	margin-bottom: 0 !important;
+	width: 100%;
+	height: 100%;
+
+	.carousel-new-slide-inner {
+		padding: 30px;
+		min-height: 250px;
+		height: 100%;
+		border: 2px solid #007cba;
+		border-radius: 8px;
+		background: #fff;
+		transition: all 0.2s ease;
+		display: flex;
+		flex-direction: column;
+
+		&:hover {
+			box-shadow: 0 4px 12px rgba(0, 124, 186, 0.2);
+		}
+
+		.block-editor-inner-blocks {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+
+			> .block-editor-block-list__layout {
+				flex: 1;
+				display: flex;
+				flex-direction: column;
+				gap: 15px;
+			}
+		}
+
+		// Ensure blocks within slides are properly styled
+		.wp-block {
+			margin: 0;
+
+			img {
+				max-width: 100%;
+				height: auto;
+				display: block;
+			}
+		}
+	}
+
+	// Selected state
+	&.is-selected .carousel-new-slide-inner {
+		box-shadow: 0 0 0 3px #007cba;
+		border-color: #007cba;
+	}
+
+	// When slide is empty
+	&:not(.has-child-blocks) {
+		.carousel-new-slide-inner {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-height: 250px;
+			color: #757575;
+			font-style: italic;
+			border-style: dashed;
+
+			&:before {
+				content: 'Click to add content to this slide';
+				font-size: 14px;
+			}
+		}
+	}
+
+	// Inside Swiper, ensure proper sizing
+	.swiper-slide & {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+}
+
+// Block toolbar adjustments
+.block-editor-block-toolbar {
+	.wp-block[data-type="prolific/carousel-new"],
+	.wp-block[data-type="prolific/carousel-new-slide"] {
+		z-index: 100;
+	}
+}
+
+// Inspector controls custom styles
+.carousel-custom-nav-upload {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 12px;
+	background: #f0f0f0;
+	border-radius: 4px;
+	margin-top: 8px;
+
+	button {
+		width: 100%;
+
+		&.is-link {
+			width: auto;
+			margin-left: auto;
+		}
+	}
+}
+
+// Ensure proper spacing in inspector
+.components-panel__body {
+	.components-base-control {
+		margin-bottom: 16px;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	hr {
+		margin: 16px 0;
+		border: 0;
+		border-top: 1px solid #ddd;
+	}
+}
+
+// Add Slide button wrapper (in editor view - above carousel)
+.wp-block-prolific-carousel-new {
+	.carousel-new-add-slide-wrapper {
+		position: relative;
+		z-index: 100; // Ensure it's above navigation arrows
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 15px;
+		margin-bottom: 20px;
+		padding: 20px;
+		background: #f9f9f9;
+		border: 2px dashed #007cba;
+		border-radius: 8px;
+		transition: all 0.2s ease;
+
+		&:hover {
+			background: #f0f6fc;
+			border-color: #005a87;
+		}
+
+		.carousel-new-add-slide-button,
+		.carousel-new-settings-button {
+			min-height: 44px;
+			font-weight: 500;
+			transition: all 0.2s ease;
+
+			&:hover {
+				transform: scale(1.02);
+			}
+
+			&:focus {
+				box-shadow: 0 0 0 2px #fff, 0 0 0 4px #007cba;
+			}
+		}
+
+		.carousel-slide-count-info {
+			color: #1e1e1e;
+			font-size: 14px;
+			font-weight: 600;
+			padding: 6px 14px;
+			background: #fff;
+			border-radius: 16px;
+			border: 1px solid #ddd;
+		}
+	}
+}
+
+// Responsive adjustments for editor
+@media (max-width: 782px) {
+	.wp-block-prolific-carousel-new {
+		.carousel-new-editor-wrapper {
+			padding: 15px;
+		}
+
+		.carousel-new-editor-header {
+			flex-direction: column;
+			align-items: stretch;
+
+			.carousel-new-info {
+				justify-content: center;
+			}
+
+			.carousel-new-editor-nav {
+				justify-content: center;
+			}
+		}
+	}
+
+	.wp-block[data-type="prolific/carousel-new-slide"] {
+		.carousel-new-slide-inner {
+			padding: 20px;
+		}
+	}
+}
+
+// Better visibility for nested blocks
+.wp-block-prolific-carousel-new {
+	.block-editor-block-list__block {
+		// Ensure block controls are visible
+		&.is-selected {
+			> .block-editor-block-list__block-edit {
+				&::before {
+					outline: 2px solid #007cba;
+					outline-offset: -2px;
+				}
+			}
+		}
+	}
+}
+
+// List view icons
+.block-editor-list-view-block-select-button {
+	&[data-block-name="prolific/carousel-new-slide"] {
+		&::before {
+			content: "\f233 "; // WordPress dashicon for slides
+		}
+	}
+
+	&[data-block-name="prolific/carousel-new"] {
+		&::before {
+			content: "\f233 "; // WordPress dashicon for images
+		}
+	}
+}
+
+// Prevent Swiper from interfering with WordPress block interactions
+.carousel-new-swiper-container {
+	// Allow clicks to pass through to blocks
+	.swiper-slide {
+		pointer-events: auto;
+		cursor: default;
+	}
+
+	// Ensure navigation elements are clickable
+	.swiper-button-next,
+	.swiper-button-prev,
+	.swiper-pagination,
+	.swiper-scrollbar {
+		pointer-events: auto;
+		cursor: pointer;
+		z-index: 10;
+	}
+
+	// Disable grab cursor in editor (we disabled touch anyway)
+	.swiper {
+		cursor: default !important;
+	}
+}
+
+// Make sure block controls are always visible and above Swiper
+.wp-block-prolific-carousel-new {
+	.block-editor-block-list__block-edit {
+		z-index: 20;
+		position: relative;
+	}
+
+	.block-editor-block-toolbar {
+		z-index: 30;
+	}
+}
+
+// Custom navigation buttons base (default positioning only)
+.wp-block-prolific-carousel-new {
+	.custom-prev,
+	.custom-next {
+		position: absolute;
+		z-index: 10;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+		background: rgba(255, 255, 255, 0.95);
+		border: 2px solid rgba(0, 124, 186, 0.3);
+		border-radius: 50%;
+		transition: all 0.2s ease;
+		padding: 0;
+
+		&:hover {
+			background: #007cba;
+			border-color: #007cba;
+			color: #fff;
+			transform: scale(1.1);
+
+			svg {
+				fill: #fff;
+			}
+		}
+
+		svg {
+			width: 24px;
+			height: 24px;
+			display: block;
+			transition: fill 0.2s ease;
+		}
+
+		span[aria-hidden="true"] {
+			font-size: 24px;
+			line-height: 1;
+			color: #007cba;
+		}
+
+		&:hover span[aria-hidden="true"] {
+			color: #fff;
+		}
+	}
+
+	// Default navigation position: sides center
+	.custom-prev,
+	swiper-container .swiper-button-prev {
+		left: 10px;
+		top: 50%;
+		transform: translateY(-50%);
+
+		&:hover {
+			transform: translateY(-50%) scale(1.1);
+		}
+	}
+
+	.custom-next,
+	swiper-container .swiper-button-next {
+		right: 10px;
+		top: 50%;
+		transform: translateY(-50%);
+
+		&:hover {
+			transform: translateY(-50%) scale(1.1);
+		}
+	}
+}
+
+// Content Alignment Styles (controls content within the carousel)
+.wp-block-prolific-carousel-new {
+	// Left align content
+	&.has-content-align-left {
+		swiper-container,
+		.swiper-slide {
+			text-align: left;
+		}
+	}
+
+	// Center align content (default)
+	&.has-content-align-center {
+		swiper-container,
+		.swiper-slide {
+			text-align: center;
+		}
+	}
+
+	// Right align content
+	&.has-content-align-right {
+		swiper-container,
+		.swiper-slide {
+			text-align: right;
+		}
+	}
+}
