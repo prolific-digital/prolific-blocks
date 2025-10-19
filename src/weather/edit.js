@@ -93,6 +93,8 @@ export default function Edit({ attributes, setAttributes }) {
 		latitude,
 		longitude,
 		locationName,
+		customLocationName,
+		showLocation,
 		displayType,
 		showNights,
 		temperatureUnit,
@@ -369,11 +371,14 @@ export default function Edit({ attributes, setAttributes }) {
 
 		const tempUnit = temperatureUnit === 'fahrenheit' ? '°F' : '°C';
 
+		// Determine which location name to display: custom name > API name > nothing
+		const displayLocationName = customLocationName || locationName;
+
 		return (
 			<div className={`weather-preview weather-display-${displayType}`}>
-				{locationName && (
+				{showLocation && displayLocationName && (
 					<div className="weather-location">
-						{__('Weather for', 'prolific-blocks')} {locationName}
+						{__('Weather for', 'prolific-blocks')} {displayLocationName}
 					</div>
 				)}
 
@@ -518,6 +523,21 @@ export default function Edit({ attributes, setAttributes }) {
 					<p className="components-base-control__help">
 						{__('Enter coordinates for the location you want to display weather for. Coordinates for US locations can be found on weather.gov.', 'prolific-blocks')}
 					</p>
+					<hr />
+					<TextControl
+						label={__('Custom Location Name (Optional)', 'prolific-blocks')}
+						help={__('Override the location name detected from coordinates. Leave blank to use automatic detection.', 'prolific-blocks')}
+						value={customLocationName}
+						onChange={(value) => setAttributes({ customLocationName: value })}
+						type="text"
+						placeholder={locationName || __('Enter custom location name', 'prolific-blocks')}
+					/>
+					<ToggleControl
+						label={__('Show Location', 'prolific-blocks')}
+						help={__('Display the location name above weather information.', 'prolific-blocks')}
+						checked={showLocation}
+						onChange={(value) => setAttributes({ showLocation: value })}
+					/>
 				</PanelBody>
 
 				<PanelBody title={__('Display Options', 'prolific-blocks')} initialOpen={true}>

@@ -51,6 +51,14 @@
       "type": "string",
       "default": ""
     },
+    "customLocationName": {
+      "type": "string",
+      "default": ""
+    },
+    "showLocation": {
+      "type": "boolean",
+      "default": true
+    },
     "displayType": {
       "type": "string",
       "default": "full"

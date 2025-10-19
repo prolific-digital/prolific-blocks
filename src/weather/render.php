@@ -372,6 +372,8 @@ if (!function_exists('prolific_format_wind_direction')) {
 $latitude = isset($attributes['latitude']) ? sanitize_text_field($attributes['latitude']) : '';
 $longitude = isset($attributes['longitude']) ? sanitize_text_field($attributes['longitude']) : '';
 $location_name = isset($attributes['locationName']) ? sanitize_text_field($attributes['locationName']) : '';
+$custom_location_name = isset($attributes['customLocationName']) ? sanitize_text_field($attributes['customLocationName']) : '';
+$show_location = isset($attributes['showLocation']) ? $attributes['showLocation'] : true;
 $display_type = isset($attributes['displayType']) ? $attributes['displayType'] : 'full';
 $show_nights = isset($attributes['showNights']) ? $attributes['showNights'] : false;
 $temperature_unit = isset($attributes['temperatureUnit']) ? $attributes['temperatureUnit'] : 'fahrenheit';
@@ -426,8 +428,10 @@ if (false === $weather_data) {
 
 $temp_unit = prolific_get_temp_unit($temperature_unit);
 
-// Use fetched location name if not already set in attributes
-$final_location_name = !empty($location_name) ? $location_name : (!empty($weather_data['locationName']) ? $weather_data['locationName'] : '');
+// Determine which location name to display: custom name > API name > attribute name
+// Priority: customLocationName > locationName > API locationName
+$api_location_name = !empty($weather_data['locationName']) ? $weather_data['locationName'] : '';
+$final_location_name = !empty($custom_location_name) ? $custom_location_name : (!empty($location_name) ? $location_name : $api_location_name);
 
 // Build block wrapper attributes with display type class
 $wrapper_classes = ['wp-block-prolific-weather', 'weather-display-' . $display_type];
@@ -435,7 +439,7 @@ $wrapper_attributes = get_block_wrapper_attributes(['class' => implode(' ', $wra
 ?>
 
 <div <?php echo $wrapper_attributes; ?>>
-  <?php if (!empty($final_location_name)): ?>
+  <?php if ($show_location && !empty($final_location_name)): ?>
     <div class="weather-location">
       <?php echo esc_html(sprintf(__('Weather for %s', 'prolific-blocks'), $final_location_name)); ?>
     </div>
