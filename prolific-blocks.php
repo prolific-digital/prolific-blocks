@@ -61,16 +61,47 @@ add_filter('block_categories_all', 'prolific_block_categories', 10, 1);
  * @see https://developer.wordpress.org/reference/functions/register_block_type/
  */
 function prolific_blocks_init() {
+	// Layout & Display Blocks
 	register_block_type(__DIR__ . '/build/carousel');
 	register_block_type(__DIR__ . '/build/carousel-slide');
 	register_block_type(__DIR__ . '/build/carousel-new');
 	register_block_type(__DIR__ . '/build/carousel-new-slide');
-	register_block_type(__DIR__ . '/build/hamburger');
-	register_block_type(__DIR__ . '/build/timeline');
-	register_block_type(__DIR__ . '/build/timeline-item');
-	register_block_type(__DIR__ . '/build/lottie-js');
 	register_block_type(__DIR__ . '/build/tabs');
 	register_block_type(__DIR__ . '/build/tabs-panel');
+	register_block_type(__DIR__ . '/build/tabbed-content');
+	register_block_type(__DIR__ . '/build/tabbed-content-panel');
+	register_block_type(__DIR__ . '/build/timeline');
+	register_block_type(__DIR__ . '/build/timeline-item');
+
+	// Navigation Blocks
+	register_block_type(__DIR__ . '/build/hamburger');
+	register_block_type(__DIR__ . '/build/breadcrumbs');
+	register_block_type(__DIR__ . '/build/table-of-contents');
+	register_block_type(__DIR__ . '/build/anchor-navigation');
+
+	// Media & Content Blocks
+	register_block_type(__DIR__ . '/build/lottie-js');
+	register_block_type(__DIR__ . '/build/icon');
+	register_block_type(__DIR__ . '/build/svg');
+	register_block_type(__DIR__ . '/build/pdf-viewer');
+	register_block_type(__DIR__ . '/build/responsive-image');
+	register_block_type(__DIR__ . '/build/social-sharing');
+	register_block_type(__DIR__ . '/build/charts');
+
+	// Utility Blocks
+	register_block_type(__DIR__ . '/build/countdown-timer');
+	register_block_type(__DIR__ . '/build/reading-time');
+	register_block_type(__DIR__ . '/build/weather');
+
+	// Text Formatting
+	register_block_type(__DIR__ . '/build/text-highlight-format');
+
+	// Query Blocks
+	register_block_type(__DIR__ . '/build/query-posts');
+	register_block_type(__DIR__ . '/build/query-loop-carousel');
+
+	// Global Features
+	register_block_type(__DIR__ . '/build/global-attributes');
 }
 add_action('init', 'prolific_blocks_init');
 
