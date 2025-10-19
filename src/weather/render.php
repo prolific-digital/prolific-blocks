@@ -19,165 +19,165 @@
  */
 if (!function_exists('prolific_fetch_weather_data')) {
   function prolific_fetch_weather_data($latitude, $longitude, $display_mode, $forecast_days) {
-  // Log the request for debugging
-  error_log('Prolific Weather: Fetching weather for lat=' . $latitude . ', lon=' . $longitude);
+    // Log the request for debugging
+    error_log('Prolific Weather: Fetching weather for lat=' . $latitude . ', lon=' . $longitude);
 
-  // First, get the grid endpoint for the coordinates
-  $points_url = sprintf(
-    'https://api.weather.gov/points/%s,%s',
-    floatval($latitude),
-    floatval($longitude)
-  );
+    // First, get the grid endpoint for the coordinates
+    $points_url = sprintf(
+      'https://api.weather.gov/points/%s,%s',
+      floatval($latitude),
+      floatval($longitude)
+    );
 
-  error_log('Prolific Weather: Points URL: ' . $points_url);
+    error_log('Prolific Weather: Points URL: ' . $points_url);
 
-  $points_response = wp_remote_get($points_url, [
-    'headers' => [
-      'User-Agent' => 'ProlificBlocks/1.0 (WordPress Weather Block)',
-      'Accept' => 'application/json'
-    ],
-    'timeout' => 15
-  ]);
+    $points_response = wp_remote_get($points_url, [
+      'headers' => [
+        'User-Agent' => 'ProlificBlocks/1.0 (WordPress Weather Block)',
+        'Accept' => 'application/json'
+      ],
+      'timeout' => 15
+    ]);
 
-  if (is_wp_error($points_response)) {
-    error_log('Prolific Weather: Points request error: ' . $points_response->get_error_message());
-    return new WP_Error('api_error', __('Unable to connect to weather service.', 'prolific-blocks'));
-  }
+    if (is_wp_error($points_response)) {
+      error_log('Prolific Weather: Points request error: ' . $points_response->get_error_message());
+      return new WP_Error('api_error', __('Unable to connect to weather service.', 'prolific-blocks'));
+    }
 
-  $points_code = wp_remote_retrieve_response_code($points_response);
-  error_log('Prolific Weather: Points response code: ' . $points_code);
+    $points_code = wp_remote_retrieve_response_code($points_response);
+    error_log('Prolific Weather: Points response code: ' . $points_code);
 
-  if ($points_code !== 200) {
+    if ($points_code !== 200) {
+      $points_body = wp_remote_retrieve_body($points_response);
+      error_log('Prolific Weather: Points error response: ' . $points_body);
+      return new WP_Error('api_error', __('Invalid coordinates or location not supported.', 'prolific-blocks'));
+    }
+
     $points_body = wp_remote_retrieve_body($points_response);
-    error_log('Prolific Weather: Points error response: ' . $points_body);
-    return new WP_Error('api_error', __('Invalid coordinates or location not supported.', 'prolific-blocks'));
-  }
+    $points_data = json_decode($points_body, true);
 
-  $points_body = wp_remote_retrieve_body($points_response);
-  $points_data = json_decode($points_body, true);
+    if (empty($points_data['properties']['forecast'])) {
+      error_log('Prolific Weather: No forecast URL in points response');
+      return new WP_Error('api_error', __('Forecast data unavailable for this location.', 'prolific-blocks'));
+    }
 
-  if (empty($points_data['properties']['forecast'])) {
-    error_log('Prolific Weather: No forecast URL in points response');
-    return new WP_Error('api_error', __('Forecast data unavailable for this location.', 'prolific-blocks'));
-  }
+    $forecast_url = $points_data['properties']['forecast'];
+    $hourly_url = isset($points_data['properties']['forecastHourly']) ? $points_data['properties']['forecastHourly'] : '';
 
-  $forecast_url = $points_data['properties']['forecast'];
-  $hourly_url = isset($points_data['properties']['forecastHourly']) ? $points_data['properties']['forecastHourly'] : '';
+    error_log('Prolific Weather: Forecast URL: ' . $forecast_url);
+    error_log('Prolific Weather: Hourly URL: ' . $hourly_url);
 
-  error_log('Prolific Weather: Forecast URL: ' . $forecast_url);
-  error_log('Prolific Weather: Hourly URL: ' . $hourly_url);
+    $weather_data = [];
 
-  $weather_data = [];
+    // Always fetch forecast data (needed for current conditions too)
+    $forecast_response = wp_remote_get($forecast_url, [
+      'headers' => [
+        'User-Agent' => 'ProlificBlocks/1.0 (WordPress Weather Block)',
+        'Accept' => 'application/json'
+      ],
+      'timeout' => 15
+    ]);
 
-  // Always fetch forecast data (needed for current conditions too)
-  $forecast_response = wp_remote_get($forecast_url, [
-    'headers' => [
-      'User-Agent' => 'ProlificBlocks/1.0 (WordPress Weather Block)',
-      'Accept' => 'application/json'
-    ],
-    'timeout' => 15
-  ]);
+    if (!is_wp_error($forecast_response) && wp_remote_retrieve_response_code($forecast_response) === 200) {
+      $forecast_body = wp_remote_retrieve_body($forecast_response);
+      $forecast_data = json_decode($forecast_body, true);
 
-  if (!is_wp_error($forecast_response) && wp_remote_retrieve_response_code($forecast_response) === 200) {
-    $forecast_body = wp_remote_retrieve_body($forecast_response);
-    $forecast_data = json_decode($forecast_body, true);
+      error_log('Prolific Weather: Forecast data retrieved, periods count: ' . (isset($forecast_data['properties']['periods']) ? count($forecast_data['properties']['periods']) : 0));
 
-    error_log('Prolific Weather: Forecast data retrieved, periods count: ' . (isset($forecast_data['properties']['periods']) ? count($forecast_data['properties']['periods']) : 0));
+      if (!empty($forecast_data['properties']['periods'])) {
+        // Only store forecast if we need to display it
+        if ($display_mode === 'forecast' || $display_mode === 'both') {
+          $weather_data['forecast'] = array_slice($forecast_data['properties']['periods'], 0, $forecast_days * 2);
+        }
 
-    if (!empty($forecast_data['properties']['periods'])) {
-      // Only store forecast if we need to display it
-      if ($display_mode === 'forecast' || $display_mode === 'both') {
-        $weather_data['forecast'] = array_slice($forecast_data['properties']['periods'], 0, $forecast_days * 2);
-      }
+        // Set up current conditions (use first period from forecast)
+        if ($display_mode === 'current' || $display_mode === 'both') {
+          if (!empty($forecast_data['properties']['periods'][0])) {
+            $current_period = $forecast_data['properties']['periods'][0];
 
-      // Set up current conditions (use first period from forecast)
-      if ($display_mode === 'current' || $display_mode === 'both') {
-        if (!empty($forecast_data['properties']['periods'][0])) {
-          $current_period = $forecast_data['properties']['periods'][0];
-
-          // Extract probabilityOfPrecipitation value from the object structure
-          $precip_value = null;
-          if (isset($current_period['probabilityOfPrecipitation'])) {
-            if (is_array($current_period['probabilityOfPrecipitation']) && isset($current_period['probabilityOfPrecipitation']['value'])) {
-              $precip_value = $current_period['probabilityOfPrecipitation']['value'];
-            } elseif (is_numeric($current_period['probabilityOfPrecipitation'])) {
-              $precip_value = $current_period['probabilityOfPrecipitation'];
+            // Extract probabilityOfPrecipitation value from the object structure
+            $precip_value = null;
+            if (isset($current_period['probabilityOfPrecipitation'])) {
+              if (is_array($current_period['probabilityOfPrecipitation']) && isset($current_period['probabilityOfPrecipitation']['value'])) {
+                $precip_value = $current_period['probabilityOfPrecipitation']['value'];
+              } elseif (is_numeric($current_period['probabilityOfPrecipitation'])) {
+                $precip_value = $current_period['probabilityOfPrecipitation'];
+              }
             }
-          }
 
-          $weather_data['current'] = [
-            'name' => $current_period['name'],
-            'temperature' => $current_period['temperature'],
-            'temperatureUnit' => $current_period['temperatureUnit'],
-            'shortForecast' => $current_period['shortForecast'],
-            'detailedForecast' => isset($current_period['detailedForecast']) ? $current_period['detailedForecast'] : '',
-            'icon' => $current_period['icon'],
-            'windSpeed' => $current_period['windSpeed'],
-            'windDirection' => $current_period['windDirection'],
-            'probabilityOfPrecipitation' => $precip_value
-          ];
+            $weather_data['current'] = [
+              'name' => $current_period['name'],
+              'temperature' => $current_period['temperature'],
+              'temperatureUnit' => $current_period['temperatureUnit'],
+              'shortForecast' => $current_period['shortForecast'],
+              'detailedForecast' => isset($current_period['detailedForecast']) ? $current_period['detailedForecast'] : '',
+              'icon' => $current_period['icon'],
+              'windSpeed' => $current_period['windSpeed'],
+              'windDirection' => $current_period['windDirection'],
+              'probabilityOfPrecipitation' => $precip_value
+            ];
 
-          // Try to get more detailed current conditions from hourly if available
-          if (!empty($hourly_url)) {
-            $hourly_response = wp_remote_get($hourly_url, [
-              'headers' => [
-                'User-Agent' => 'ProlificBlocks/1.0 (WordPress Weather Block)',
-                'Accept' => 'application/json'
-              ],
-              'timeout' => 15
-            ]);
+            // Try to get more detailed current conditions from hourly if available
+            if (!empty($hourly_url)) {
+              $hourly_response = wp_remote_get($hourly_url, [
+                'headers' => [
+                  'User-Agent' => 'ProlificBlocks/1.0 (WordPress Weather Block)',
+                  'Accept' => 'application/json'
+                ],
+                'timeout' => 15
+              ]);
 
-            if (!is_wp_error($hourly_response) && wp_remote_retrieve_response_code($hourly_response) === 200) {
-              $hourly_body = wp_remote_retrieve_body($hourly_response);
-              $hourly_data = json_decode($hourly_body, true);
+              if (!is_wp_error($hourly_response) && wp_remote_retrieve_response_code($hourly_response) === 200) {
+                $hourly_body = wp_remote_retrieve_body($hourly_response);
+                $hourly_data = json_decode($hourly_body, true);
 
-              error_log('Prolific Weather: Hourly data retrieved, periods count: ' . (isset($hourly_data['properties']['periods']) ? count($hourly_data['properties']['periods']) : 0));
+                error_log('Prolific Weather: Hourly data retrieved, periods count: ' . (isset($hourly_data['properties']['periods']) ? count($hourly_data['properties']['periods']) : 0));
 
-              if (!empty($hourly_data['properties']['periods'][0])) {
-                $current_hourly = $hourly_data['properties']['periods'][0];
+                if (!empty($hourly_data['properties']['periods'][0])) {
+                  $current_hourly = $hourly_data['properties']['periods'][0];
 
-                // Extract relativeHumidity value from object structure
-                $humidity_value = null;
-                if (isset($current_hourly['relativeHumidity'])) {
-                  if (is_array($current_hourly['relativeHumidity']) && isset($current_hourly['relativeHumidity']['value'])) {
-                    $humidity_value = $current_hourly['relativeHumidity']['value'];
-                  } elseif (is_numeric($current_hourly['relativeHumidity'])) {
-                    $humidity_value = $current_hourly['relativeHumidity'];
+                  // Extract relativeHumidity value from object structure
+                  $humidity_value = null;
+                  if (isset($current_hourly['relativeHumidity'])) {
+                    if (is_array($current_hourly['relativeHumidity']) && isset($current_hourly['relativeHumidity']['value'])) {
+                      $humidity_value = $current_hourly['relativeHumidity']['value'];
+                    } elseif (is_numeric($current_hourly['relativeHumidity'])) {
+                      $humidity_value = $current_hourly['relativeHumidity'];
+                    }
                   }
-                }
 
-                // Extract probabilityOfPrecipitation from hourly
-                $hourly_precip_value = null;
-                if (isset($current_hourly['probabilityOfPrecipitation'])) {
-                  if (is_array($current_hourly['probabilityOfPrecipitation']) && isset($current_hourly['probabilityOfPrecipitation']['value'])) {
-                    $hourly_precip_value = $current_hourly['probabilityOfPrecipitation']['value'];
-                  } elseif (is_numeric($current_hourly['probabilityOfPrecipitation'])) {
-                    $hourly_precip_value = $current_hourly['probabilityOfPrecipitation'];
+                  // Extract probabilityOfPrecipitation from hourly
+                  $hourly_precip_value = null;
+                  if (isset($current_hourly['probabilityOfPrecipitation'])) {
+                    if (is_array($current_hourly['probabilityOfPrecipitation']) && isset($current_hourly['probabilityOfPrecipitation']['value'])) {
+                      $hourly_precip_value = $current_hourly['probabilityOfPrecipitation']['value'];
+                    } elseif (is_numeric($current_hourly['probabilityOfPrecipitation'])) {
+                      $hourly_precip_value = $current_hourly['probabilityOfPrecipitation'];
+                    }
                   }
-                }
 
-                // Merge with more precise hourly data
-                $weather_data['current']['temperature'] = $current_hourly['temperature'];
-                $weather_data['current']['relativeHumidity'] = $humidity_value;
-                $weather_data['current']['windSpeed'] = $current_hourly['windSpeed'];
-                $weather_data['current']['windDirection'] = isset($current_hourly['windDirection']) ? $current_hourly['windDirection'] : $weather_data['current']['windDirection'];
-                if ($hourly_precip_value !== null) {
-                  $weather_data['current']['probabilityOfPrecipitation'] = $hourly_precip_value;
+                  // Merge with more precise hourly data
+                  $weather_data['current']['temperature'] = $current_hourly['temperature'];
+                  $weather_data['current']['relativeHumidity'] = $humidity_value;
+                  $weather_data['current']['windSpeed'] = $current_hourly['windSpeed'];
+                  $weather_data['current']['windDirection'] = isset($current_hourly['windDirection']) ? $current_hourly['windDirection'] : $weather_data['current']['windDirection'];
+                  if ($hourly_precip_value !== null) {
+                    $weather_data['current']['probabilityOfPrecipitation'] = $hourly_precip_value;
+                  }
                 }
               }
             }
-          }
 
-          error_log('Prolific Weather: Current weather data prepared: ' . print_r($weather_data['current'], true));
+            error_log('Prolific Weather: Current weather data prepared: ' . print_r($weather_data['current'], true));
+          }
         }
       }
+    } else {
+      error_log('Prolific Weather: Forecast request failed');
     }
-  } else {
-    error_log('Prolific Weather: Forecast request failed');
-  }
 
-  error_log('Prolific Weather: Returning weather data with keys: ' . implode(', ', array_keys($weather_data)));
-  return $weather_data;
+    error_log('Prolific Weather: Returning weather data with keys: ' . implode(', ', array_keys($weather_data)));
+    return $weather_data;
   }
 }
 
@@ -185,7 +185,7 @@ if (!function_exists('prolific_fetch_weather_data')) {
 if (!function_exists('prolific_convert_temperature')) {
   function prolific_convert_temperature($fahrenheit, $unit) {
     if ($unit === 'celsius') {
-      return round(($fahrenheit - 32) * 5/9);
+      return round(($fahrenheit - 32) * 5 / 9);
     }
     return round($fahrenheit);
   }
@@ -218,8 +218,22 @@ if (!function_exists('prolific_format_wind_direction')) {
     }
 
     $directions = [
-      'N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
-      'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'
+      'N',
+      'NNE',
+      'NE',
+      'ENE',
+      'E',
+      'ESE',
+      'SE',
+      'SSE',
+      'S',
+      'SSW',
+      'SW',
+      'WSW',
+      'W',
+      'WNW',
+      'NW',
+      'NNW'
     ];
 
     $index = round($degrees / 22.5) % 16;
