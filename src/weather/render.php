@@ -297,9 +297,6 @@ if (false === $weather_data) {
 
 $temp_unit = prolific_get_temp_unit($temperature_unit);
 
-// Start output buffering
-ob_start();
-
 // Build block wrapper attributes
 $wrapper_attributes = get_block_wrapper_attributes(['class' => 'wp-block-prolific-weather']);
 ?>
@@ -390,6 +387,3 @@ $wrapper_attributes = get_block_wrapper_attributes(['class' => 'wp-block-prolifi
     </div>
   <?php endif; ?>
 </div>
-
-<?php
-return ob_get_clean();
