@@ -113,10 +113,7 @@ export default function Edit({ attributes, setAttributes }) {
 
     if (!tabPanels.length) return;
 
-    console.log(tabPanels);
-
     tabPanels.forEach((panel, index) => {
-      console.log(index);
       if (index === activeTabIndex) {
         panel.classList.add("active");
       } else {

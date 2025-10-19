@@ -12,7 +12,6 @@
 	function initCarousel(blockElement) {
 		const carouselElement = blockElement.querySelector('swiper-container');
 		if (!carouselElement) {
-			console.log('No swiper-container found');
 			return;
 		}
 
@@ -93,8 +92,6 @@
 
 		// Initialize the swiper
 		carouselElement.initialize();
-
-		console.log('Carousel initialized with params:', swiperParams);
 	}
 
 	/**

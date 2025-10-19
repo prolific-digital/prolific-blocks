@@ -328,18 +328,26 @@ When updating versions, update both files and create corresponding GitHub releas
 - Grid lines and data label options
 
 ### Weather Block
-- National Weather Service API integration
-- Current conditions and forecast display
-- Hourly and daily forecast options
-- Automatic location-based data fetching
-- Transient caching for performance
-- Error handling and fallback states
-- **Empty State:** Displays helpful Placeholder with cloud icon when lat/long not entered
-- **CSS Visibility Pattern:** Progressive enhancement with animations
-  - Block is visible by default (no opacity: 0 without JS)
-  - Uses CSS `@keyframes weatherFadeIn` for smooth entrance
-  - JavaScript adds `.weather-animate-in` class for animation
-  - Fail-safe: block displays even if JavaScript fails
+- National Weather Service API integration with comprehensive weather condition coverage
+- **Data Caching:** WordPress transients with configurable refresh (hourly, daily, manual)
+- **Font Awesome Icons:** Inline SVG icons for all weather conditions (no API images)
+  - Intelligent icon mapping: sun, moon, clouds, rain, snow, thunderstorms, tornado, fog, wind
+  - Temperature icons for hot/cold conditions, icicles for freezing rain
+  - Smart night detection (shows moon instead of sun)
+- **Location Display:**
+  - Auto-fetched from NWS API (nearest weather station)
+  - Custom location name override field to fix inaccurate API names
+  - Toggle to show/hide location name completely
+- **Three Display Modes:**
+  - compact: Icon + temperature only (minimal inline)
+  - current: Expanded weather card with all details
+  - full: Current weather + horizontal scrollable forecast
+- **Forecast Display:**
+  - CSS-only horizontal scroll with snap points
+  - Optional night forecasts (disabled by default)
+  - Configurable number of forecast days
+- **Customization:** Temperature units (F/C), show/hide toggles for humidity/wind/precipitation
+- **Error Handling:** Helpful placeholders, error messages, empty states
 
 ### Reading Time Block
 - Font Awesome SVG icons (book, clock, visibility/eye)

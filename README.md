@@ -1,115 +1,303 @@
-# Prolific Blocks - WordPress Plugin
+# Prolific Blocks
 
-## Overview
+**Version:** 1.0.0
+**Requires at least:** WordPress 6.3
+**Tested up to:** WordPress 6.7
+**Requires PHP:** 7.4
+**License:** GPL-2.0-or-later
+**Author:** Prolific Digital
 
-Prolific Blocks is a WordPress plugin designed to expand the functionality of the block editor by introducing additional customizable blocks. Whether you want to integrate stylish hamburger menus, carousels, interactive Lottie animations, dynamic timelines, or tabbed content, Prolific Blocks has the tools you need to create engaging web experiences.
+## Description
 
-## Current Blocks
+Prolific Blocks is a comprehensive WordPress plugin that extends the block editor with 28+ advanced custom blocks. From interactive carousels and weather displays to data visualizations and content management tools, Prolific Blocks provides everything you need to create engaging, professional websites without touching code.
 
-### 1. Hamburger Block
+## Key Features
 
-- Add a customizable hamburger button to your page.
-- Clicking the button toggles an `active` class on the `<body>` tag, enabling interaction with menus or other elements.
-- Supports various animation styles for the hamburger button.
-- Manage ARIA controls for accessibility.
+- **28+ Custom Blocks** across 6 categories
+- **Native WordPress Integration** - Built with modern WordPress block development standards
+- **Font Awesome Icons** - Inline SVG icons (no external dependencies)
+- **Responsive Design** - Mobile-optimized across all blocks
+- **Accessibility** - ARIA labels, keyboard navigation, screen reader support
+- **Performance Optimized** - Transient caching, conditional asset loading
+- **Automatic Updates** - GitHub-based update system
+- **No jQuery** - Modern vanilla JavaScript
 
-### 2. Carousel Block
+## Available Blocks
 
-- Create responsive carousels with unlimited slides.
-- Configure slides per view, spacing between slides, and device-specific settings for desktop, tablet, and mobile.
-- Flexible options to customize the appearance and behavior of your carousel.
-- Full accessibility support with keyboard navigation, screen reader announcements, and pause controls.
-- Enhanced security with robust SVG sanitization for custom navigation icons.
-- Mobile-optimized with touch support enabled by default.
-- Built using the Swiper.js library for smooth performance.
+### Layout & Display
 
-### 3. Lottie Block
+#### Carousel & Carousel New
+- Swiper.js-powered image/content carousels
+- Responsive breakpoints (desktop, tablet, mobile)
+- Custom navigation with SVG support
+- Multiple transition effects (slide, fade, cube, flip, coverflow, cards)
+- Autoplay with pause controls
+- Full accessibility support
 
-- Upload Lottie animations (JSON files) directly to your WordPress media library.
-- Customize playback options such as speed, autoplay, looping, and more.
-- Enable "play on scroll" to trigger animations as users scroll through your page.
-- Support for starting animation when it becomes visible in the viewport.
+#### Tabbed Content
+- Flexible tab positioning (top, bottom, left, right)
+- Mobile behavior options (stack, accordion, same)
+- URL hash support for direct tab linking
+- localStorage for remembering active tab
+- Full keyboard navigation
+- ARIA implementation
 
-### 4. Timeline Block
+#### Timeline
+- Vertical event timeline
+- Customizable styling per item
+- Native scrolling animations
+- Unlimited timeline items
 
-- Build vertical timelines with unlimited items.
-- Supports native scrolling animations for a smooth user experience.
-- Easily customize each timeline item's appearance.
+### Navigation
 
-### 5. Tabs Block
+#### Anchor Navigation
+- Horizontal jump-link menu
+- CSS sticky positioning
+- Smooth scroll with offset control
+- 4 style variations (pills, underline, bordered, minimal)
+- Mobile responsive layouts
 
-- Create tabbed content sections with customizable appearance.
-- Add any block content within each tab panel.
-- Improve content organization and user experience.
+#### Breadcrumbs
+- Auto-generated breadcrumb navigation
+- Customizable separators and styling
+- Schema.org markup for SEO
+
+#### Table of Contents
+- Dynamic TOC from H1-H6 headings
+- Filterable heading levels
+- Collapsible sections
+- Numbered list support
+- Smooth scroll with offset
+
+#### Hamburger Menu
+- Animated hamburger button (13 animation styles)
+- Toggles 'active' class on body
+- ARIA accessibility controls
+
+### Media & Content
+
+#### Weather
+- National Weather Service API integration
+- 3 display modes (compact, current, full)
+- Font Awesome weather icons
+- Horizontal scrollable forecast
+- Location override and hide options
+- Configurable caching (hourly/daily)
+
+#### Lottie Animation
+- @lottiefiles/dotlottie-web player
+- Comprehensive playback controls
+- Play on view/scroll triggers
+- Marker selection
+- Speed and direction controls
+
+#### Charts
+- D3.js-powered visualizations
+- 5 chart types (bar, line, pie, area, scatter)
+- Custom color schemes
+- Responsive sizing
+- Legend and tooltip controls
+
+#### Icon
+- 120+ Font Awesome icons
+- Searchable by category
+- Rotation control (0-360°)
+- Size and color customization
+
+#### SVG
+- Upload SVG files
+- Rotation and flip controls
+- Maintains original colors
+- Aspect ratio locking
+
+#### PDF Viewer
+- Native inline PDF display
+- No external dependencies
+- Responsive sizing
+
+#### Responsive Image
+- Device-specific images (desktop/tablet/mobile)
+- HTML5 picture element
+- Custom breakpoints
+- Fallback chain
+
+#### Social Sharing
+- 7 style variations
+- Major platforms supported
+- currentColor theming
+- Optimized share URLs
+
+### Utilities
+
+#### Countdown Timer
+- Event/promotion countdowns
+- Evergreen mode (localStorage)
+- 3 native style variations
+- Expiry message with auto-hide
+
+#### Reading Time
+- Auto-calculated from post content
+- Font Awesome icons (book, clock, eye)
+- Image time calculation option
+- 3 rounding methods
+- Transient caching
+
+### Text Formatting
+
+#### Text Highlight
+- RichText format extension
+- Customizable background color
+- Inline text highlighting
+
+### Query Blocks
+
+#### Query Posts
+- Advanced WP_Query interface
+- Post type and taxonomy filters
+- 4 display modes (Grid, List, Masonry, Carousel)
+- AJAX search and filtering
+- Swiper.js carousel integration
+- No page reload
+
+### Global Features
+
+#### Custom HTML Attributes
+- Adds "Advanced > Custom Attributes" to ALL blocks
+- Support for aria-*, role, rel, loading, etc.
+- Passes Lighthouse audits
+- XSS protection and sanitization
 
 ## Installation
 
-### Step 1: Download the Plugin
+### From WordPress Dashboard
 
-Download the latest release of the Prolific Blocks plugin from the WordPress plugin repository or directly from this GitHub repository.
+1. Navigate to **Plugins > Add New**
+2. Click **Upload Plugin**
+3. Select `prolific-blocks.zip`
+4. Click **Install Now**
+5. Click **Activate Plugin**
 
-### Step 2: Install the Plugin
+### Manual Installation
 
-1. In your WordPress dashboard, navigate to **Plugins > Add New**.
-2. Click on **Upload Plugin** and select the `prolific-blocks.zip` file.
-3. Click **Install Now**.
+1. Download the plugin ZIP file
+2. Extract to `/wp-content/plugins/prolific-blocks/`
+3. Activate through the WordPress **Plugins** menu
 
-### Step 3: Activate the Plugin
+## Configuration
 
-Once installed, click **Activate Plugin** to start using Prolific Blocks.
+### File Upload Settings
 
-## Usage
+The plugin automatically enables uploads for:
+- `.json` files (Lottie animations)
+- `.lottie` files (Lottie animations)
+- `.svg` files (SVG block)
 
-After activation, you can start using the available blocks in the WordPress block editor.
+### Swiper.js Library
 
-### How to Use the Blocks
+The Swiper.js library (v11.1.9) is conditionally loaded only when Carousel or Query Posts blocks are present on a page.
 
-#### Hamburger Block
+### Weather API
 
-1. Add the Hamburger Block to your page.
-2. Customize the button's animation style and design in the block settings.
-3. When clicked, it will toggle an `active` class on the `<body>` tag, allowing you to reveal hidden menus or other elements.
-4. Set ARIA controls to enhance accessibility.
+The Weather block uses the National Weather Service API (no API key required). US locations only.
 
-#### Carousel Block
+## Development
 
-1. Insert the Carousel Block into any page or post.
-2. Add as many slides as needed.
-3. Adjust settings for slide spacing, slides per view, and responsive behavior for different devices.
-4. Enable accessibility features like keyboard navigation and screen reader support.
-5. Add custom navigation arrows using SVG files from your media library.
-6. Configure autoplay settings with pause on hover and pause controls.
+### Build Commands
 
-#### Lottie Block
+- `npm run build` - Production build
+- `npm start` - Development build with watch mode
+- `npm run lint:js` - Lint JavaScript
+- `npm run lint:css` - Lint CSS
+- `npm run format` - Format code
+- `npm run plugin-zip` - Create distribution ZIP
 
-1. Upload a Lottie JSON file through the block editor.
-2. Customize animation options such as autoplay, loop, and animation speed.
-3. Enable "play on scroll" or "start on view" to enhance user interaction.
+### Block Structure
 
-#### Timeline Block
+Each block follows WordPress block development best practices:
+- `block.json` - Block metadata
+- `edit.js` - Editor component
+- `save.js` - Saved output
+- `render.php` - Dynamic rendering (when needed)
+- `view.js` - Frontend JavaScript
+- `style.scss` - Shared styles
+- `editor.scss` - Editor-only styles
 
-1. Add the Timeline Block to display a vertical timeline.
-2. Customize the content and appearance of each timeline item.
-3. Enable scrolling animations to enhance the user experience.
+## Technical Details
 
-#### Tabs Block
+### Dependencies
 
-1. Add the Tabs Block to your page.
-2. Insert Tab Panel blocks within it to organize your content.
-3. Customize the appearance and behavior of the tabs.
+- **WordPress 6.3+**
+- **PHP 7.4+**
+- **@wordpress/scripts 27.9.0**
+- **Swiper.js 11.1.9** (bundled, conditionally loaded)
+- **@lottiefiles/dotlottie-web 0.30.2** (bundled)
+- **D3.js 7.9.0** (bundled)
+- **Hamburgers 1.2.1** (bundled)
 
-## Automatic Updates
+### Performance
 
-Prolific Blocks is configured to receive automatic update notifications in your WordPress dashboard when new versions are released on GitHub.
+- Transient caching for API-based blocks (Weather, Reading Time)
+- Conditional asset loading (Swiper.js only when needed)
+- No jQuery dependency
+- Optimized bundle sizes
 
-## Version
+### Accessibility
 
-Current version: 1.0.0
+- ARIA labels and roles
+- Keyboard navigation
+- Screen reader support
+- Focus management
+- Semantic HTML
 
-## Upcoming Features
+### Security
 
-We're constantly improving Prolific Blocks and plan to introduce more block types and features in future updates. Stay tuned for exciting new functionality.
+- SVG sanitization (XSS prevention)
+- Input validation and escaping
+- Nonce verification for AJAX
+- WordPress coding standards
+
+## Browser Support
+
+- Chrome (latest 2 versions)
+- Firefox (latest 2 versions)
+- Safari (latest 2 versions)
+- Edge (latest 2 versions)
+
+## Known Limitations
+
+- Weather block: US locations only (National Weather Service API limitation)
+- Query Loop Carousel: Disabled (use Query Posts block instead)
+
+## Support
+
+For bug reports, feature requests, or support:
+- GitHub: https://github.com/prolific-digital/prolific-blocks
+- Website: https://prolificdigital.com
+
+## Changelog
+
+### 1.0.0
+- Initial public release
+- 28 custom blocks
+- Font Awesome integration
+- Swiper.js carousel system
+- Weather API integration
+- D3.js charts
+- Global custom attributes
+- Comprehensive accessibility features
+
+## Credits
+
+Developed by Prolific Digital
+
+**Third-Party Libraries:**
+- Swiper.js - MIT License
+- Font Awesome - Font Awesome Free License
+- @lottiefiles/dotlottie-web - MIT License
+- D3.js - ISC License
+- Hamburgers - MIT License
 
 ## License
 
-Prolific Blocks is licensed under GPL-2.0-or-later.
+GPL-2.0-or-later
+https://www.gnu.org/licenses/gpl-2.0.html

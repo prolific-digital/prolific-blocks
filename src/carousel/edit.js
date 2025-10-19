@@ -307,7 +307,6 @@ export default function Edit({ attributes, setAttributes, clientId }) {
         nextBtnClone.onclick = (e) => {
           e.preventDefault();
           e.stopPropagation();
-          console.log('Next button clicked');
           if (swiper && typeof swiper.slideNext === 'function') {
             swiper.slideNext();
           }
@@ -326,7 +325,6 @@ export default function Edit({ attributes, setAttributes, clientId }) {
         prevBtnClone.onclick = (e) => {
           e.preventDefault();
           e.stopPropagation();
-          console.log('Previous button clicked');
           if (swiper && typeof swiper.slidePrev === 'function') {
             swiper.slidePrev();
           }
@@ -514,7 +512,6 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                 e.stopPropagation();
                 if (swiperElRef.current && swiperElRef.current.swiper) {
                   swiperElRef.current.swiper.slidePrev();
-                  console.log("Previous slide clicked");
                 }
               }}
             >
@@ -534,7 +531,6 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                 e.stopPropagation();
                 if (swiperElRef.current && swiperElRef.current.swiper) {
                   swiperElRef.current.swiper.slideNext();
-                  console.log("Next slide clicked");
                 }
               }}
             >
