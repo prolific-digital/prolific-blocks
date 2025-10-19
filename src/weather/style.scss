@@ -1,0 +1,160 @@
+/**
+ * Frontend styles for Weather block.
+ * These styles are loaded on both the frontend and in the editor.
+ */
+
+.wp-block-prolific-weather {
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  &.weather-error {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    color: #856404;
+  }
+
+  .weather-current {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+
+    .weather-icon {
+      flex-shrink: 0;
+
+      img {
+        width: 80px;
+        height: 80px;
+        display: block;
+      }
+    }
+
+    .weather-details {
+      flex: 1;
+
+      .weather-temp {
+        margin-bottom: 0.5rem;
+
+        .temp-current {
+          display: block;
+          font-size: 2.5rem;
+          font-weight: 700;
+          line-height: 1;
+          margin-bottom: 0.25rem;
+        }
+
+        .temp-range {
+          display: block;
+          font-size: 0.875rem;
+          color: #666;
+        }
+      }
+
+      .weather-condition {
+        font-size: 1.125rem;
+        font-weight: 500;
+        margin-bottom: 0.75rem;
+      }
+
+      .weather-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.875rem;
+        color: #666;
+
+        span {
+          display: inline-flex;
+          align-items: center;
+
+          &::before {
+            content: '•';
+            margin-right: 0.5rem;
+            color: #999;
+          }
+
+          &:first-child::before {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
+  .weather-forecast {
+    .forecast-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0 0 1rem 0;
+    }
+
+    .forecast-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 1rem;
+
+      @media (max-width: 640px) {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      }
+
+      .forecast-day {
+        text-align: center;
+        padding: 1rem 0.5rem;
+        background: white;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+        .forecast-day-name {
+          font-size: 0.875rem;
+          font-weight: 600;
+          margin-bottom: 0.5rem;
+          color: #333;
+        }
+
+        .forecast-icon {
+          margin: 0.5rem 0;
+
+          img {
+            width: 50px;
+            height: 50px;
+            display: inline-block;
+          }
+        }
+
+        .forecast-temp {
+          font-size: 1rem;
+          font-weight: 600;
+          margin: 0.5rem 0;
+          color: #333;
+        }
+
+        .forecast-condition {
+          font-size: 0.75rem;
+          color: #666;
+          margin-top: 0.5rem;
+        }
+      }
+    }
+  }
+
+  // Animation for progressive enhancement
+  // Block is ALWAYS visible by default (no opacity: 0 without JS)
+  // Only animate if JavaScript successfully adds the animation class
+  &.weather-animate-in {
+    animation: weatherFadeIn 0.3s ease forwards;
+  }
+}
+
+@keyframes weatherFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

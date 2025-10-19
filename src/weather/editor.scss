@@ -1,0 +1,53 @@
+/**
+ * Editor-specific styles for Weather block.
+ * These styles are only loaded in the block editor.
+ */
+
+.wp-block-prolific-weather {
+  .weather-placeholder {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: #f0f0f1;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    color: #757575;
+
+    p {
+      margin: 0;
+      font-size: 0.875rem;
+    }
+  }
+
+  .weather-loading {
+    text-align: center;
+    padding: 3rem 2rem;
+
+    .components-spinner {
+      margin: 0 auto 1rem;
+    }
+
+    p {
+      margin: 0;
+      color: #757575;
+      font-size: 0.875rem;
+    }
+  }
+
+  .weather-preview {
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .components-notice {
+    margin: 0 0 1rem 0;
+  }
+}
+
+// Inspector controls styling
+.components-panel__body {
+  .weather-location-button {
+    width: 100%;
+    justify-content: center;
+    margin-top: 8px;
+  }
+}

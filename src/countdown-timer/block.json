@@ -1,0 +1,152 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "prolific/countdown-timer",
+  "version": "1.0.0",
+  "title": "Countdown Timer",
+  "category": "prolific",
+  "icon": "clock",
+  "description": "Display a countdown timer for promotions, events, or deadlines",
+  "keywords": ["countdown", "timer", "deadline", "event", "promotion"],
+  "example": {},
+  "supports": {
+    "align": ["left", "center", "right", "wide", "full"],
+    "ariaLabel": true,
+    "className": true,
+    "customClassName": true,
+    "html": false,
+    "color": {
+      "text": true,
+      "background": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "fontWeight": true
+    },
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
+    "border": {
+      "color": true,
+      "radius": true,
+      "width": true
+    }
+  },
+  "styles": [
+    {
+      "name": "grid",
+      "label": "Grid",
+      "isDefault": true
+    },
+    {
+      "name": "inline",
+      "label": "Inline"
+    },
+    {
+      "name": "stacked",
+      "label": "Stacked"
+    }
+  ],
+  "attributes": {
+    "blockId": {
+      "type": "string",
+      "default": ""
+    },
+    "targetDate": {
+      "type": "string",
+      "default": ""
+    },
+    "targetTime": {
+      "type": "string",
+      "default": "23:59"
+    },
+    "timezone": {
+      "type": "string",
+      "default": "site"
+    },
+    "showDays": {
+      "type": "boolean",
+      "default": true
+    },
+    "showHours": {
+      "type": "boolean",
+      "default": true
+    },
+    "showMinutes": {
+      "type": "boolean",
+      "default": true
+    },
+    "showSeconds": {
+      "type": "boolean",
+      "default": true
+    },
+    "labelDays": {
+      "type": "string",
+      "default": "Days"
+    },
+    "labelDay": {
+      "type": "string",
+      "default": "Day"
+    },
+    "labelHours": {
+      "type": "string",
+      "default": "Hours"
+    },
+    "labelHour": {
+      "type": "string",
+      "default": "Hour"
+    },
+    "labelMinutes": {
+      "type": "string",
+      "default": "Minutes"
+    },
+    "labelMinute": {
+      "type": "string",
+      "default": "Minute"
+    },
+    "labelSeconds": {
+      "type": "string",
+      "default": "Seconds"
+    },
+    "labelSecond": {
+      "type": "string",
+      "default": "Second"
+    },
+    "expiredMessage": {
+      "type": "string",
+      "default": "This offer has expired"
+    },
+    "autoHide": {
+      "type": "boolean",
+      "default": false
+    },
+    "leadingZeros": {
+      "type": "boolean",
+      "default": true
+    },
+    "separator": {
+      "type": "string",
+      "default": "colon"
+    },
+    "size": {
+      "type": "string",
+      "default": "medium"
+    },
+    "evergreenMode": {
+      "type": "boolean",
+      "default": false
+    },
+    "evergreenHours": {
+      "type": "number",
+      "default": 24
+    }
+  },
+  "textdomain": "prolific-blocks",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "viewScript": "file:./view.js",
+  "render": "file:./render.php"
+}

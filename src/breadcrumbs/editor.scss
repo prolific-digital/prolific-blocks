@@ -1,0 +1,64 @@
+/**
+ * Editor-specific styles for Breadcrumbs block.
+ */
+
+.wp-block-prolific-breadcrumbs {
+	// Preview wrapper
+	.breadcrumbs-preview {
+		padding: 1em;
+		background: #f9f9f9;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+	}
+
+	// Breadcrumb list
+	.breadcrumbs-list {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		gap: 0.5em;
+	}
+
+	// Individual breadcrumb items
+	.breadcrumb-item {
+		display: inline-flex;
+		align-items: center;
+
+		a {
+			color: #007cba;
+			text-decoration: none;
+			cursor: default;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+
+		// Current page (non-link)
+		&.breadcrumb-current {
+			font-weight: 600;
+			color: #1e1e1e;
+		}
+	}
+
+	// Divider between items
+	.breadcrumb-divider {
+		display: inline-flex;
+		align-items: center;
+		opacity: 0.6;
+		user-select: none;
+		color: #757575;
+	}
+}
+
+// Inspector panel improvements
+.components-panel__body {
+	hr {
+		margin: 16px 0;
+		border: 0;
+		border-top: 1px solid #ddd;
+	}
+}

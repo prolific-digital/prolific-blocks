@@ -1,0 +1,87 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "prolific/reading-time",
+  "version": "1.0.0",
+  "title": "Reading Time Indicator",
+  "category": "prolific",
+  "icon": "book",
+  "description": "Auto-calculate and display estimated reading time from post content",
+  "keywords": ["reading", "time", "estimate", "words", "duration"],
+  "example": {},
+  "supports": {
+    "align": true,
+    "ariaLabel": true,
+    "className": true,
+    "customClassName": true,
+    "html": false,
+    "color": {
+      "text": true,
+      "background": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "fontWeight": true
+    },
+    "spacing": {
+      "padding": true,
+      "margin": true
+    }
+  },
+  "attributes": {
+    "blockId": {
+      "type": "string",
+      "default": ""
+    },
+    "wordsPerMinute": {
+      "type": "number",
+      "default": 200
+    },
+    "displayFormat": {
+      "type": "string",
+      "default": "X min read"
+    },
+    "customFormat": {
+      "type": "string",
+      "default": "Reading time: {time} minutes"
+    },
+    "includeImages": {
+      "type": "boolean",
+      "default": false
+    },
+    "secondsPerImage": {
+      "type": "number",
+      "default": 12
+    },
+    "roundingMethod": {
+      "type": "string",
+      "default": "round"
+    },
+    "prefixText": {
+      "type": "string",
+      "default": ""
+    },
+    "suffixText": {
+      "type": "string",
+      "default": ""
+    },
+    "showIcon": {
+      "type": "boolean",
+      "default": true
+    },
+    "iconType": {
+      "type": "string",
+      "default": "book"
+    },
+    "minimumTime": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "textdomain": "prolific-blocks",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php"
+}

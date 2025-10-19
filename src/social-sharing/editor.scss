@@ -1,0 +1,220 @@
+/**
+ * Editor-specific styles for Social Sharing block.
+ */
+
+.wp-block-prolific-social-sharing {
+	// Preview wrapper
+	.social-sharing-preview {
+		padding: 1.5rem;
+		background: #f9f9f9;
+		border: 2px dashed #ddd;
+		border-radius: 8px;
+	}
+
+	// Empty state message
+	.social-sharing-empty {
+		color: #757575;
+		font-size: 14px;
+		font-style: italic;
+		text-align: center;
+		margin: 0;
+	}
+
+	// Container for sharing buttons
+	.social-sharing-buttons {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		align-items: center;
+	}
+
+	// Individual share buttons (preview only, not clickable)
+	.social-share-button {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 1rem;
+		background: transparent;
+		color: currentColor;
+		text-decoration: none;
+		border-radius: 6px;
+		border: 1px solid currentColor;
+		font-weight: 500;
+		cursor: default;
+		pointer-events: none;
+
+		.share-icon {
+			display: flex;
+			align-items: center;
+			font-size: 1.2em;
+
+			svg {
+				width: 1em;
+				height: 1em;
+				fill: currentColor;
+			}
+		}
+
+		.share-label {
+			white-space: nowrap;
+		}
+
+		// Platform-specific preview styles (for visual reference in editor)
+		&.social-facebook {
+			color: #1877f2;
+		}
+
+		&.social-twitter {
+			color: #000;
+		}
+
+		&.social-linkedin {
+			color: #0077b5;
+		}
+
+		&.social-pinterest {
+			color: #e60023;
+		}
+
+		&.social-email {
+			color: #666;
+		}
+
+		&.social-whatsapp {
+			color: #25d366;
+		}
+
+		&.social-reddit {
+			color: #ff4500;
+		}
+
+		&.social-telegram {
+			color: #0088cc;
+		}
+	}
+
+	// Native WordPress Style Variations (editor preview)
+
+	// Outlined (default) - already defined above as default button style
+	&.is-style-outlined {
+		// Default styles already applied
+	}
+
+	// Filled style variation
+	&.is-style-filled {
+		.social-share-button {
+			background: currentColor;
+			border-color: currentColor;
+
+			.share-icon,
+			.share-label {
+				// Create contrast by inverting the color
+				filter: invert(1) grayscale(1) contrast(100);
+			}
+		}
+
+		// Platform-specific filled styles for editor preview
+		.social-share-button.social-facebook {
+			background: #1877f2;
+			border-color: #1877f2;
+		}
+
+		.social-share-button.social-twitter {
+			background: #000;
+			border-color: #000;
+		}
+
+		.social-share-button.social-linkedin {
+			background: #0077b5;
+			border-color: #0077b5;
+		}
+
+		.social-share-button.social-pinterest {
+			background: #e60023;
+			border-color: #e60023;
+		}
+
+		.social-share-button.social-email {
+			background: #666;
+			border-color: #666;
+		}
+
+		.social-share-button.social-whatsapp {
+			background: #25d366;
+			border-color: #25d366;
+		}
+
+		.social-share-button.social-reddit {
+			background: #ff4500;
+			border-color: #ff4500;
+		}
+
+		.social-share-button.social-telegram {
+			background: #0088cc;
+			border-color: #0088cc;
+		}
+	}
+
+	// Minimal style variation
+	&.is-style-minimal {
+		.social-share-button {
+			background: transparent;
+			border: none;
+			padding: 0.35rem 0.75rem;
+		}
+	}
+
+	// Pills style variation - fully rounded buttons
+	&.is-style-pills {
+		.social-share-button {
+			border-radius: 9999px;
+			padding: 0.65rem 1.5rem;
+		}
+	}
+
+	// Square style variation - no border radius
+	&.is-style-square {
+		.social-share-button {
+			border-radius: 0;
+		}
+	}
+
+	// Rounded style variation - moderate border radius
+	&.is-style-rounded {
+		.social-share-button {
+			border-radius: 8px;
+		}
+	}
+
+	// Ghost style variation - transparent with border, fills on hover
+	&.is-style-ghost {
+		.social-share-button {
+			background: transparent;
+			border: 2px solid currentColor;
+
+			// Show filled state in editor for preview purposes
+			&:hover {
+				background: currentColor;
+
+				.share-icon,
+				.share-label {
+					// Create contrast by inverting the color on hover
+					filter: invert(1) grayscale(1) contrast(100);
+				}
+			}
+		}
+	}
+}
+
+// Inspector panel improvements
+.components-panel__body {
+	.components-checkbox-control {
+		margin-bottom: 12px;
+
+		span {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+		}
+	}
+}

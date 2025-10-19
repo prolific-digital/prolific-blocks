@@ -1,0 +1,93 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "prolific/weather",
+  "version": "1.0.0",
+  "title": "Weather",
+  "category": "prolific",
+  "icon": "cloud",
+  "description": "Display current weather and forecast using the National Weather Service API.",
+  "example": {},
+  "supports": {
+    "align": ["wide", "full"],
+    "ariaLabel": true,
+    "className": true,
+    "customClassName": true,
+    "html": false,
+    "color": {
+      "text": true,
+      "background": true,
+      "link": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true
+    },
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
+    "border": {
+      "color": true,
+      "radius": true,
+      "style": true,
+      "width": true
+    }
+  },
+  "attributes": {
+    "blockId": {
+      "type": "string",
+      "default": ""
+    },
+    "latitude": {
+      "type": "string",
+      "default": ""
+    },
+    "longitude": {
+      "type": "string",
+      "default": ""
+    },
+    "displayMode": {
+      "type": "string",
+      "default": "both"
+    },
+    "temperatureUnit": {
+      "type": "string",
+      "default": "fahrenheit"
+    },
+    "showTemperature": {
+      "type": "boolean",
+      "default": true
+    },
+    "showHumidity": {
+      "type": "boolean",
+      "default": true
+    },
+    "showWind": {
+      "type": "boolean",
+      "default": true
+    },
+    "showPrecipitation": {
+      "type": "boolean",
+      "default": true
+    },
+    "forecastDays": {
+      "type": "number",
+      "default": 7
+    },
+    "refreshInterval": {
+      "type": "string",
+      "default": "hourly"
+    },
+    "cachedData": {
+      "type": "object",
+      "default": {}
+    }
+  },
+  "textdomain": "prolific-blocks",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "viewScript": "file:./view.js",
+  "render": "file:./render.php"
+}

@@ -1,0 +1,111 @@
+/**
+ * Frontend styles for Tabbed Content Panel block
+ */
+
+.tabbed-content-panel {
+	display: none;
+	transition: opacity 0.3s ease;
+
+	/* Active state */
+	&.is-active {
+		display: block;
+		animation: fadeIn 0.3s ease;
+	}
+
+	/* Accordion button - hidden by default, shown on mobile */
+	.tabbed-content-panel__accordion-button {
+		display: none;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		padding: 16px;
+		margin-bottom: 16px;
+		background: #f7f7f7;
+		border: 1px solid #e0e0e0;
+		border-radius: 4px;
+		cursor: pointer;
+		font-size: 16px;
+		font-weight: 600;
+		text-align: left;
+		transition: background 0.2s ease;
+		font-family: inherit;
+		color: inherit;
+
+		&:hover {
+			background: #ebebeb;
+		}
+
+		&:focus {
+			outline: 2px solid #2271b1;
+			outline-offset: 2px;
+		}
+
+		.tabbed-content-panel__accordion-label {
+			flex: 1;
+		}
+
+		.tabbed-content-panel__accordion-icon {
+			font-size: 24px;
+			line-height: 1;
+			font-weight: 300;
+			margin-left: 12px;
+		}
+	}
+
+	/* Content area */
+	.tabbed-content-panel__content {
+		/* Inner blocks styles */
+	}
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+/* Mobile accordion styles */
+@media (max-width: 768px) {
+	.wp-block-prolific-tabbed-content[data-mobile-behavior="accordion"] {
+		.tabbed-content-panel {
+			display: block; /* Show all panels on mobile */
+			margin-bottom: 12px;
+
+			.tabbed-content-panel__accordion-button {
+				display: flex; /* Show accordion buttons */
+			}
+
+			.tabbed-content-panel__content {
+				display: none; /* Hide content by default */
+			}
+
+			/* Active panel shows content */
+			&.is-active {
+				.tabbed-content-panel__content {
+					display: block;
+					animation: slideDown 0.3s ease;
+				}
+
+				.tabbed-content-panel__accordion-icon {
+					transform: rotate(45deg);
+				}
+			}
+		}
+	}
+}
+
+/* Slide down animation */
+@keyframes slideDown {
+	from {
+		opacity: 0;
+		max-height: 0;
+	}
+	to {
+		opacity: 1;
+		max-height: 1000px;
+	}
+}

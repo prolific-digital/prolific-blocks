@@ -1,0 +1,108 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "prolific/responsive-image",
+  "version": "1.0.0",
+  "title": "Responsive Image",
+  "category": "prolific",
+  "icon": "format-image",
+  "description": "Display different images for desktop, tablet, and mobile devices with customizable breakpoints",
+  "keywords": ["image", "responsive", "picture", "mobile", "tablet", "desktop", "media"],
+  "example": {},
+  "supports": {
+    "align": ["left", "center", "right", "wide", "full"],
+    "ariaLabel": true,
+    "className": true,
+    "customClassName": true,
+    "html": false,
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
+    "border": {
+      "color": true,
+      "radius": true,
+      "width": true
+    }
+  },
+  "attributes": {
+    "blockId": {
+      "type": "string",
+      "default": ""
+    },
+    "desktopImageId": {
+      "type": "number",
+      "default": 0
+    },
+    "desktopImageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "desktopWidth": {
+      "type": "number"
+    },
+    "desktopHeight": {
+      "type": "number"
+    },
+    "tabletImageId": {
+      "type": "number",
+      "default": 0
+    },
+    "tabletImageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "tabletWidth": {
+      "type": "number"
+    },
+    "tabletHeight": {
+      "type": "number"
+    },
+    "mobileImageId": {
+      "type": "number",
+      "default": 0
+    },
+    "mobileImageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "mobileWidth": {
+      "type": "number"
+    },
+    "mobileHeight": {
+      "type": "number"
+    },
+    "caption": {
+      "type": "string",
+      "default": ""
+    },
+    "desktopBreakpoint": {
+      "type": "number",
+      "default": 1024
+    },
+    "tabletBreakpoint": {
+      "type": "number",
+      "default": 768
+    },
+    "lockDesktopRatio": {
+      "type": "boolean",
+      "default": false
+    },
+    "lockTabletRatio": {
+      "type": "boolean",
+      "default": false
+    },
+    "lockMobileRatio": {
+      "type": "boolean",
+      "default": false
+    },
+    "currentPreviewDevice": {
+      "type": "string",
+      "default": "desktop"
+    }
+  },
+  "textdomain": "prolific-blocks",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css"
+}

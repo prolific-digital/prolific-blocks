@@ -1,0 +1,66 @@
+/**
+ * Editor styles for Tabbed Content Panel block
+ */
+
+.wp-block-prolific-tabbed-content-panel {
+	border: 1px solid #e0e0e0;
+	border-radius: 4px;
+	padding: 20px;
+	margin-bottom: 12px;
+	transition: all 0.3s ease;
+	background: #fff;
+
+	/* Not active state - dimmed */
+	&:not(.is-active) {
+		opacity: 0.6;
+
+		.tabbed-content-panel__content {
+			pointer-events: none;
+		}
+	}
+
+	/* Active state - highlighted */
+	&.is-active {
+		border-color: #2271b1;
+		box-shadow: 0 0 0 1px #2271b1;
+		opacity: 1;
+	}
+
+	/* Accordion button - hidden in editor by default */
+	.tabbed-content-panel__accordion-button {
+		display: none;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		padding: 16px;
+		margin: -20px -20px 20px -20px;
+		background: #f7f7f7;
+		border: none;
+		border-bottom: 1px solid #e0e0e0;
+		border-radius: 4px 4px 0 0;
+		cursor: pointer;
+		font-size: 16px;
+		font-weight: 600;
+		text-align: left;
+		transition: background 0.2s ease;
+
+		&:hover {
+			background: #ebebeb;
+		}
+
+		.tabbed-content-panel__accordion-label {
+			flex: 1;
+		}
+
+		.tabbed-content-panel__accordion-icon {
+			font-size: 24px;
+			line-height: 1;
+			font-weight: 300;
+		}
+	}
+
+	/* Content area */
+	.tabbed-content-panel__content {
+		/* Inner blocks styles */
+	}
+}

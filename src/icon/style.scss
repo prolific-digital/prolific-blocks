@@ -1,0 +1,41 @@
+/**
+ * Frontend & Editor Styles for Icon Block
+ */
+
+.wp-block-prolific-icon {
+	display: block;
+
+	.prolific-icon-wrapper {
+		display: inline-block;
+		line-height: 1;
+	}
+
+	.prolific-icon {
+		display: block;
+		fill: currentColor;
+		transition: transform 0.2s ease;
+	}
+
+	a {
+		display: inline-block;
+		text-decoration: none;
+		color: inherit;
+
+		&:hover .prolific-icon {
+			opacity: 0.8;
+		}
+	}
+
+	// Alignment
+	&.has-text-align-left {
+		text-align: left;
+	}
+
+	&.has-text-align-center {
+		text-align: center;
+	}
+
+	&.has-text-align-right {
+		text-align: right;
+	}
+}

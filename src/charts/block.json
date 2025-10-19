@@ -1,0 +1,158 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "prolific/charts",
+  "version": "1.0.0",
+  "title": "Charts",
+  "category": "prolific",
+  "icon": "chart-bar",
+  "description": "Create beautiful, interactive data visualizations with multiple chart types powered by D3.js",
+  "keywords": ["chart", "graph", "data", "visualization", "d3", "analytics", "statistics"],
+  "example": {},
+  "supports": {
+    "align": ["left", "center", "right", "wide", "full"],
+    "ariaLabel": true,
+    "className": true,
+    "customClassName": true,
+    "html": false,
+    "color": {
+      "text": true,
+      "background": true
+    },
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
+    "border": {
+      "color": true,
+      "radius": true,
+      "width": true
+    }
+  },
+  "attributes": {
+    "blockId": {
+      "type": "string",
+      "default": ""
+    },
+    "chartType": {
+      "type": "string",
+      "default": "bar"
+    },
+    "orientation": {
+      "type": "string",
+      "default": "vertical"
+    },
+    "chartData": {
+      "type": "array",
+      "default": [
+        { "label": "Jan", "value": 30 },
+        { "label": "Feb", "value": 45 },
+        { "label": "Mar", "value": 60 },
+        { "label": "Apr", "value": 40 },
+        { "label": "May", "value": 55 }
+      ]
+    },
+    "chartWidth": {
+      "type": "string",
+      "default": "100%"
+    },
+    "chartHeight": {
+      "type": "number",
+      "default": 400
+    },
+    "marginTop": {
+      "type": "number",
+      "default": 20
+    },
+    "marginRight": {
+      "type": "number",
+      "default": 20
+    },
+    "marginBottom": {
+      "type": "number",
+      "default": 50
+    },
+    "marginLeft": {
+      "type": "number",
+      "default": 60
+    },
+    "responsive": {
+      "type": "boolean",
+      "default": true
+    },
+    "colorScheme": {
+      "type": "string",
+      "default": "blue"
+    },
+    "customColors": {
+      "type": "array",
+      "default": []
+    },
+    "showDataLabels": {
+      "type": "boolean",
+      "default": false
+    },
+    "showLegend": {
+      "type": "boolean",
+      "default": true
+    },
+    "legendPosition": {
+      "type": "string",
+      "default": "top"
+    },
+    "fontSize": {
+      "type": "number",
+      "default": 12
+    },
+    "showXAxis": {
+      "type": "boolean",
+      "default": true
+    },
+    "showYAxis": {
+      "type": "boolean",
+      "default": true
+    },
+    "xAxisLabel": {
+      "type": "string",
+      "default": ""
+    },
+    "yAxisLabel": {
+      "type": "string",
+      "default": ""
+    },
+    "showGridLines": {
+      "type": "boolean",
+      "default": true
+    },
+    "enableAnimations": {
+      "type": "boolean",
+      "default": true
+    },
+    "animationDuration": {
+      "type": "number",
+      "default": 800
+    },
+    "easingFunction": {
+      "type": "string",
+      "default": "easeQuadInOut"
+    },
+    "showTooltips": {
+      "type": "boolean",
+      "default": true
+    },
+    "chartTitle": {
+      "type": "string",
+      "default": ""
+    },
+    "chartDescription": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "textdomain": "prolific-blocks",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "viewScript": "file:./view.js",
+  "render": "file:./render.php"
+}

@@ -1,0 +1,224 @@
+/**
+ * Frontend styles for the Charts block
+ */
+
+.prolific-chart-block {
+	margin: 2rem 0;
+
+	.chart-title {
+		font-size: 1.5rem;
+		font-weight: 700;
+		margin-bottom: 0.5rem;
+		color: #1f2937;
+	}
+
+	.chart-description {
+		font-size: 1rem;
+		color: #6b7280;
+		margin-bottom: 1.5rem;
+		line-height: 1.6;
+	}
+
+	.chart-container {
+		position: relative;
+		width: 100%;
+		overflow: visible;
+
+		svg {
+			max-width: 100%;
+			height: auto;
+			display: block;
+		}
+
+		// Axis styles
+		.x-axis,
+		.y-axis {
+			path,
+			line {
+				stroke: #d1d5db;
+			}
+
+			text {
+				fill: #374151;
+				font-size: 12px;
+			}
+		}
+
+		.x-axis-label,
+		.y-axis-label {
+			font-size: 14px;
+			font-weight: 600;
+		}
+
+		// Grid styles
+		.grid line {
+			stroke: #e5e7eb;
+			stroke-opacity: 0.7;
+		}
+
+		// Bar chart specific styles
+		.bar {
+			cursor: pointer;
+			transition: opacity 0.2s ease;
+
+			&:hover {
+				opacity: 0.8;
+			}
+		}
+
+		// Line and area chart styles
+		.line {
+			fill: none;
+			stroke-width: 2.5;
+		}
+
+		.area {
+			fill-opacity: 0.3;
+		}
+
+		.dot {
+			cursor: pointer;
+			transition: r 0.2s ease;
+
+			&:hover {
+				r: 6;
+			}
+		}
+
+		// Pie and donut chart styles
+		.arc {
+			cursor: pointer;
+			transition: opacity 0.2s ease;
+
+			path {
+				&:hover {
+					opacity: 0.8;
+				}
+			}
+		}
+	}
+
+	.chart-placeholder {
+		padding: 3rem 2rem;
+		text-align: center;
+		background-color: #f9fafb;
+		border: 2px dashed #d1d5db;
+		border-radius: 8px;
+		color: #6b7280;
+		font-size: 1rem;
+		line-height: 1.6;
+	}
+
+	.chart-loading {
+		padding: 3rem 2rem;
+		text-align: center;
+		color: #6b7280;
+		font-size: 1rem;
+	}
+
+	// Tooltip styles
+	.chart-tooltip {
+		position: absolute;
+		background-color: rgba(0, 0, 0, 0.9);
+		color: #fff;
+		padding: 8px 12px;
+		border-radius: 6px;
+		font-size: 14px;
+		line-height: 1.4;
+		pointer-events: none;
+		z-index: 1000;
+		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+					0 2px 4px -1px rgba(0, 0, 0, 0.06);
+		transition: opacity 0.2s ease;
+
+		strong {
+			display: block;
+			margin-bottom: 4px;
+			font-weight: 600;
+		}
+	}
+}
+
+// Alignment support
+.wp-block-prolific-charts {
+	&.alignleft {
+		margin-right: 2rem;
+	}
+
+	&.alignright {
+		margin-left: 2rem;
+	}
+
+	&.aligncenter {
+		text-align: center;
+	}
+
+	&.alignwide,
+	&.alignfull {
+		.chart-container {
+			max-width: 100%;
+		}
+	}
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+	.prolific-chart-block {
+		.chart-title {
+			font-size: 1.25rem;
+		}
+
+		.chart-description {
+			font-size: 0.9rem;
+		}
+
+		.chart-container {
+			.x-axis,
+			.y-axis {
+				text {
+					font-size: 10px;
+				}
+			}
+
+			.x-axis-label,
+			.y-axis-label {
+				font-size: 12px;
+			}
+		}
+
+		.chart-tooltip {
+			font-size: 12px;
+			padding: 6px 10px;
+		}
+	}
+}
+
+@media (max-width: 480px) {
+	.prolific-chart-block {
+		.chart-title {
+			font-size: 1.1rem;
+		}
+
+		.chart-description {
+			font-size: 0.85rem;
+		}
+
+		.chart-container {
+			.x-axis,
+			.y-axis {
+				text {
+					font-size: 9px;
+				}
+			}
+		}
+	}
+}
+
+// Print styles
+@media print {
+	.prolific-chart-block {
+		.chart-tooltip {
+			display: none;
+		}
+	}
+}

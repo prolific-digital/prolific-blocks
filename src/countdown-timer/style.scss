@@ -1,0 +1,182 @@
+/**
+ * Frontend & Editor Styles for Countdown Timer Block
+ */
+
+.wp-block-prolific-countdown-timer {
+	display: block;
+
+	.countdown-container {
+		display: flex;
+		gap: 1rem;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.countdown-unit {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.5rem;
+		min-width: 60px;
+	}
+
+	.countdown-number {
+		font-size: 2.5rem;
+		font-weight: 700;
+		line-height: 1;
+		display: block;
+	}
+
+	.countdown-separator {
+		font-size: 2rem;
+		font-weight: 700;
+		margin: 0 0.25rem;
+		align-self: flex-start;
+		padding-top: 0.25rem;
+	}
+
+	.countdown-label {
+		font-size: 0.875rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		opacity: 0.8;
+	}
+
+	.countdown-expired {
+		text-align: center;
+		padding: 1.5rem;
+		font-size: 1.25rem;
+		font-weight: 600;
+	}
+
+	// Style: Grid (default)
+	&.is-style-grid {
+		.countdown-container {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+			gap: 1rem;
+		}
+
+		.countdown-unit {
+			padding: 1rem;
+			border: 1px solid rgba(0, 0, 0, 0.1);
+			border-radius: 4px;
+			background: rgba(0, 0, 0, 0.02);
+		}
+
+		.countdown-separator {
+			display: none;
+		}
+	}
+
+	// Style: Inline
+	&.is-style-inline {
+		.countdown-container {
+			flex-direction: row;
+			flex-wrap: wrap;
+		}
+
+		.countdown-unit {
+			flex-direction: row;
+			align-items: center;
+		}
+
+		.countdown-separator {
+			align-self: center;
+			padding-top: 0;
+			order: 3;
+		}
+
+		.countdown-label {
+			order: 1;
+		}
+
+		.countdown-number {
+			order: 2;
+		}
+	}
+
+	// Style: Stacked
+	&.is-style-stacked {
+		.countdown-container {
+			flex-direction: column;
+		}
+
+		.countdown-unit {
+			width: 100%;
+			max-width: 200px;
+			flex-direction: row;
+			justify-content: space-between;
+			padding: 0.75rem 1rem;
+			border: 1px solid rgba(0, 0, 0, 0.1);
+			border-radius: 4px;
+		}
+
+		.countdown-separator {
+			display: none;
+		}
+	}
+
+	// Size: Small
+	&.countdown-size-small {
+		.countdown-number {
+			font-size: 1.5rem;
+		}
+
+		.countdown-separator {
+			font-size: 1.25rem;
+		}
+
+		.countdown-label {
+			font-size: 0.75rem;
+		}
+
+		.countdown-unit {
+			min-width: 40px;
+		}
+	}
+
+	// Size: Large
+	&.countdown-size-large {
+		.countdown-number {
+			font-size: 3.5rem;
+		}
+
+		.countdown-separator {
+			font-size: 3rem;
+		}
+
+		.countdown-label {
+			font-size: 1rem;
+		}
+
+		.countdown-unit {
+			min-width: 80px;
+		}
+	}
+
+	// Responsive
+	@media (max-width: 768px) {
+		.countdown-container {
+			gap: 0.5rem;
+		}
+
+		.countdown-number {
+			font-size: 2rem;
+		}
+
+		.countdown-separator {
+			font-size: 1.5rem;
+		}
+
+		&.countdown-size-large {
+			.countdown-number {
+				font-size: 2.5rem;
+			}
+
+			.countdown-separator {
+				font-size: 2rem;
+			}
+		}
+	}
+}

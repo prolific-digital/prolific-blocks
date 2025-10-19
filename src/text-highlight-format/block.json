@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "prolific/text-highlight-format",
+  "version": "1.0.0",
+  "title": "Text Highlight Format",
+  "category": "prolific",
+  "description": "Format extension that adds highlight/wrapper capabilities to text-based blocks",
+  "keywords": ["highlight", "format", "text", "wrapper", "span"],
+  "textdomain": "prolific-blocks",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css"
+}

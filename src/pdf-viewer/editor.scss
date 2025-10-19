@@ -1,0 +1,66 @@
+/**
+ * Editor-specific styles for PDF Viewer block.
+ * These styles are only loaded in the block editor.
+ */
+
+.wp-block-prolific-pdf-viewer {
+  .pdf-placeholder {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: #f0f0f1;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+
+    .pdf-upload-button {
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin: 0;
+      color: #757575;
+      font-size: 0.875rem;
+    }
+  }
+
+  .pdf-editor-notice {
+    margin: 0 0 1rem 0;
+  }
+
+  .pdf-filename {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+  }
+}
+
+// Inspector controls styling
+.components-panel__body {
+  .pdf-current-file {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: #f0f0f1;
+    border-radius: 4px;
+
+    p {
+      margin: 0;
+      font-size: 0.875rem;
+
+      &.pdf-current-filename {
+        margin-top: 0.5rem;
+        font-family: monospace;
+        color: #666;
+        word-break: break-all;
+      }
+    }
+  }
+
+  .pdf-replace-button,
+  .pdf-remove-button {
+    margin-top: 0.5rem;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .pdf-remove-button {
+    margin-top: 0.25rem;
+  }
+}

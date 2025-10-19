@@ -1,0 +1,37 @@
+/**
+ * Editor-specific styles for Anchor Navigation Block
+ */
+
+.wp-block-prolific-anchor-navigation {
+	.anchor-nav-sticky-notice {
+		background: #f0f0f1;
+		border-left: 3px solid #2271b1;
+		padding: 0.75rem 1rem;
+		margin-bottom: 1rem;
+		font-size: 0.875rem;
+		color: #1d2327;
+	}
+
+	.anchor-navigation {
+		padding: 1rem;
+		background: rgba(0, 0, 0, 0.02);
+		border-radius: 4px;
+	}
+
+	.anchor-nav-notice {
+		background: #fcf9e8;
+		border: 1px solid #f0b849;
+		border-radius: 4px;
+		padding: 0.75rem 1rem;
+		margin-top: 1rem;
+		text-align: center;
+		font-size: 0.875rem;
+		color: #1d2327;
+	}
+
+	// Editor preview links should not be clickable
+	.anchor-nav-link {
+		cursor: default;
+		pointer-events: none;
+	}
+}

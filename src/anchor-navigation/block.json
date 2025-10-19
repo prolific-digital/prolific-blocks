@@ -1,0 +1,105 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "prolific/anchor-navigation",
+  "version": "1.0.0",
+  "title": "Anchor Navigation",
+  "category": "prolific",
+  "icon": "menu",
+  "description": "Horizontal jump links menu for long-form content navigation",
+  "keywords": ["anchor", "navigation", "jump links", "menu", "toc"],
+  "example": {},
+  "supports": {
+    "align": ["wide", "full"],
+    "ariaLabel": true,
+    "className": true,
+    "customClassName": true,
+    "html": false,
+    "color": {
+      "text": true,
+      "background": true,
+      "link": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true
+    },
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
+    "border": {
+      "color": true,
+      "radius": true,
+      "width": true
+    }
+  },
+  "attributes": {
+    "blockId": {
+      "type": "string",
+      "default": ""
+    },
+    "includeH1": {
+      "type": "boolean",
+      "default": false
+    },
+    "includeH2": {
+      "type": "boolean",
+      "default": true
+    },
+    "includeH3": {
+      "type": "boolean",
+      "default": true
+    },
+    "includeH4": {
+      "type": "boolean",
+      "default": false
+    },
+    "includeH5": {
+      "type": "boolean",
+      "default": false
+    },
+    "includeH6": {
+      "type": "boolean",
+      "default": false
+    },
+    "smoothScroll": {
+      "type": "boolean",
+      "default": true
+    },
+    "scrollOffset": {
+      "type": "number",
+      "default": 100
+    },
+    "sticky": {
+      "type": "boolean",
+      "default": false
+    },
+    "stickyOffset": {
+      "type": "number",
+      "default": 0
+    },
+    "styleVariation": {
+      "type": "string",
+      "default": "pills"
+    },
+    "alignment": {
+      "type": "string",
+      "default": "center"
+    },
+    "mobileStyle": {
+      "type": "string",
+      "default": "scroll"
+    },
+    "mobileBreakpoint": {
+      "type": "number",
+      "default": 768
+    }
+  },
+  "textdomain": "prolific-blocks",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "viewScript": "file:./view.js",
+  "render": "file:./render.php"
+}

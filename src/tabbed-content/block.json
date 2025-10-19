@@ -1,0 +1,100 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "prolific/tabbed-content",
+	"version": "1.0.0",
+	"title": "Tabbed Content",
+	"category": "prolific",
+	"icon": "table-col-after",
+	"description": "Create comprehensive tabbed content with advanced positioning, mobile responsiveness, and accessibility features.",
+	"keywords": ["tabs", "tabbed", "content", "accordion", "panels"],
+	"example": {},
+	"supports": {
+		"ariaLabel": true,
+		"className": true,
+		"customClassName": true,
+		"html": false,
+		"anchor": true,
+		"align": ["wide", "full"],
+		"color": {
+			"background": true,
+			"text": true,
+			"link": true,
+			"gradients": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true,
+			"blockGap": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true
+		}
+	},
+	"attributes": {
+		"blockId": {
+			"type": "string",
+			"default": ""
+		},
+		"tabs": {
+			"type": "array",
+			"default": [
+				{
+					"id": "tab-1",
+					"label": "Tab 1"
+				},
+				{
+					"id": "tab-2",
+					"label": "Tab 2"
+				}
+			]
+		},
+		"activeTab": {
+			"type": "number",
+			"default": 0
+		},
+		"tabPosition": {
+			"type": "string",
+			"default": "top",
+			"enum": ["top", "bottom", "left", "right"]
+		},
+		"tabAlignment": {
+			"type": "string",
+			"default": "left",
+			"enum": ["left", "center", "right", "justified"]
+		},
+		"tabStyle": {
+			"type": "string",
+			"default": "default",
+			"enum": ["default", "boxed", "pills", "minimal"]
+		},
+		"mobileBreakpoint": {
+			"type": "number",
+			"default": 768
+		},
+		"mobileBehavior": {
+			"type": "string",
+			"default": "stack",
+			"enum": ["same", "stack", "accordion"]
+		},
+		"enableUrlHash": {
+			"type": "boolean",
+			"default": false
+		},
+		"rememberTab": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"providesContext": {
+		"prolific/tabbedContent/blockId": "blockId",
+		"prolific/tabbedContent/tabs": "tabs",
+		"prolific/tabbedContent/activeTab": "activeTab"
+	},
+	"textdomain": "prolific-blocks",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js"
+}

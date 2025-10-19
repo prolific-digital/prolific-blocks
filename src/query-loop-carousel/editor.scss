@@ -1,0 +1,235 @@
+/**
+ * Editor styles for Query Loop Carousel
+ *
+ * @package Prolific_Blocks
+ */
+
+// Editor-specific styles for carousel mode indicator
+.wp-block-query.is-carousel-enabled {
+	position: relative;
+	border: 2px dashed #007cba;
+	border-radius: 4px;
+	padding: 10px;
+
+	// Add a visual indicator badge
+	&::before {
+		content: "Carousel Mode Active";
+		position: absolute;
+		top: -12px;
+		left: 10px;
+		background: #007cba;
+		color: #fff;
+		padding: 2px 10px;
+		font-size: 11px;
+		font-weight: 600;
+		border-radius: 3px;
+		z-index: 10;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+	}
+
+	// Show grid preview in editor (mimics carousel layout)
+	.wp-block-post-template {
+		display: grid !important;
+		gap: 20px;
+
+		// Desktop preview
+		@media (min-width: 1024px) {
+			&:not([style*="grid-template-columns"]) {
+				grid-template-columns: repeat(3, 1fr);
+			}
+		}
+
+		// Tablet preview
+		@media (min-width: 768px) and (max-width: 1023px) {
+			&:not([style*="grid-template-columns"]) {
+				grid-template-columns: repeat(2, 1fr);
+			}
+		}
+
+		// Mobile preview
+		@media (max-width: 767px) {
+			&:not([style*="grid-template-columns"]) {
+				grid-template-columns: 1fr;
+			}
+		}
+	}
+
+	// Add carousel icon indicator
+	.block-editor-block-list__block-edit::after {
+		content: "🎠";
+		position: absolute;
+		top: 5px;
+		right: 5px;
+		font-size: 20px;
+		opacity: 0.5;
+		pointer-events: none;
+	}
+}
+
+// Inspector controls styling
+.components-panel__body {
+	.components-notice {
+		margin: 15px 0;
+	}
+
+	h3 {
+		margin-top: 20px;
+		margin-bottom: 10px;
+		font-size: 13px;
+		font-weight: 600;
+		color: #1e1e1e;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		border-bottom: 1px solid #e0e0e0;
+		padding-bottom: 8px;
+
+		&:first-of-type {
+			margin-top: 10px;
+		}
+	}
+
+	.components-toggle-control {
+		margin-bottom: 15px;
+	}
+
+	.components-range-control {
+		margin-bottom: 20px;
+
+		.components-base-control__label {
+			font-weight: 500;
+		}
+	}
+
+	.components-select-control {
+		margin-bottom: 20px;
+
+		.components-base-control__label {
+			font-weight: 500;
+		}
+	}
+}
+
+// Prevent layout shift in editor
+.editor-styles-wrapper .wp-block-query.is-carousel-enabled {
+	.wp-block-post-template {
+		margin: 0;
+
+		> li {
+			list-style: none;
+		}
+	}
+}
+
+// Add visual feedback for carousel settings panel
+.components-panel__body-title button {
+	&[aria-expanded="true"] {
+		.components-panel__body-title-text {
+			&:has-text("Carousel Mode") {
+				color: #007cba;
+				font-weight: 600;
+			}
+		}
+	}
+}
+
+// Highlight active carousel mode toggle
+.components-panel__body {
+	.components-toggle-control:first-child {
+		.components-form-toggle.is-checked {
+			.components-form-toggle__track {
+				background-color: #007cba;
+			}
+		}
+	}
+}
+
+// Info notice styling
+.components-notice.is-info {
+	background-color: #f0f6fc;
+	border-left-color: #007cba;
+
+	p {
+		font-size: 13px;
+		line-height: 1.5;
+	}
+}
+
+// Ensure proper spacing in the inspector
+.block-editor-block-inspector {
+	.components-panel__body-carousel-mode {
+		.components-base-control {
+			+ .components-base-control {
+				margin-top: 0;
+			}
+		}
+	}
+}
+
+// Visual separator between setting groups
+.components-panel__body {
+	h3 + .components-range-control,
+	h3 + .components-toggle-control,
+	h3 + .components-select-control {
+		margin-top: 15px;
+	}
+}
+
+// Responsive preview helper in editor
+.wp-block-query.is-carousel-enabled {
+	// Add hover effect to show it's interactive in editor
+	&:hover {
+		border-color: #0073aa;
+
+		&::before {
+			background: #0073aa;
+		}
+	}
+
+	// Selected state
+	&.is-selected {
+		border-color: #007cba;
+		border-style: solid;
+
+		&::before {
+			background: #007cba;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		}
+	}
+}
+
+// Dark mode support for editor
+@media (prefers-color-scheme: dark) {
+	.wp-block-query.is-carousel-enabled {
+		border-color: #4a9eff;
+
+		&::before {
+			background: #4a9eff;
+			color: #000;
+		}
+
+		&:hover {
+			border-color: #5eb0ff;
+
+			&::before {
+				background: #5eb0ff;
+			}
+		}
+	}
+
+	.components-panel__body {
+		h3 {
+			color: #e0e0e0;
+			border-bottom-color: #3c3c3c;
+		}
+	}
+
+	.components-notice.is-info {
+		background-color: #1e2d3d;
+		border-left-color: #4a9eff;
+
+		p {
+			color: #e0e0e0;
+		}
+	}
+}

@@ -1,0 +1,227 @@
+/**
+ * Editor styles for Query Posts block
+ */
+
+.prolific-query-posts-editor {
+	min-height: 200px;
+
+	.prolific-query-posts-preview {
+		width: 100%;
+	}
+
+	// Checkbox group styles for filters
+	.prolific-checkbox-group {
+		margin-bottom: 16px;
+		padding: 8px 0;
+		border-bottom: 1px solid #e0e0e0;
+
+		.components-base-control__label {
+			font-weight: 600;
+			margin-bottom: 8px;
+			display: block;
+		}
+
+		.components-checkbox-control {
+			margin-bottom: 8px;
+
+			.components-checkbox-control__label {
+				font-size: 13px;
+			}
+		}
+
+		.components-base-control__help {
+			font-size: 12px;
+			font-style: italic;
+			color: #757575;
+			margin-top: 8px;
+		}
+	}
+
+	// ServerSideRender loading state
+	.components-placeholder {
+		min-height: 200px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 2em;
+		background: #f0f0f1;
+		border: 1px solid #dcdcde;
+
+		.components-spinner {
+			margin-bottom: 12px;
+		}
+
+		p {
+			margin: 0;
+			color: #50575e;
+		}
+	}
+}
+
+// Inspector controls styling enhancements
+.block-editor-block-inspector {
+	.components-panel__body {
+		// Add spacing between panel sections
+		hr {
+			margin: 16px 0;
+			border: 0;
+			border-top: 1px solid #e0e0e0;
+		}
+
+		// Label styling for grouped controls
+		.components-base-control__label {
+			&:first-child {
+				margin-bottom: 8px;
+			}
+		}
+
+		// Range control spacing
+		.components-range-control {
+			margin-bottom: 16px;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+
+		// Select control styling
+		.components-select-control {
+			margin-bottom: 16px;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+
+		// Toggle control styling
+		.components-toggle-control {
+			margin-bottom: 12px;
+
+			.components-toggle-control__label {
+				font-size: 13px;
+			}
+
+			.components-base-control__help {
+				margin-top: 4px;
+				font-size: 12px;
+			}
+		}
+
+		// Text control styling
+		.components-text-control {
+			margin-bottom: 16px;
+
+			.components-base-control__help {
+				margin-top: 4px;
+				font-size: 12px;
+			}
+		}
+	}
+
+	// Carousel settings panel highlight
+	.components-panel__body[aria-label="Carousel Settings"] {
+		border-left: 3px solid #007cba;
+	}
+}
+
+// Preview styles in editor
+.prolific-query-posts {
+	.query-controls {
+		margin-bottom: 24px;
+		padding: 16px;
+		background: #f9f9f9;
+		border: 1px solid #e0e0e0;
+		border-radius: 4px;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+
+		> div {
+			flex: 1 1 auto;
+			min-width: 200px;
+		}
+
+		input,
+		select {
+			width: 100%;
+			padding: 8px 12px;
+			border: 1px solid #dcdcde;
+			border-radius: 4px;
+			font-size: 14px;
+
+			&:focus {
+				outline: none;
+				border-color: #007cba;
+				box-shadow: 0 0 0 1px #007cba;
+			}
+		}
+	}
+
+	.posts-grid,
+	.posts-list,
+	.posts-masonry {
+		.post-item {
+			background: #fff;
+			border: 1px solid #e0e0e0;
+			border-radius: 4px;
+			overflow: hidden;
+			transition: box-shadow 0.2s ease;
+
+			&:hover {
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+			}
+		}
+	}
+
+	// Grid preview
+	.posts-grid {
+		display: grid;
+		gap: 20px;
+	}
+
+	// List preview
+	.posts-list {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+
+	// Masonry preview
+	.posts-masonry {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+		grid-auto-rows: 10px;
+		gap: 20px;
+	}
+
+	// Loading state
+	.loading {
+		opacity: 0.5;
+		pointer-events: none;
+		position: relative;
+
+		&::after {
+			content: '';
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 40px;
+			height: 40px;
+			border: 4px solid #f3f3f3;
+			border-top: 4px solid #007cba;
+			border-radius: 50%;
+			animation: spin 1s linear infinite;
+		}
+	}
+
+	@keyframes spin {
+		0% {
+			transform: translate(-50%, -50%) rotate(0deg);
+		}
+		100% {
+			transform: translate(-50%, -50%) rotate(360deg);
+		}
+	}
+}

@@ -1,0 +1,206 @@
+/**
+ * Frontend & Editor Styles for Anchor Navigation Block
+ */
+
+.wp-block-prolific-anchor-navigation {
+	display: block;
+	position: relative;
+
+	.anchor-navigation {
+		width: 100%;
+	}
+
+	.anchor-nav-list {
+		display: flex;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+	}
+
+	.anchor-nav-item {
+		margin: 0;
+		padding: 0;
+	}
+
+	.anchor-nav-link {
+		display: block;
+		padding: 0.5rem 1rem;
+		text-decoration: none;
+		color: inherit;
+		transition: all 0.2s ease;
+		white-space: nowrap;
+
+		&.is-active {
+			font-weight: 600;
+		}
+	}
+
+	// Alignment options
+	&.anchor-nav-align-left .anchor-nav-list {
+		justify-content: flex-start;
+	}
+
+	&.anchor-nav-align-center .anchor-nav-list {
+		justify-content: center;
+	}
+
+	&.anchor-nav-align-right .anchor-nav-list {
+		justify-content: flex-end;
+	}
+
+	&.anchor-nav-align-space-between .anchor-nav-list {
+		justify-content: space-between;
+	}
+
+	// Style Variation: Pills
+	&.anchor-nav-style-pills {
+		.anchor-nav-link {
+			border-radius: 9999px;
+			background: rgba(0, 0, 0, 0.05);
+
+			&:hover {
+				background: rgba(0, 0, 0, 0.1);
+			}
+
+			&.is-active {
+				background: currentColor;
+				color: #fff;
+			}
+		}
+	}
+
+	// Style Variation: Underline
+	&.anchor-nav-style-underline {
+		.anchor-nav-link {
+			border-bottom: 2px solid transparent;
+			padding-bottom: 0.75rem;
+
+			&:hover {
+				border-bottom-color: currentColor;
+				opacity: 0.7;
+			}
+
+			&.is-active {
+				border-bottom-color: currentColor;
+			}
+		}
+	}
+
+	// Style Variation: Bordered
+	&.anchor-nav-style-bordered {
+		.anchor-nav-link {
+			border: 2px solid rgba(0, 0, 0, 0.1);
+			border-radius: 4px;
+
+			&:hover {
+				border-color: currentColor;
+			}
+
+			&.is-active {
+				border-color: currentColor;
+				background: rgba(0, 0, 0, 0.05);
+			}
+		}
+	}
+
+	// Style Variation: Minimal
+	&.anchor-nav-style-minimal {
+		.anchor-nav-link {
+			padding: 0.5rem 0.75rem;
+
+			&:hover {
+				opacity: 0.7;
+			}
+
+			&.is-active {
+				text-decoration: underline;
+			}
+		}
+	}
+
+	// Sticky positioning - use CSS sticky for smooth behavior
+	&.is-sticky {
+		position: sticky;
+		z-index: 1000;
+		background: inherit;
+		transition: box-shadow 0.3s ease;
+
+		&.is-stuck {
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		}
+	}
+
+	// Mobile styles
+	&.anchor-nav-mobile-scroll {
+		@media (max-width: 768px) {
+			.anchor-nav-list {
+				flex-wrap: nowrap;
+				overflow-x: auto;
+				overflow-y: hidden;
+				-webkit-overflow-scrolling: touch;
+				scroll-behavior: smooth;
+
+				&::-webkit-scrollbar {
+					height: 6px;
+				}
+
+				&::-webkit-scrollbar-track {
+					background: rgba(0, 0, 0, 0.05);
+					border-radius: 3px;
+				}
+
+				&::-webkit-scrollbar-thumb {
+					background: rgba(0, 0, 0, 0.2);
+					border-radius: 3px;
+
+					&:hover {
+						background: rgba(0, 0, 0, 0.3);
+					}
+				}
+			}
+		}
+	}
+
+	&.anchor-nav-mobile-stack {
+		@media (max-width: 768px) {
+			.anchor-nav-list {
+				flex-direction: column;
+				align-items: stretch;
+			}
+
+			.anchor-nav-link {
+				text-align: left;
+			}
+		}
+	}
+}
+
+// Add scroll margin to headings for better offset handling
+// This works in conjunction with JavaScript scroll offset
+// Provides a CSS fallback and better browser compatibility
+h1, h2, h3, h4, h5, h6 {
+	// Default scroll margin to account for common header heights and sticky nav
+	scroll-margin-top: 100px;
+
+	// Support for WordPress admin bar
+	@media screen and (min-width: 783px) {
+		// WP admin bar is 32px on desktop
+		.admin-bar & {
+			scroll-margin-top: 132px; // 100px + 32px admin bar
+		}
+	}
+
+	@media screen and (max-width: 782px) {
+		// WP admin bar is 46px on mobile
+		.admin-bar & {
+			scroll-margin-top: 146px; // 100px + 46px admin bar
+		}
+	}
+}
+
+// Smooth scroll behavior
+html {
+	scroll-behavior: smooth;
+}

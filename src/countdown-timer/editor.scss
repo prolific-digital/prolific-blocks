@@ -1,0 +1,36 @@
+/**
+ * Editor-specific styles for Countdown Timer Block
+ */
+
+.wp-block-prolific-countdown-timer {
+	.countdown-timer-preview {
+		position: relative;
+	}
+
+	.countdown-evergreen-notice {
+		background: #f0f0f1;
+		border-left: 3px solid #2271b1;
+		padding: 0.75rem 1rem;
+		margin-bottom: 1rem;
+		font-size: 0.875rem;
+		color: #1d2327;
+	}
+
+	.countdown-notice {
+		background: #fcf9e8;
+		border: 1px solid #f0b849;
+		border-radius: 4px;
+		padding: 1rem;
+		margin-top: 1rem;
+		text-align: center;
+		font-size: 0.875rem;
+		color: #1d2327;
+	}
+
+	// Make preview numbers more visible in editor
+	.countdown-container {
+		padding: 1rem;
+		background: rgba(0, 0, 0, 0.02);
+		border-radius: 4px;
+	}
+}

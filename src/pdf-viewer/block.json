@@ -1,0 +1,86 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "prolific/pdf-viewer",
+  "version": "1.0.0",
+  "title": "PDF Viewer",
+  "category": "prolific",
+  "icon": "media-document",
+  "description": "Display PDF files inline with configurable viewer options.",
+  "example": {},
+  "supports": {
+    "align": ["left", "center", "right", "wide", "full"],
+    "ariaLabel": true,
+    "className": true,
+    "customClassName": true,
+    "html": false,
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
+    "border": {
+      "color": true,
+      "radius": true,
+      "style": true,
+      "width": true
+    }
+  },
+  "attributes": {
+    "blockId": {
+      "type": "string",
+      "default": ""
+    },
+    "pdfId": {
+      "type": "number",
+      "default": 0
+    },
+    "pdfUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "pdfFilename": {
+      "type": "string",
+      "default": ""
+    },
+    "displayMethod": {
+      "type": "string",
+      "default": "embed"
+    },
+    "showDownloadButton": {
+      "type": "boolean",
+      "default": true
+    },
+    "enableFullscreen": {
+      "type": "boolean",
+      "default": false
+    },
+    "aspectRatio": {
+      "type": "string",
+      "default": "16-9"
+    },
+    "customHeight": {
+      "type": "number",
+      "default": 600
+    },
+    "showToolbar": {
+      "type": "boolean",
+      "default": true
+    },
+    "enableZoom": {
+      "type": "boolean",
+      "default": true
+    },
+    "enableNavigation": {
+      "type": "boolean",
+      "default": true
+    },
+    "altText": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "textdomain": "prolific-blocks",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css"
+}

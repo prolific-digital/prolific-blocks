@@ -1,0 +1,320 @@
+/**
+ * Frontend styles for the Table of Contents block.
+ *
+ * These styles are applied both in the editor and on the frontend.
+ */
+
+.wp-block-prolific-table-of-contents {
+	background-color: #f8f9fa;
+	border: 1px solid #e0e0e0;
+	border-radius: 8px;
+	padding: 1.5rem;
+	margin: 2rem 0;
+	max-width: 100%;
+
+	// Header section
+	.toc-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 1rem;
+		padding-bottom: 1rem;
+		border-bottom: 2px solid #e0e0e0;
+	}
+
+	.toc-title {
+		margin: 0;
+		padding: 0;
+		font-size: 1.25rem;
+		font-weight: 600;
+		color: #1e1e1e;
+		line-height: 1.4;
+	}
+
+	// Toggle button
+	.toc-toggle {
+		background: none;
+		border: none;
+		padding: 0.5rem;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #666;
+		transition: color 0.2s ease;
+
+		&:hover {
+			color: #000;
+		}
+
+		&:focus {
+			outline: 2px solid #007cba;
+			outline-offset: 2px;
+		}
+	}
+
+	.toc-toggle-icon {
+		display: block;
+		width: 20px;
+		height: 20px;
+		position: relative;
+		transition: transform 0.3s ease;
+
+		&::before,
+		&::after {
+			content: '';
+			position: absolute;
+			background-color: currentColor;
+			transition: transform 0.3s ease;
+		}
+
+		// Horizontal line
+		&::before {
+			width: 20px;
+			height: 2px;
+			top: 50%;
+			left: 0;
+			transform: translateY(-50%);
+		}
+
+		// Vertical line
+		&::after {
+			width: 2px;
+			height: 20px;
+			left: 50%;
+			top: 0;
+			transform: translateX(-50%);
+		}
+	}
+
+	// Collapsed state
+	&.toc-collapsed {
+		.toc-content {
+			display: none;
+		}
+
+		.toc-toggle-icon::after {
+			transform: translateX(-50%) rotate(90deg);
+		}
+	}
+
+	// Content wrapper
+	.toc-content {
+		transition: opacity 0.3s ease;
+	}
+
+	// Navigation
+	.toc-navigation {
+		font-size: 0.95rem;
+	}
+
+	// Lists
+	.toc-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+
+		&.toc-list-level-0 {
+			padding-left: 0;
+		}
+
+		&.toc-list-level-1,
+		&.toc-list-level-2,
+		&.toc-list-level-3 {
+			padding-left: 1.5rem;
+			margin-top: 0.25rem;
+		}
+	}
+
+	// Numbered lists
+	&:has(.toc-navigation ol.toc-list) {
+		.toc-list {
+			list-style: decimal;
+			padding-left: 1.5rem;
+
+			&.toc-list-level-0 {
+				padding-left: 1.5rem;
+			}
+
+			&.toc-list-level-1 {
+				list-style: lower-alpha;
+			}
+
+			&.toc-list-level-2 {
+				list-style: lower-roman;
+			}
+		}
+	}
+
+	// Bullet lists
+	&:has(.toc-navigation ul.toc-list) {
+		.toc-list {
+			list-style: none;
+			padding-left: 0;
+
+			&.toc-list-level-1,
+			&.toc-list-level-2,
+			&.toc-list-level-3 {
+				padding-left: 1.5rem;
+			}
+		}
+
+		.toc-item {
+			position: relative;
+
+			&::before {
+				content: '•';
+				position: absolute;
+				left: -1rem;
+				color: #666;
+			}
+		}
+
+		.toc-list-level-0 > .toc-item::before {
+			content: '▸';
+			left: 0;
+			margin-right: 0.5rem;
+			position: relative;
+		}
+	}
+
+	// List items
+	.toc-item {
+		margin: 0.5rem 0;
+		line-height: 1.6;
+	}
+
+	// Links
+	.toc-link {
+		color: #007cba;
+		text-decoration: none;
+		transition: color 0.2s ease, text-decoration 0.2s ease;
+		display: inline-block;
+		position: relative;
+
+		&:hover {
+			color: #005a87;
+			text-decoration: underline;
+		}
+
+		&:focus {
+			outline: 2px solid #007cba;
+			outline-offset: 2px;
+			border-radius: 2px;
+		}
+
+		// Active link
+		&.toc-link-active {
+			color: #005a87;
+			font-weight: 600;
+		}
+	}
+
+	// Alignment variations
+	&.alignwide,
+	&.alignfull {
+		max-width: 100%;
+	}
+
+	&.alignleft {
+		float: left;
+		margin-right: 2rem;
+		max-width: 300px;
+	}
+
+	&.alignright {
+		float: right;
+		margin-left: 2rem;
+		max-width: 300px;
+	}
+
+	&.aligncenter {
+		margin-left: auto;
+		margin-right: auto;
+		max-width: 600px;
+	}
+}
+
+// Smooth scroll behavior
+html {
+	scroll-behavior: smooth;
+}
+
+// Add scroll margin to headings for better offset handling
+// This works in conjunction with JavaScript scroll offset
+// Provides a CSS fallback and better browser compatibility
+h1, h2, h3, h4, h5, h6 {
+	// Default scroll margin to account for common header heights
+	scroll-margin-top: 100px;
+
+	// Support for WordPress admin bar
+	@media screen and (min-width: 783px) {
+		// WP admin bar is 32px on desktop
+		.admin-bar & {
+			scroll-margin-top: 132px; // 100px + 32px admin bar
+		}
+	}
+
+	@media screen and (max-width: 782px) {
+		// WP admin bar is 46px on mobile
+		.admin-bar & {
+			scroll-margin-top: 146px; // 100px + 46px admin bar
+		}
+	}
+}
+
+// Target heading focus styles
+h2:focus,
+h3:focus,
+h4:focus,
+h5:focus,
+h6:focus {
+	outline: none;
+}
+
+// Responsive styles
+@media (max-width: 768px) {
+	.wp-block-prolific-table-of-contents {
+		padding: 1rem;
+
+		.toc-title {
+			font-size: 1.1rem;
+		}
+
+		.toc-navigation {
+			font-size: 0.9rem;
+		}
+
+		.toc-list {
+			&.toc-list-level-1,
+			&.toc-list-level-2,
+			&.toc-list-level-3 {
+				padding-left: 1rem;
+			}
+		}
+
+		&.alignleft,
+		&.alignright {
+			float: none;
+			margin-left: 0;
+			margin-right: 0;
+			max-width: 100%;
+		}
+	}
+}
+
+// Print styles
+@media print {
+	.wp-block-prolific-table-of-contents {
+		background-color: transparent;
+		border: 1px solid #ccc;
+
+		.toc-toggle {
+			display: none;
+		}
+
+		.toc-content {
+			display: block !important;
+		}
+	}
+}

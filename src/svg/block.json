@@ -1,0 +1,88 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "prolific/svg",
+  "version": "1.0.0",
+  "title": "SVG",
+  "category": "prolific",
+  "icon": "format-image",
+  "description": "Upload and customize SVG files with rotation and flip controls",
+  "keywords": ["svg", "vector", "image", "graphic", "icon"],
+  "example": {},
+  "supports": {
+    "align": ["left", "center", "right", "wide", "full"],
+    "ariaLabel": true,
+    "className": true,
+    "customClassName": true,
+    "html": false,
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
+    "color": {
+      "background": true
+    }
+  },
+  "attributes": {
+    "blockId": {
+      "type": "string",
+      "default": ""
+    },
+    "svgUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "svgContent": {
+      "type": "string",
+      "default": ""
+    },
+    "rotation": {
+      "type": "number",
+      "default": 0
+    },
+    "flipHorizontal": {
+      "type": "boolean",
+      "default": false
+    },
+    "flipVertical": {
+      "type": "boolean",
+      "default": false
+    },
+    "width": {
+      "type": "number",
+      "default": 100
+    },
+    "widthUnit": {
+      "type": "string",
+      "default": "%"
+    },
+    "height": {
+      "type": "number",
+      "default": 0
+    },
+    "heightUnit": {
+      "type": "string",
+      "default": "px"
+    },
+    "maintainAspectRatio": {
+      "type": "boolean",
+      "default": true
+    },
+    "altText": {
+      "type": "string",
+      "default": ""
+    },
+    "alignment": {
+      "type": "string",
+      "default": "center"
+    },
+    "mediaId": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "textdomain": "prolific-blocks",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css"
+}

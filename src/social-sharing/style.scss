@@ -1,0 +1,155 @@
+/**
+ * Frontend styles for Social Sharing block.
+ */
+
+.wp-block-prolific-social-sharing {
+	// Container for sharing buttons
+	.social-sharing-buttons {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		align-items: center;
+	}
+
+	// Individual share buttons
+	.social-share-button {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 1rem;
+		background: transparent;
+		color: currentColor;
+		text-decoration: none;
+		border-radius: 6px;
+		border: 1px solid currentColor;
+		font-weight: 500;
+		transition: all 0.2s ease;
+		cursor: pointer;
+
+		&:hover {
+			opacity: 0.8;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		}
+
+		&:focus {
+			outline: 2px solid currentColor;
+			outline-offset: 2px;
+		}
+
+		.share-icon {
+			display: flex;
+			align-items: center;
+			font-size: 1.2em;
+
+			svg {
+				width: 1em;
+				height: 1em;
+				fill: currentColor;
+			}
+		}
+
+		.share-label {
+			white-space: nowrap;
+		}
+	}
+
+	// Native WordPress Style Variations
+
+	// Outlined (default) - already defined above as default button style
+	&.is-style-outlined {
+		// Default styles already applied
+	}
+
+	// Filled style variation
+	&.is-style-filled {
+		.social-share-button {
+			background: currentColor;
+			border-color: currentColor;
+
+			.share-icon,
+			.share-label {
+				// Create contrast by inverting the color
+				// This will be white on dark backgrounds, dark on light backgrounds
+				filter: invert(1) grayscale(1) contrast(100);
+			}
+
+			&:hover {
+				opacity: 0.85;
+			}
+		}
+	}
+
+	// Minimal style variation (no border, transparent background)
+	&.is-style-minimal {
+		.social-share-button {
+			background: transparent;
+			border: none;
+			padding: 0.35rem 0.75rem;
+
+			&:hover {
+				background: rgba(0, 0, 0, 0.05);
+				box-shadow: none;
+			}
+
+			&:focus {
+				outline: 2px solid currentColor;
+				outline-offset: 2px;
+			}
+		}
+	}
+
+	// Pills style variation - fully rounded buttons
+	&.is-style-pills {
+		.social-share-button {
+			border-radius: 9999px;
+			padding: 0.65rem 1.5rem;
+		}
+	}
+
+	// Square style variation - no border radius
+	&.is-style-square {
+		.social-share-button {
+			border-radius: 0;
+		}
+	}
+
+	// Rounded style variation - moderate border radius
+	&.is-style-rounded {
+		.social-share-button {
+			border-radius: 8px;
+		}
+	}
+
+	// Ghost style variation - transparent with border, fills on hover
+	&.is-style-ghost {
+		.social-share-button {
+			background: transparent;
+			border: 2px solid currentColor;
+
+			&:hover {
+				background: currentColor;
+
+				.share-icon,
+				.share-label {
+					// Create contrast by inverting the color on hover
+					filter: invert(1) grayscale(1) contrast(100);
+				}
+			}
+		}
+	}
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+	.wp-block-prolific-social-sharing {
+		.social-sharing-buttons {
+			gap: 0.5rem;
+		}
+
+		.social-share-button {
+			font-size: 0.875rem;
+			padding: 0.4rem 0.8rem;
+		}
+	}
+}

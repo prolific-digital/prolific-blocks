@@ -1,0 +1,58 @@
+/**
+ * Frontend styles for Breadcrumbs block.
+ */
+
+.wp-block-prolific-breadcrumbs {
+	// Breadcrumb list
+	.breadcrumbs-list {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		gap: 0.5em;
+	}
+
+	// Individual breadcrumb items
+	.breadcrumb-item {
+		display: inline-flex;
+		align-items: center;
+
+		a {
+			text-decoration: none;
+			transition: color 0.2s ease;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+
+		// Current page (non-link)
+		&.breadcrumb-current {
+			font-weight: 600;
+
+			span {
+				color: inherit;
+			}
+		}
+	}
+
+	// Divider between items
+	.breadcrumb-divider {
+		display: inline-flex;
+		align-items: center;
+		opacity: 0.6;
+		user-select: none;
+	}
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+	.wp-block-prolific-breadcrumbs {
+		.breadcrumbs-list {
+			gap: 0.35em;
+			font-size: 0.9em;
+		}
+	}
+}

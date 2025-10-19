@@ -1,0 +1,82 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "prolific/icon",
+  "version": "1.0.0",
+  "title": "Icon",
+  "category": "prolific",
+  "icon": "star-filled",
+  "description": "Display Font Awesome icons with customization options",
+  "keywords": ["icon", "font awesome", "svg", "symbol"],
+  "example": {},
+  "supports": {
+    "align": true,
+    "ariaLabel": true,
+    "className": true,
+    "customClassName": true,
+    "html": false,
+    "color": {
+      "text": true,
+      "background": true
+    },
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
+    "border": {
+      "color": true,
+      "radius": true,
+      "width": true
+    }
+  },
+  "attributes": {
+    "blockId": {
+      "type": "string",
+      "default": ""
+    },
+    "iconName": {
+      "type": "string",
+      "default": "heart"
+    },
+    "iconSize": {
+      "type": "number",
+      "default": 48
+    },
+    "rotation": {
+      "type": "number",
+      "default": 0
+    },
+    "flipHorizontal": {
+      "type": "boolean",
+      "default": false
+    },
+    "flipVertical": {
+      "type": "boolean",
+      "default": false
+    },
+    "linkUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "linkTarget": {
+      "type": "boolean",
+      "default": false
+    },
+    "linkRel": {
+      "type": "string",
+      "default": ""
+    },
+    "ariaLabel": {
+      "type": "string",
+      "default": ""
+    },
+    "alignment": {
+      "type": "string",
+      "default": "center"
+    }
+  },
+  "textdomain": "prolific-blocks",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css"
+}

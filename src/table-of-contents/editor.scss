@@ -1,0 +1,119 @@
+/**
+ * Editor-specific styles for the Table of Contents block.
+ *
+ * These styles are only applied in the WordPress block editor.
+ */
+
+.wp-block-prolific-table-of-contents {
+	// Editor preview styling
+	.editor-styles-wrapper & {
+		position: relative;
+
+		// Add a subtle indicator that this is a preview
+		&::after {
+			content: 'Preview';
+			position: absolute;
+			top: 0.5rem;
+			right: 0.5rem;
+			font-size: 0.7rem;
+			color: #666;
+			background-color: rgba(255, 255, 255, 0.8);
+			padding: 0.25rem 0.5rem;
+			border-radius: 3px;
+			pointer-events: none;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+	}
+
+	// Notice styling in editor
+	.components-notice {
+		margin: 0;
+		padding: 1rem;
+
+		.components-notice__content {
+			margin: 0;
+			font-size: 0.9rem;
+		}
+	}
+
+	// Make sure links don't navigate in editor
+	.toc-link {
+		cursor: pointer;
+		pointer-events: none;
+	}
+
+	// Toggle button in editor
+	.toc-toggle {
+		cursor: default;
+		opacity: 0.7;
+
+		&:hover {
+			opacity: 1;
+		}
+	}
+
+	// Highlight the block when selected
+	.is-selected & {
+		box-shadow: 0 0 0 2px #007cba;
+	}
+}
+
+// Inspector Controls styling
+.block-editor-block-inspector {
+	.components-panel__body-title {
+		font-weight: 600;
+	}
+
+	.components-base-control__help {
+		font-size: 0.9rem;
+		color: #757575;
+		margin-top: 0.5rem;
+	}
+
+	.components-toggle-control {
+		.components-base-control__field {
+			margin-bottom: 1rem;
+		}
+	}
+
+	.components-text-control {
+		margin-bottom: 1rem;
+	}
+
+	.components-range-control {
+		margin-bottom: 1rem;
+
+		.components-range-control__number {
+			min-width: 60px;
+		}
+	}
+
+	hr {
+		margin: 1.5rem 0;
+		border: none;
+		border-top: 1px solid #ddd;
+	}
+}
+
+// Block inserter preview
+.block-editor-block-preview__content {
+	.wp-block-prolific-table-of-contents {
+		transform: scale(0.8);
+		transform-origin: top left;
+
+		&::after {
+			display: none;
+		}
+	}
+}
+
+// Responsive preview in editor
+@media (max-width: 600px) {
+	.wp-block-prolific-table-of-contents {
+		&::after {
+			font-size: 0.6rem;
+			padding: 0.2rem 0.4rem;
+		}
+	}
+}

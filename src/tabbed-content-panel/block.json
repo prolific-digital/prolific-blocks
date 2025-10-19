@@ -1,0 +1,53 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "prolific/tabbed-content-panel",
+	"version": "1.0.0",
+	"title": "Tabbed Content Panel",
+	"category": "prolific",
+	"icon": "text-page",
+	"description": "A content panel for the Tabbed Content block.",
+	"keywords": ["panel", "tab content", "content"],
+	"parent": ["prolific/tabbed-content"],
+	"example": {},
+	"supports": {
+		"ariaLabel": true,
+		"className": true,
+		"customClassName": true,
+		"html": false,
+		"reusable": false,
+		"color": {
+			"background": true,
+			"text": true,
+			"link": true,
+			"gradients": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true
+		}
+	},
+	"attributes": {
+		"tabId": {
+			"type": "string",
+			"default": ""
+		},
+		"panelIndex": {
+			"type": "number",
+			"default": 0
+		}
+	},
+	"usesContext": [
+		"prolific/tabbedContent/blockId",
+		"prolific/tabbedContent/tabs",
+		"prolific/tabbedContent/activeTab"
+	],
+	"textdomain": "prolific-blocks",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css"
+}

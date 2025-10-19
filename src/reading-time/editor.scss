@@ -1,0 +1,21 @@
+/**
+ * Editor-specific styles for Reading Time Block
+ */
+
+.wp-block-prolific-reading-time {
+	.reading-time-display {
+		padding: 0.75rem 1rem;
+		background: rgba(0, 0, 0, 0.02);
+		border-radius: 4px;
+		border-left: 3px solid #2271b1;
+	}
+
+	.reading-time-notice {
+		padding: 0.75rem 1rem;
+		background: #fcf9e8;
+		border: 1px solid #f0b849;
+		border-radius: 4px;
+		font-size: 0.875rem;
+		color: #1d2327;
+	}
+}

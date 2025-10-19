@@ -1,0 +1,84 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "prolific/social-sharing",
+  "version": "1.0.0",
+  "title": "Social Sharing",
+  "category": "prolific",
+  "icon": "share",
+  "description": "Add social media sharing buttons for the current page.",
+  "example": {},
+  "supports": {
+    "align": ["wide", "full"],
+    "ariaLabel": true,
+    "className": true,
+    "customClassName": true,
+    "html": false,
+    "color": {
+      "text": true,
+      "background": true,
+      "__experimentalDefaultControls": {
+        "text": true,
+        "background": true
+      }
+    },
+    "spacing": {
+      "padding": true,
+      "margin": true
+    }
+  },
+  "styles": [
+    {
+      "name": "outlined",
+      "label": "Outlined",
+      "isDefault": true
+    },
+    {
+      "name": "filled",
+      "label": "Filled"
+    },
+    {
+      "name": "minimal",
+      "label": "Minimal"
+    },
+    {
+      "name": "pills",
+      "label": "Pills"
+    },
+    {
+      "name": "square",
+      "label": "Square"
+    },
+    {
+      "name": "rounded",
+      "label": "Rounded"
+    },
+    {
+      "name": "ghost",
+      "label": "Ghost"
+    }
+  ],
+  "attributes": {
+    "blockId": {
+      "type": "string",
+      "default": ""
+    },
+    "platforms": {
+      "type": "array",
+      "default": ["facebook", "twitter", "linkedin", "email"]
+    },
+    "showLabels": {
+      "type": "boolean",
+      "default": true
+    },
+    "openInNewTab": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "textdomain": "prolific-blocks",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php"
+}

@@ -1,0 +1,260 @@
+/**
+ * Frontend styles for Query Loop Carousel
+ *
+ * @package Prolific_Blocks
+ */
+
+// Query Carousel Wrapper
+.wp-block-query.is-carousel {
+	position: relative;
+	overflow: hidden;
+
+	// Swiper container
+	.swiper {
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		padding: 0;
+		overflow: visible; // Allow navigation to be visible outside
+
+		// Swiper wrapper (the post template list)
+		.swiper-wrapper {
+			display: flex;
+			align-items: stretch;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+
+			// Swiper slide (individual posts)
+			.swiper-slide {
+				flex-shrink: 0;
+				width: 100%;
+				height: auto;
+				display: flex;
+				flex-direction: column;
+
+				// Ensure inner content fills the slide
+				> * {
+					height: 100%;
+				}
+			}
+		}
+	}
+
+	// Navigation arrows
+	.swiper-button-prev,
+	.swiper-button-next {
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		z-index: 10;
+		width: 44px;
+		height: 44px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(255, 255, 255, 0.9);
+		border: 1px solid rgba(0, 0, 0, 0.1);
+		border-radius: 50%;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		color: #000;
+		font-size: 20px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+		&::after {
+			font-family: 'swiper-icons', sans-serif;
+			font-size: 20px;
+			font-weight: bold;
+		}
+
+		&:hover {
+			background: rgba(255, 255, 255, 1);
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		}
+
+		&:focus {
+			outline: 2px solid #007cba;
+			outline-offset: 2px;
+		}
+
+		&.swiper-button-disabled {
+			opacity: 0.35;
+			cursor: not-allowed;
+			pointer-events: none;
+		}
+	}
+
+	.swiper-button-prev {
+		left: 10px;
+
+		&::after {
+			content: 'prev';
+		}
+	}
+
+	.swiper-button-next {
+		right: 10px;
+
+		&::after {
+			content: 'next';
+		}
+	}
+
+	// Pagination
+	.swiper-pagination {
+		position: relative;
+		margin-top: 20px;
+		text-align: center;
+
+		// Bullets
+		.swiper-pagination-bullet {
+			width: 10px;
+			height: 10px;
+			background: #000;
+			opacity: 0.3;
+			border-radius: 50%;
+			margin: 0 5px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+
+			&.swiper-pagination-bullet-active {
+				opacity: 1;
+				background: #007cba;
+			}
+
+			&:hover {
+				opacity: 0.7;
+			}
+
+			&:focus {
+				outline: 2px solid #007cba;
+				outline-offset: 2px;
+			}
+		}
+
+		// Fraction
+		&.swiper-pagination-fraction {
+			font-size: 14px;
+			color: #666;
+			font-weight: 500;
+		}
+
+		// Progress bar
+		&.swiper-pagination-progressbar {
+			height: 4px;
+			background: rgba(0, 0, 0, 0.1);
+			border-radius: 2px;
+
+			.swiper-pagination-progressbar-fill {
+				background: #007cba;
+				border-radius: 2px;
+			}
+		}
+	}
+
+	// Ensure proper spacing for posts
+	.wp-block-post-template {
+		&.swiper-wrapper {
+			// Reset grid layouts when carousel is active
+			grid-template-columns: none !important;
+			gap: 0 !important;
+
+			> li {
+				// Reset width from grid
+				width: 100% !important;
+				max-width: none !important;
+			}
+		}
+	}
+
+	// Fade effect specific styles
+	&.swiper-fade {
+		.swiper-slide {
+			&:not(.swiper-slide-active) {
+				opacity: 0;
+				pointer-events: none;
+			}
+		}
+	}
+
+	// Coverflow effect specific styles
+	&.swiper-coverflow {
+		padding: 40px 0;
+
+		.swiper {
+			overflow: visible;
+		}
+	}
+}
+
+// Screen reader only text
+.swiper-live-region {
+	position: absolute;
+	left: -10000px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+	.wp-block-query.is-carousel {
+		.swiper-button-prev,
+		.swiper-button-next {
+			width: 36px;
+			height: 36px;
+			font-size: 16px;
+
+			&::after {
+				font-size: 16px;
+			}
+		}
+
+		.swiper-button-prev {
+			left: 5px;
+		}
+
+		.swiper-button-next {
+			right: 5px;
+		}
+	}
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+	.wp-block-query.is-carousel {
+		.swiper-button-prev,
+		.swiper-button-next {
+			background: rgba(0, 0, 0, 0.9);
+			color: #fff;
+			border-color: rgba(255, 255, 255, 0.1);
+
+			&:hover {
+				background: rgba(0, 0, 0, 1);
+			}
+		}
+
+		.swiper-pagination {
+			.swiper-pagination-bullet {
+				background: #fff;
+
+				&.swiper-pagination-bullet-active {
+					background: #4a9eff;
+				}
+			}
+
+			&.swiper-pagination-fraction {
+				color: #ccc;
+			}
+
+			&.swiper-pagination-progressbar {
+				background: rgba(255, 255, 255, 0.1);
+
+				.swiper-pagination-progressbar-fill {
+					background: #4a9eff;
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,177 @@
+/**
+ * Frontend styles for Responsive Image block
+ */
+
+.wp-block-prolific-responsive-image {
+	// Base container
+	.prolific-responsive-image {
+		margin: 0;
+		position: relative;
+
+		// Picture element
+		.prolific-responsive-picture {
+			display: block;
+			line-height: 0; // Removes extra space below images
+
+			img {
+				max-width: 100%;
+				height: auto;
+				display: block;
+			}
+		}
+
+		// Link wrapper
+		a {
+			display: block;
+			text-decoration: none;
+
+			&:hover,
+			&:focus {
+				opacity: 0.9;
+				transition: opacity 0.2s ease-in-out;
+			}
+		}
+
+		// Caption styling
+		figcaption {
+			margin-top: 0.5em;
+			font-size: 0.875em;
+			color: #757575;
+			text-align: center;
+			line-height: 1.6;
+
+			// Allow basic formatting in captions
+			p {
+				margin: 0.5em 0;
+			}
+		}
+	}
+
+	// Alignment support
+	&.alignleft {
+		float: left;
+		margin-right: 2em;
+		margin-bottom: 1em;
+	}
+
+	&.alignright {
+		float: right;
+		margin-left: 2em;
+		margin-bottom: 1em;
+	}
+
+	&.aligncenter {
+		text-align: center;
+
+		.prolific-responsive-image {
+			margin-left: auto;
+			margin-right: auto;
+		}
+	}
+
+	// Wide and full width alignment
+	&.alignwide,
+	&.alignfull {
+		.prolific-responsive-picture {
+			width: 100%;
+
+			img {
+				width: 100%;
+			}
+		}
+	}
+}
+
+/**
+ * Responsive behavior
+ * Ensures images scale properly at different breakpoints
+ */
+
+// Small screens (mobile)
+@media (max-width: 767px) {
+	.wp-block-prolific-responsive-image {
+		&.alignleft,
+		&.alignright {
+			float: none;
+			margin: 0 auto 1em;
+			max-width: 100%;
+		}
+	}
+}
+
+/**
+ * Print styles
+ * Use desktop image for print media
+ */
+@media print {
+	.wp-block-prolific-responsive-image {
+		.prolific-responsive-picture {
+			img {
+				max-width: 100%;
+				page-break-inside: avoid;
+			}
+		}
+	}
+}
+
+/**
+ * Accessibility
+ * Ensure focus states are visible
+ */
+.wp-block-prolific-responsive-image {
+	a:focus {
+		outline: 2px solid #007cba;
+		outline-offset: 2px;
+	}
+
+	a:focus:not(:focus-visible) {
+		outline: none;
+	}
+
+	a:focus-visible {
+		outline: 2px solid #007cba;
+		outline-offset: 2px;
+	}
+}
+
+/**
+ * Dark mode support (optional)
+ * Adjust caption color in dark mode
+ */
+@media (prefers-color-scheme: dark) {
+	.wp-block-prolific-responsive-image {
+		.prolific-responsive-image {
+			figcaption {
+				color: #b0b0b0;
+			}
+		}
+	}
+}
+
+/**
+ * Reduced motion preference
+ * Disable transitions for users who prefer reduced motion
+ */
+@media (prefers-reduced-motion: reduce) {
+	.wp-block-prolific-responsive-image {
+		.prolific-responsive-image {
+			a:hover,
+			a:focus {
+				transition: none;
+			}
+		}
+	}
+}
+
+/**
+ * Loading state
+ * Prevent layout shift during lazy loading
+ */
+.wp-block-prolific-responsive-image {
+	.prolific-responsive-picture {
+		img[loading='lazy'] {
+			// Reserve space to prevent layout shift
+			min-height: 1px;
+		}
+	}
+}

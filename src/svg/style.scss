@@ -1,0 +1,114 @@
+/**
+ * Frontend styles for the SVG block
+ *
+ * These styles are applied both in the editor and on the frontend
+ */
+
+.wp-block-prolific-svg {
+	// Container for the SVG
+	.prolific-svg-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	// SVG wrapper with transforms
+	.prolific-svg-wrapper {
+		display: inline-block;
+		line-height: 0;
+		max-width: 100%;
+		transition: transform 0.3s ease;
+
+		svg {
+			max-width: 100%;
+			height: auto;
+			display: block;
+		}
+	}
+
+	// Alignment classes
+	&.alignleft {
+		.prolific-svg-container {
+			justify-content: flex-start;
+		}
+	}
+
+	&.alignright {
+		.prolific-svg-container {
+			justify-content: flex-end;
+		}
+	}
+
+	&.aligncenter {
+		.prolific-svg-container {
+			justify-content: center;
+		}
+	}
+
+	&.alignwide {
+		max-width: var(--wp--style--global--wide-size, 1280px);
+		margin-left: auto;
+		margin-right: auto;
+
+		.prolific-svg-container {
+			justify-content: center;
+		}
+	}
+
+	&.alignfull {
+		max-width: 100%;
+
+		.prolific-svg-container {
+			justify-content: center;
+		}
+	}
+
+	// Responsive handling
+	@media (max-width: 768px) {
+		.prolific-svg-wrapper {
+			max-width: 100%;
+
+			svg {
+				max-width: 100%;
+				height: auto;
+			}
+		}
+	}
+}
+
+/**
+ * Ensure SVG inherits color properties when needed
+ */
+.wp-block-prolific-svg {
+	.prolific-svg-wrapper svg {
+		// Allow SVG to inherit text color if no fill is set
+		&:not([fill]) {
+			fill: currentColor;
+		}
+	}
+}
+
+/**
+ * Smooth transitions for transform changes
+ */
+.wp-block-prolific-svg {
+	.prolific-svg-wrapper {
+		// Smooth rotation and flip animations
+		svg {
+			transition: transform 0.3s ease;
+		}
+	}
+}
+
+/**
+ * Accessibility improvements
+ */
+.wp-block-prolific-svg {
+	.prolific-svg-wrapper[role="img"] {
+		// Ensure proper focus styles for accessible images
+		&:focus {
+			outline: 2px solid currentColor;
+			outline-offset: 2px;
+		}
+	}
+}
