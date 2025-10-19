@@ -47,9 +47,17 @@
       "type": "string",
       "default": ""
     },
-    "displayMode": {
+    "locationName": {
       "type": "string",
-      "default": "both"
+      "default": ""
+    },
+    "displayType": {
+      "type": "string",
+      "default": "full"
+    },
+    "showNights": {
+      "type": "boolean",
+      "default": false
     },
     "temperatureUnit": {
       "type": "string",
