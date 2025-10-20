@@ -132,13 +132,11 @@ $swiper_attrs = [];
 $swiper_attrs['direction'] = pb_carousel_new_get_attribute($attributes, 'direction');
 $swiper_attrs['speed'] = (int) pb_carousel_new_get_attribute($attributes, 'speed');
 
-// Boolean settings
+// Boolean settings (excluding navigation and pagination - we use custom controls)
 $boolean_attrs = [
 	'centeredSlides',
 	'autoHeight',
 	'freeMode',
-	'navigation',
-	'pagination',
 	'scrollbar',
 	'loop',
 	'allowTouchMove',
@@ -155,12 +153,21 @@ foreach ($boolean_attrs as $attr) {
 	}
 }
 
-// Pagination type
+// Always disable built-in navigation - we use custom controls
+$swiper_attrs['navigation'] = 'false';
+
+// Configure pagination
 if (pb_carousel_new_get_attribute($attributes, 'pagination')) {
+	$swiper_attrs['pagination'] = 'true';
 	$pagination_type = pb_carousel_new_get_attribute($attributes, 'paginationType');
 	if ($pagination_type) {
 		$swiper_attrs['pagination-type'] = $pagination_type;
 	}
+	// Tell Swiper which element to use for pagination
+	$swiper_attrs['pagination-el'] = '.swiper-pagination';
+	$swiper_attrs['pagination-clickable'] = 'true';
+} else {
+	$swiper_attrs['pagination'] = 'false';
 }
 
 // Effect

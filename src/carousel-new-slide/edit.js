@@ -9,9 +9,7 @@ import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
  * Provides a starting point that users can customize.
  */
 const TEMPLATE = [
-	['core/image', {
-		align: 'center',
-	}],
+	['core/image', {}],
 	['core/heading', {
 		level: 3,
 		placeholder: __('Slide Title', 'prolific-blocks'),

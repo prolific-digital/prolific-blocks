@@ -34,18 +34,44 @@
 		const swiperContainer = carousel.querySelector('swiper-container');
 		if (!swiperContainer) return;
 
-		// Wait for Swiper to be fully initialized
-		swiperContainer.addEventListener('swiperready', function () {
-			const swiper = this.swiper;
-			if (!swiper) return;
-
+		// Function to initialize all features
+		function initializeFeatures(swiper) {
 			setupCustomNavigation(carousel, swiper);
-			setupCustomPagination(carousel, swiper);
 			setupPauseButton(carousel, swiper);
 			setupFocusManagement(swiper);
 			setupA11yAttributes(swiper);
 			setupBrowserCompatibility(swiper);
-		});
+		}
+
+		// Check if Swiper is already initialized
+		if (swiperContainer.swiper) {
+			initializeFeatures(swiperContainer.swiper);
+		} else {
+			// Wait for Swiper to initialize - try multiple approaches
+			let initialized = false;
+
+			// Approach 1: Listen for swiperready event
+			swiperContainer.addEventListener('swiperready', function () {
+				if (this.swiper && !initialized) {
+					initialized = true;
+					initializeFeatures(this.swiper);
+				}
+			});
+
+			// Approach 2: Poll for swiper property (fallback)
+			const checkSwiper = setInterval(function () {
+				if (swiperContainer.swiper && !initialized) {
+					initialized = true;
+					clearInterval(checkSwiper);
+					initializeFeatures(swiperContainer.swiper);
+				}
+			}, 100);
+
+			// Approach 3: Timeout fallback (stop polling after 5 seconds)
+			setTimeout(function () {
+				clearInterval(checkSwiper);
+			}, 5000);
+		}
 	}
 
 	/**
@@ -67,11 +93,16 @@
 
 		if (!prevButton || !nextButton) return;
 
-		prevButton.addEventListener('click', function () {
+		// Add click handlers
+		prevButton.addEventListener('click', function (e) {
+			e.preventDefault();
+			e.stopPropagation();
 			swiper.slidePrev();
 		});
 
-		nextButton.addEventListener('click', function () {
+		nextButton.addEventListener('click', function (e) {
+			e.preventDefault();
+			e.stopPropagation();
 			swiper.slideNext();
 		});
 
@@ -81,29 +112,6 @@
 		swiper.on('slideChange', function () {
 			updateNavigationState(swiper, prevButton, nextButton);
 		});
-	}
-
-	/**
-	 * Set up custom pagination element for grouped controls.
-	 *
-	 * @param {HTMLElement} carousel - The carousel container.
-	 * @param {Object} swiper - The Swiper instance.
-	 */
-	function setupCustomPagination(carousel, swiper) {
-		// Check if pagination is in grouped controls
-		const groupedPagination = carousel.querySelector('.carousel-new-controls-group .swiper-pagination');
-
-		if (groupedPagination && swiper.params.pagination) {
-			// Manually initialize pagination to the custom element
-			if (swiper.pagination && swiper.pagination.el !== groupedPagination) {
-				swiper.params.pagination.el = groupedPagination;
-				if (swiper.pagination.init) {
-					swiper.pagination.init();
-					swiper.pagination.render();
-					swiper.pagination.update();
-				}
-			}
-		}
 	}
 
 	/**
