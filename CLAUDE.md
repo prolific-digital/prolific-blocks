@@ -243,6 +243,29 @@ To display Dashicons in block editor, add to editor.scss:
 }
 ```
 
+## Documentation
+
+### Public-Facing Documentation
+Complete user documentation for all 20 blocks is maintained in Notion:
+
+**Main Documentation Page:**
+- Edit URL: https://www.notion.so/prolificdigital/Prolific-Blocks-19f5efcd8c5f807f951ac38f50e90f0d
+- Public URL: https://prolificdigital.notion.site/Prolific-Blocks-19f5efcd8c5f807f951ac38f50e90f0d?pvs=74
+
+**Individual Block Pages:**
+Each block has its own sub-page with comprehensive documentation including overview, features, use cases, settings guide, and best practices. All blocks link to this documentation via the SupportCard component.
+
+**Local Documentation:**
+- `BLOCK-DOCUMENTATION.md` - Complete markdown documentation for all blocks (source for Notion pages)
+- `GLOBAL-ATTRIBUTES-DOCUMENTATION.md` - Documentation for Global Custom HTML Attributes feature
+
+### SupportCard Component
+Reusable component (`src/components/SupportCard.js`) that provides "Need help?" documentation links in all block inspector panels:
+- Default URL points to main Notion documentation page
+- Accepts optional `docUrl` prop for block-specific documentation
+- Used by all 19 main custom blocks (Layout, Navigation, Media, Utility, Query blocks)
+- Consistent card-based UI following WordPress design patterns
+
 ## Version Information
 
 Current version: 1.0.0 (managed in both `package.json` and `prolific-blocks.php`)
@@ -359,7 +382,7 @@ When updating versions, update both files and create corresponding GitHub releas
 ### Carousel New Block
 - Enhanced Swiper.js carousel with advanced controls
 - **Navigation Buttons Always Grouped:** Prev/next buttons always wrapped in `.carousel-new-nav-buttons` div
-- **Navigation Position Control:** Position navigation buttons (left/center/right) when not grouped
+- **Navigation Position Control:** Position navigation buttons (top/center/bottom) when not grouped
 - **Control Grouping:** Option to group navigation and pagination together with `groupControls` attribute
 - **Grouped Controls Position:** Place grouped controls on top or bottom of carousel
 - **Grouped Controls Layouts:**
@@ -367,15 +390,25 @@ When updating versions, update both files and create corresponding GitHub releas
   - Left: `[←→ Arrows] [Pagination]` - arrows grouped left, pagination right
   - Right: `[Pagination] [←→ Arrows]` - pagination left, arrows grouped right
 - **Custom Navigation:** Upload SVG icons for prev/next buttons
-- **Frontend Navigation Fix:** Custom navigation properly connected to Swiper instance in view.js
+- **Frontend Functionality (view.js):**
+  - Triple-fallback Swiper initialization: immediate check, event listener, polling
+  - Prevents race conditions between Swiper auto-init and script execution
+  - Custom navigation buttons properly connected via `swiper.slidePrev()` / `slideNext()`
+  - Pagination element targeting via `pagination-el` attribute
+  - Duplicate prevention flag ensures features initialize only once
+- **Swiper Configuration (render.php):**
+  - Disables built-in Swiper navigation (`navigation="false"`)
+  - Configures pagination with `pagination-el=".swiper-pagination"` for custom positioning
+  - Data attributes for all settings (pagination type, autoplay, loop, etc.)
 - Pagination styles display in editor preview (all types: bullets, fraction, progress bar)
 - Responsive behavior on all screen sizes
-- **Proper Swiper Element initialization:** Data attributes for pagination type and all settings
 - **CSS Classes for Styling:**
-  - `.nav-position-{left|center|right}` - navigation positioning
+  - `.nav-position-{top|center|bottom}` - navigation positioning
+  - `.pagination-position-{top|bottom}` - pagination positioning
   - `.grouped` - when controls are grouped
-  - `.group-layout-{split|left|right}` - grouped layout style
-  - `.group-position-{top|bottom}` - grouped controls position
+  - `.grouped-layout-{split|left|right}` - grouped layout style
+  - `.grouped-position-{top|bottom}` - grouped controls position
+- **Default Image Alignment:** Carousel New Slide blocks default to no alignment (not center) for flexibility
 
 ### Table of Contents Block
 - **Scroll Offset Fix:** CSS `scroll-margin-top: 100px` + JavaScript offset for proper heading visibility
