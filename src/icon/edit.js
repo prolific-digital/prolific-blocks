@@ -21,6 +21,7 @@ import { useState } from '@wordpress/element';
  */
 import { iconCategories, iconPaths } from './icons';
 import './editor.scss';
+import SupportCard from '../components/SupportCard';
 
 /**
  * Icon Picker Component
@@ -207,6 +208,7 @@ export default function Edit({ attributes, setAttributes }) {
 			</div>
 
 			<InspectorControls>
+				<SupportCard />
 				<PanelBody title={__('Icon Selection', 'prolific-blocks')} initialOpen={true}>
 					<div className="icon-selection-preview">
 						<div className="selected-icon-display">

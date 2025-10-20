@@ -24,6 +24,7 @@ import apiFetch from '@wordpress/api-fetch';
  * Internal dependencies
  */
 import './editor.scss';
+import SupportCard from '../components/SupportCard';
 
 /**
  * Edit component for SVG block.
@@ -213,6 +214,7 @@ export default function Edit({ attributes, setAttributes }) {
 			</div>
 
 			<InspectorControls>
+				<SupportCard />
 				<PanelBody title={__('SVG Settings', 'prolific-blocks')} initialOpen={true}>
 					<div className="prolific-svg-media-control">
 						<BaseControl

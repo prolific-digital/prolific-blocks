@@ -22,6 +22,7 @@ import {
 import { useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 import ServerSideRender from '@wordpress/server-side-render';
+import SupportCard from '../components/SupportCard';
 
 /**
  * Edit component for Query Posts block
@@ -163,6 +164,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 	return (
 		<>
 			<InspectorControls>
+				<SupportCard />
 				{/* Query Settings Panel */}
 				<PanelBody title={__('Query Settings', 'prolific-blocks')} initialOpen={true}>
 					{postTypes && postTypes.length > 0 && (

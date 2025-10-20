@@ -29,6 +29,7 @@ import { createBlock } from '@wordpress/blocks';
  * Internal dependencies
  */
 import './editor.scss';
+import SupportCard from '../components/SupportCard';
 
 /**
  * Edit component for the Tabbed Content block
@@ -237,6 +238,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 	return (
 		<>
 			<InspectorControls>
+				<SupportCard />
 				{/* Documentation Notice */}
 				<PanelBody>
 					<p className="components-base-control__help" style={{ marginTop: 0, marginBottom: 0 }}>

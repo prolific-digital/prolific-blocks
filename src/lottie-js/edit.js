@@ -26,6 +26,7 @@ import { DotLottie } from '@lottiefiles/dotlottie-web';
  * Editor styles
  */
 import './editor.scss';
+import SupportCard from '../components/SupportCard';
 
 /**
  * Edit component for Lottie block.
@@ -248,6 +249,7 @@ export default function Edit({ attributes, setAttributes }) {
 			</div>
 
 			<InspectorControls>
+				<SupportCard />
 				{/* File Upload Panel */}
 				<PanelBody title={__('Animation File', 'prolific-blocks')} initialOpen={true}>
 					<MediaUploadCheck>

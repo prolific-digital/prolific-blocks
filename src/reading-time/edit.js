@@ -28,6 +28,7 @@ const iconPaths = {
  * Editor styles
  */
 import './editor.scss';
+import SupportCard from '../components/SupportCard';
 
 /**
  * Calculate reading time from content
@@ -178,6 +179,7 @@ export default function Edit({ attributes, setAttributes }) {
 			</div>
 
 			<InspectorControls>
+				<SupportCard />
 				<PanelBody title={__('Calculation Settings', 'prolific-blocks')} initialOpen={true}>
 					<RangeControl
 						label={__('Words Per Minute', 'prolific-blocks')}

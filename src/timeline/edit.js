@@ -44,6 +44,7 @@ import { PanelBody, ToggleControl, SelectControl } from "@wordpress/components";
  * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
  */
 import "./editor.scss";
+import SupportCard from '../components/SupportCard';
 
 /**
  * The edit function describes the structure of your block in the context of the

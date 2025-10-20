@@ -14,6 +14,7 @@ import {
  * Editor styles
  */
 import './editor.scss';
+import SupportCard from '../components/SupportCard';
 
 /**
  * Edit component for Anchor Navigation block.
@@ -81,6 +82,7 @@ export default function Edit({ attributes, setAttributes }) {
 			</div>
 
 			<InspectorControls>
+				<SupportCard />
 				<PanelBody title={__('Heading Levels', 'prolific-blocks')} initialOpen={true}>
 					<p className="components-base-control__help">
 						{__('Select which heading levels to include in the navigation', 'prolific-blocks')}

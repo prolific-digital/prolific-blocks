@@ -17,6 +17,7 @@ import { useEffect } from '@wordpress/element';
  * Editor styles
  */
 import './editor.scss';
+import SupportCard from '../components/SupportCard';
 
 /**
  * Helper function to slugify heading text into anchor IDs
@@ -253,6 +254,7 @@ export default function Edit({ attributes, setAttributes }) {
 			</div>
 
 			<InspectorControls>
+				<SupportCard />
 				<PanelBody title={__('Display Settings', 'prolific-blocks')} initialOpen={true}>
 					<ToggleControl
 						label={__('Show Title', 'prolific-blocks')}

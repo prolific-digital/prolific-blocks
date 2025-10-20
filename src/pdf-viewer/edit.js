@@ -18,6 +18,7 @@ import { useEffect } from '@wordpress/element';
  * Editor styles
  */
 import './editor.scss';
+import SupportCard from '../components/SupportCard';
 
 /**
  * Edit component for PDF Viewer block.
@@ -220,6 +221,7 @@ export default function Edit({ attributes, setAttributes }) {
 			</div>
 
 			<InspectorControls>
+				<SupportCard />
 				<PanelBody title={__('PDF Settings', 'prolific-blocks')} initialOpen={true}>
 					{pdfUrl ? (
 						<>

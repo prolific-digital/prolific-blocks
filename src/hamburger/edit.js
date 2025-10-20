@@ -44,6 +44,7 @@ import {
  * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
  */
 import "./editor.scss";
+import SupportCard from '../components/SupportCard';
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -105,6 +106,7 @@ export default function Edit({ attributes, setAttributes }) {
   return (
     <>
       <InspectorControls>
+        <SupportCard />
         <PanelBody title={__("Hamburger Settings", "text-domain")}>
           <SelectControl
             label={__("Select Hamburger Style", "text-domain")}

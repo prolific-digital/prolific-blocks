@@ -32,6 +32,7 @@ import { desktop, tablet, mobile } from '@wordpress/icons';
  * Internal dependencies
  */
 import './editor.scss';
+import SupportCard from '../components/SupportCard';
 
 /**
  * Device Preview Toolbar Component
@@ -307,6 +308,7 @@ export default function Edit({ attributes, setAttributes }) {
 			</BlockControls>
 
 			<InspectorControls>
+				<SupportCard />
 				<PanelBody title={__('Desktop Image', 'prolific-blocks')} initialOpen={true}>
 					<ImageUploadControl
 						label={__('Desktop Image', 'prolific-blocks')}

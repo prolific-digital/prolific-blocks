@@ -15,6 +15,7 @@ import {
  * Editor styles
  */
 import './editor.scss';
+import SupportCard from '../components/SupportCard';
 
 /**
  * Available social platforms with their labels and icons
@@ -145,6 +146,7 @@ export default function Edit({ attributes, setAttributes }) {
 			</div>
 
 			<InspectorControls>
+				<SupportCard />
 				<PanelBody title={__('Platform Selection', 'prolific-blocks')} initialOpen={true}>
 					<p style={{ fontSize: '13px', color: '#757575', marginTop: 0 }}>
 						{__('Choose which social media platforms to display', 'prolific-blocks')}

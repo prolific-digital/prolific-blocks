@@ -53,6 +53,7 @@ import {
  * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
  */
 import "./editor.scss";
+import SupportCard from '../components/SupportCard';
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -142,6 +143,7 @@ export default function Edit({ attributes, setAttributes }) {
       </div>
 
       <InspectorControls>
+        <SupportCard />
         <PanelBody title={__("Tab Settings", "text-domain")}>
           {tabs.map((tab, index) => (
             <div key={index} style={{ marginBottom: "20px" }}>

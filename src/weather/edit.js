@@ -21,6 +21,7 @@ import { cloud } from '@wordpress/icons';
  * Editor styles
  */
 import './editor.scss';
+import SupportCard from '../components/SupportCard';
 
 /**
  * Get Font Awesome weather icon component based on weather condition.
@@ -520,6 +521,7 @@ export default function Edit({ attributes, setAttributes }) {
 			</div>
 
 			<InspectorControls>
+				<SupportCard />
 				<PanelBody title={__('Location Settings', 'prolific-blocks')} initialOpen={true}>
 					<TextControl
 						label={__('Latitude', 'prolific-blocks')}

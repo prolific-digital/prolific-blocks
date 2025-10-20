@@ -69,6 +69,7 @@ import { useSelect } from "@wordpress/data";
 
 import "./editor.scss";
 import { debounce } from "lodash";
+import SupportCard from '../components/SupportCard';
 
 /**
  * Sanitize SVG content by removing potentially dangerous content.
@@ -556,6 +557,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
       </div>
 
       <InspectorControls>
+        <SupportCard />
         <PanelBody
           title={__("Slider Settings", "prolific-blocks")}
           initialOpen={true}

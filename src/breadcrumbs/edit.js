@@ -9,6 +9,7 @@ import { PanelBody, SelectControl, ToggleControl, TextControl } from '@wordpress
  * Editor styles
  */
 import './editor.scss';
+import SupportCard from '../components/SupportCard';
 
 /**
  * Edit component for Breadcrumbs block.
@@ -76,6 +77,7 @@ export default function Edit({ attributes, setAttributes }) {
 			</div>
 
 			<InspectorControls>
+				<SupportCard />
 				<PanelBody title={__('Breadcrumb Settings', 'prolific-blocks')} initialOpen={true}>
 					<SelectControl
 						label={__('Divider Style', 'prolific-blocks')}

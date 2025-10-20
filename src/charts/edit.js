@@ -21,6 +21,7 @@ import { useEffect, useRef, useState } from '@wordpress/element';
  */
 import { renderChart, getChartColors, COLOR_SCHEMES } from './chart-utils';
 import './editor.scss';
+import SupportCard from '../components/SupportCard';
 
 /**
  * Edit component for Charts block.
@@ -190,6 +191,7 @@ export default function Edit({ attributes, setAttributes }) {
 			</div>
 
 			<InspectorControls>
+				<SupportCard />
 				<PanelBody title={__('Chart Type', 'prolific-blocks')} initialOpen={true}>
 					<SelectControl
 						label={__('Chart Type', 'prolific-blocks')}

@@ -16,6 +16,7 @@ import {
  * Editor styles
  */
 import './editor.scss';
+import SupportCard from '../components/SupportCard';
 
 /**
  * Edit component for Countdown Timer block.
@@ -143,6 +144,7 @@ export default function Edit({ attributes, setAttributes }) {
 			</div>
 
 			<InspectorControls>
+				<SupportCard />
 				<PanelBody title={__('Date & Time', 'prolific-blocks')} initialOpen={true}>
 					<ToggleControl
 						label={__('Evergreen Mode', 'prolific-blocks')}
