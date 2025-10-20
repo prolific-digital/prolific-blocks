@@ -8,7 +8,6 @@ import {
 	InspectorControls,
 	MediaUpload,
 	MediaUploadCheck,
-	AlignmentControl,
 } from '@wordpress/block-editor';
 import {
 	PanelBody,
@@ -222,6 +221,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		pauseButton,
 		customNavigation,
 		autoHeight,
+		groupControls,
+		pagination,
+		paginationType,
 	]);
 
 	// Set navigation and pagination element class names
@@ -355,19 +357,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 					</div>
 				</PanelBody>
 
-				{/* Panel 1: Content Alignment */}
-				<PanelBody title={__('Content Alignment', 'prolific-blocks')} initialOpen={false}>
-					<p className="components-base-control__help">
-						{__('Control how content is aligned within the carousel. Note: This is separate from block width alignment (available in the block toolbar).', 'prolific-blocks')}
-					</p>
-					<AlignmentControl
-						value={contentAlign}
-						onChange={(value) => setAttributes({ contentAlign: value })}
-						alignments={['left', 'center', 'right']}
-					/>
-				</PanelBody>
-
-				{/* Panel 2: Layout Settings */}
+				{/* Layout Settings */}
 				<PanelBody title={__('Layout Settings', 'prolific-blocks')} initialOpen={false}>
 					<p className="components-base-control__help">
 						{__('Configure how many slides are visible at different screen sizes.', 'prolific-blocks')}
