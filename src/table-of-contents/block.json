@@ -10,7 +10,7 @@
   "keywords": ["toc", "contents", "headings", "navigation", "index"],
   "example": {},
   "supports": {
-    "align": ["left", "center", "right", "wide", "full"],
+    "align": false,
     "ariaLabel": true,
     "className": true,
     "customClassName": true,

@@ -10,7 +10,7 @@
   "keywords": ["icon", "font awesome", "svg", "symbol"],
   "example": {},
   "supports": {
-    "align": true,
+    "align": false,
     "ariaLabel": true,
     "className": true,
     "customClassName": true,

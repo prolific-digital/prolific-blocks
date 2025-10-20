@@ -8,6 +8,9 @@
   "icon": "block-default",
   "description": "A robust and flexible carousel block.",
   "example": {},
+  "supports": {
+    "align": false
+  },
   "textdomain": "prolific-blocks",
   "editorScript": "file:./index.js",
   "editorStyle": "file:./index.css",

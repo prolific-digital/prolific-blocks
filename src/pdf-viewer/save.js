@@ -21,7 +21,6 @@ export default function save({ attributes }) {
 		aspectRatio,
 		customHeight,
 		showToolbar,
-		enableZoom,
 		enableNavigation,
 		altText
 	} = attributes;
@@ -64,7 +63,6 @@ export default function save({ attributes }) {
 	if (displayMethod === 'iframe') {
 		const params = [];
 		if (!showToolbar) params.push('toolbar=0');
-		if (!enableZoom) params.push('zoom=100');
 		if (!enableNavigation) params.push('navpanes=0');
 		if (params.length > 0) {
 			iframeUrl += '#' + params.join('&');

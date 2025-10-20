@@ -10,7 +10,7 @@
   "keywords": ["svg", "vector", "image", "graphic", "icon"],
   "example": {},
   "supports": {
-    "align": ["left", "center", "right", "wide", "full"],
+    "align": false,
     "ariaLabel": true,
     "className": true,
     "customClassName": true,

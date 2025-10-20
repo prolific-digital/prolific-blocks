@@ -6,9 +6,15 @@
 
 // Main block editor wrapper
 .wp-block-prolific-carousel-new {
+	position: relative;
+	width: 100%;
+	max-width: 100%;
+	overflow: hidden;
+
 	.carousel-new-editor-wrapper {
 		position: relative;
 		width: 100%;
+		max-width: 100%;
 		padding: 20px;
 		background: #f9f9f9;
 		border: 2px solid #ddd;
@@ -74,15 +80,19 @@
 	// Swiper container in editor
 	.carousel-new-swiper-container {
 		position: relative;
+		width: 100%;
+		max-width: 100%;
 		background: #fff;
 		border-radius: 8px;
 		padding: 20px;
 		margin-bottom: 20px;
+		overflow: hidden;
 
 		// Swiper wrapper
 		.swiper {
 			position: relative;
 			width: 100%;
+			max-width: 100%;
 			min-height: 300px;
 
 			// Swiper wrapper containing slides
@@ -516,12 +526,29 @@
 	}
 }
 
-// Custom navigation buttons base (default positioning only)
+// Swiper wrapper to contain positioned elements
 .wp-block-prolific-carousel-new {
-	.custom-prev,
-	.custom-next {
-		position: absolute;
-		z-index: 10;
+	.carousel-new-swiper-wrapper {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		max-width: 100%;
+		overflow: visible; // Changed from hidden to allow top/bottom controls to be visible
+
+		swiper-container {
+			order: 0; // Default order for flexbox positioning
+			width: 100%;
+			max-width: 100%;
+			overflow: hidden;
+		}
+	}
+}
+
+// Custom navigation buttons base
+.wp-block-prolific-carousel-new {
+	.carousel-new-nav-prev,
+	.carousel-new-nav-next {
 		cursor: pointer;
 		display: flex;
 		align-items: center;
@@ -562,27 +589,185 @@
 			color: #fff;
 		}
 	}
+}
 
-	// Default navigation position: sides center
-	.custom-prev,
-	swiper-container .swiper-button-prev {
-		left: 10px;
-		top: 50%;
-		transform: translateY(-50%);
+// Navigation wrapper positioning (when NOT grouped)
+.wp-block-prolific-carousel-new {
+	.carousel-new-nav-wrapper:not(.grouped) {
+		z-index: 100;
+		display: flex;
+		max-width: 100%;
 
-		&:hover {
-			transform: translateY(-50%) scale(1.1);
+		.carousel-new-nav-buttons {
+			display: flex;
+			gap: 20px;
+		}
+
+		// Top position - outside carousel, buttons on outer edges
+		&.nav-position-top {
+			position: relative;
+			order: -1; // Place before swiper-container
+			margin-bottom: 15px;
+
+			.carousel-new-nav-buttons {
+				display: flex;
+				justify-content: space-between;
+				width: 100%;
+			}
+		}
+
+		// Center position (default) - overlays carousel
+		&.nav-position-center {
+			position: absolute;
+			top: 50%;
+			left: 10px;
+			right: 10px;
+			width: calc(100% - 20px);
+			transform: translateY(-50%);
+			justify-content: space-between;
+
+			.carousel-new-nav-buttons {
+				width: 100%;
+				justify-content: space-between;
+			}
+		}
+
+		// Bottom position - outside carousel, buttons on outer edges
+		&.nav-position-bottom {
+			position: relative;
+			order: 1; // Place after swiper-container
+			margin-top: 15px;
+
+			.carousel-new-nav-buttons {
+				display: flex;
+				justify-content: space-between;
+				width: 100%;
+			}
 		}
 	}
+}
 
-	.custom-next,
-	swiper-container .swiper-button-next {
-		right: 10px;
-		top: 50%;
-		transform: translateY(-50%);
+// Pagination positioning (when NOT grouped)
+.wp-block-prolific-carousel-new {
+	// External pagination div - Swiper will populate this
+	.swiper-pagination:not(.grouped) {
+		position: relative;
+		z-index: 10;
+		padding: 10px 0;
+		min-height: 30px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 
-		&:hover {
-			transform: translateY(-50%) scale(1.1);
+		&.pagination-position-top {
+			order: -1;
+			margin-bottom: 15px;
+			margin-top: 0;
+		}
+
+		&.pagination-position-bottom {
+			order: 1;
+			margin-top: 15px;
+			margin-bottom: 0;
+		}
+	}
+}
+
+// Grouped controls
+.wp-block-prolific-carousel-new {
+	.carousel-new-controls-group {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 30px;
+		padding: 15px 20px;
+		background: rgba(0, 0, 0, 0.03);
+		border-radius: 8px;
+		flex-wrap: wrap;
+
+		.carousel-new-nav-buttons {
+			display: flex;
+			gap: 15px;
+		}
+
+		.swiper-pagination {
+			position: relative;
+			margin: 0;
+			flex: 0 0 auto;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-height: 20px;
+		}
+
+		&.grouped-position-top {
+			order: -1;
+			margin-bottom: 15px;
+			margin-top: 0;
+		}
+
+		&.grouped-position-bottom {
+			order: 1;
+			margin-top: 15px;
+			margin-bottom: 0;
+		}
+
+		// SPLIT LAYOUT: [← Prev] [Pagination] [Next →]
+		// Arrows should be close to pagination, not at container edges
+		&.grouped-layout-split {
+			justify-content: center; // Center everything
+			gap: 20px; // Space between elements
+
+			// Direct child buttons (no wrapper in split layout)
+			.carousel-new-nav-prev,
+			.carousel-new-nav-next {
+				flex: 0 0 auto; // Don't grow or shrink
+			}
+
+			.swiper-pagination {
+				flex: 0 0 auto; // Don't grow or shrink
+				display: flex;
+				align-items: center;
+			}
+		}
+
+		// LEFT LAYOUT: [← →] [Pagination]
+		&.grouped-layout-left {
+			justify-content: space-between;
+
+			.carousel-new-nav-buttons {
+				order: 1;
+				display: flex;
+				gap: 10px;
+				flex: 0 0 auto;
+			}
+
+			.swiper-pagination {
+				order: 2;
+				flex: 1 1 auto;
+				display: flex;
+				justify-content: flex-end;
+			}
+		}
+
+		// RIGHT LAYOUT: [Pagination] [← →]
+		&.grouped-layout-right {
+			justify-content: space-between;
+
+			.carousel-new-nav-buttons {
+				order: 2;
+				display: flex;
+				gap: 10px;
+				flex: 0 0 auto;
+			}
+
+			.swiper-pagination {
+				order: 1;
+				flex: 1 1 auto;
+				display: flex;
+				justify-content: flex-start;
+			}
 		}
 	}
 }

@@ -8,7 +8,7 @@
   "icon": "block-default",
   "description": "A robust and flexible carousel for showcasing media and content.",
   "supports": {
-    "align": true,
+    "align": false,
     "anchor": true,
     "spacing": {
       "padding": true,

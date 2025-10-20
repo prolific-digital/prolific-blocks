@@ -7,6 +7,9 @@
 	"category": "prolific",
 	"description": "Extension that adds carousel functionality to core Query Loop block using Swiper.js",
 	"keywords": ["query", "loop", "carousel", "swiper", "posts"],
+	"supports": {
+		"align": false
+	},
 	"textdomain": "prolific-blocks",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",

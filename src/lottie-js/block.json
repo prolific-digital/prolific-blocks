@@ -9,7 +9,7 @@
   "description": "Animate with Lottie.",
   "example": {},
   "supports": {
-    "align": true,
+    "align": false,
     "ariaLabel": true,
     "className": true,
     "customClassName": true,

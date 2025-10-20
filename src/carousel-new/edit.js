@@ -121,6 +121,11 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		resistanceRatio,
 		a11yEnabled,
 		pauseButton,
+		navigationPosition,
+		paginationPosition,
+		groupControls,
+		groupedPosition,
+		groupedLayout,
 	} = attributes;
 
 	const blockProps = useBlockProps();
@@ -219,12 +224,13 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		autoHeight,
 	]);
 
-	// Set navigation element class names
+	// Set navigation and pagination element class names
 	useEffect(() => {
-		if (!attributes.navigationNextEl || !attributes.navigationPrevEl) {
+		if (!attributes.navigationNextEl || !attributes.navigationPrevEl || !attributes.paginationEl) {
 			setAttributes({
 				navigationNextEl: `.custom-next-${uniqueId.current}`,
 				navigationPrevEl: `.custom-prev-${uniqueId.current}`,
+				paginationEl: `.custom-pagination-${uniqueId.current}`,
 			});
 		}
 	}, []);
@@ -481,7 +487,82 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 					/>
 				</PanelBody>
 
-				{/* Panel 3: Navigation & Controls */}
+				{/* Panel 3: Control Positioning */}
+				<PanelBody title={__('Control Positioning', 'prolific-blocks')} initialOpen={false}>
+					<ToggleControl
+						__nextHasNoMarginBottom
+						label={__('Group Controls Together', 'prolific-blocks')}
+						checked={groupControls}
+						onChange={(value) => setAttributes({ groupControls: value })}
+						help={__('Group navigation and pagination controls together', 'prolific-blocks')}
+					/>
+
+					{groupControls ? (
+						<>
+							<SelectControl
+								__nextHasNoMarginBottom
+								__next40pxDefaultSize
+								label={__('Grouped Controls Position', 'prolific-blocks')}
+								value={groupedPosition}
+								options={[
+									{ label: __('Top', 'prolific-blocks'), value: 'top' },
+									{ label: __('Bottom', 'prolific-blocks'), value: 'bottom' },
+								]}
+								onChange={(value) => setAttributes({ groupedPosition: value })}
+								help={__('Position of grouped navigation and pagination controls', 'prolific-blocks')}
+							/>
+
+							<SelectControl
+								__nextHasNoMarginBottom
+								__next40pxDefaultSize
+								label={__('Grouped Controls Layout', 'prolific-blocks')}
+								value={groupedLayout}
+								options={[
+									{ label: __('Split (Nav on sides, pagination center)', 'prolific-blocks'), value: 'split' },
+									{ label: __('Left (Nav left, pagination right)', 'prolific-blocks'), value: 'left' },
+									{ label: __('Right (Pagination left, nav right)', 'prolific-blocks'), value: 'right' },
+								]}
+								onChange={(value) => setAttributes({ groupedLayout: value })}
+								help={__('How to arrange navigation and pagination when grouped', 'prolific-blocks')}
+							/>
+						</>
+					) : (
+						<>
+							{navigation && (
+								<SelectControl
+									__nextHasNoMarginBottom
+									__next40pxDefaultSize
+									label={__('Navigation Position', 'prolific-blocks')}
+									value={navigationPosition}
+									options={[
+										{ label: __('Top', 'prolific-blocks'), value: 'top' },
+										{ label: __('Center', 'prolific-blocks'), value: 'center' },
+										{ label: __('Bottom', 'prolific-blocks'), value: 'bottom' },
+									]}
+									onChange={(value) => setAttributes({ navigationPosition: value })}
+									help={__('Vertical position of navigation arrows over carousel', 'prolific-blocks')}
+								/>
+							)}
+
+							{pagination && (
+								<SelectControl
+									__nextHasNoMarginBottom
+									__next40pxDefaultSize
+									label={__('Pagination Position', 'prolific-blocks')}
+									value={paginationPosition}
+									options={[
+										{ label: __('Top', 'prolific-blocks'), value: 'top' },
+										{ label: __('Bottom', 'prolific-blocks'), value: 'bottom' },
+									]}
+									onChange={(value) => setAttributes({ paginationPosition: value })}
+									help={__('Position of pagination relative to carousel', 'prolific-blocks')}
+								/>
+							)}
+						</>
+					)}
+				</PanelBody>
+
+				{/* Panel 4: Navigation & Controls */}
 				<PanelBody title={__('Navigation & Controls', 'prolific-blocks')} initialOpen={false}>
 					<ToggleControl
 						__nextHasNoMarginBottom
@@ -625,7 +706,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 					/>
 				</PanelBody>
 
-				{/* Panel 4: Autoplay Settings */}
+				{/* Panel 5: Autoplay Settings */}
 				<PanelBody title={__('Autoplay Settings', 'prolific-blocks')} initialOpen={false}>
 					<ToggleControl
 						__nextHasNoMarginBottom
@@ -699,7 +780,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 					)}
 				</PanelBody>
 
-				{/* Panel 5: Effects & Transitions */}
+				{/* Panel 6: Effects & Transitions */}
 				<PanelBody title={__('Effects & Transitions', 'prolific-blocks')} initialOpen={false}>
 					<SelectControl
 						__nextHasNoMarginBottom
@@ -751,7 +832,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 					/>
 				</PanelBody>
 
-				{/* Panel 6: Interaction Settings */}
+				{/* Panel 7: Interaction Settings */}
 				<PanelBody title={__('Interaction Settings', 'prolific-blocks')} initialOpen={false}>
 					<ToggleControl
 						__nextHasNoMarginBottom
@@ -801,7 +882,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 					/>
 				</PanelBody>
 
-				{/* Panel 7: Accessibility */}
+				{/* Panel 8: Accessibility */}
 				<PanelBody title={__('Accessibility', 'prolific-blocks')} initialOpen={false}>
 					<ToggleControl
 						__nextHasNoMarginBottom
@@ -852,91 +933,208 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 					</span>
 				</div>
 
-				{renderSwiper && (
-					<swiper-container
-						ref={swiperElRef}
-						slides-per-view={slidesPerViewDesktop}
-						direction={direction}
-						space-between={spaceBetweenDesktop}
-						navigation={(!customNavigation && navigation).toString()}
-						pagination={pagination.toString()}
-						pagination-type={pagination ? paginationType : undefined}
-						scrollbar={scrollbar.toString()}
-						allow-touch-move="false"
-						keyboard={keyboard.toString()}
-						grab-cursor="false"
-						autoplay="false"
-						centered-slides={centeredSlides.toString()}
-						speed={speed.toString()}
-						loop="false"
-						pause-on-hover={pauseOnHover.toString()}
-						a11y={a11yEnabled.toString()}
-						auto-height={autoHeight.toString()}
-						free-mode={freeMode.toString()}
-						effect={effect}
-						breakpoints={`{
-							"1024": {
-								"slidesPerView": ${slidesPerViewDesktop},
-								"spaceBetween": ${spaceBetweenDesktop}
-							},
-							"768": {
-								"slidesPerView": ${slidesPerViewTablet},
-								"spaceBetween": ${spaceBetweenTablet}
-							},
-							"0": {
-								"slidesPerView": ${slidesPerViewMobile},
-								"spaceBetween": ${spaceBetweenMobile}
-							}
-						}`}
-						role="region"
-						aria-label={__('Carousel', 'prolific-blocks')}
-						class="editor-carousel-new"
-					>
-					{innerBlocksProps.children}
-				</swiper-container>
-				)}
-				{customNavigation && navigation && (
-					<>
-						<button
-							className={`custom-prev custom-prev-${uniqueId.current}`}
-							aria-label={__('Previous slide', 'prolific-blocks')}
-							role="button"
-							onClick={(e) => {
-								e.preventDefault();
-								e.stopPropagation();
-								if (swiperElRef.current && swiperElRef.current.swiper) {
-									swiperElRef.current.swiper.slidePrev();
+				<div className="carousel-new-swiper-wrapper">
+					{renderSwiper && (
+						<swiper-container
+							ref={swiperElRef}
+							slides-per-view={slidesPerViewDesktop}
+							direction={direction}
+							space-between={spaceBetweenDesktop}
+							navigation="false"
+							pagination={pagination.toString()}
+							pagination-type={paginationType}
+							pagination-el={groupControls && pagination ? `.custom-pagination-${uniqueId.current}` : '.swiper-pagination'}
+							scrollbar={scrollbar.toString()}
+							allow-touch-move="false"
+							keyboard={keyboard.toString()}
+							grab-cursor="false"
+							autoplay="false"
+							centered-slides={centeredSlides.toString()}
+							speed={speed.toString()}
+							loop="false"
+							pause-on-hover={pauseOnHover.toString()}
+							a11y={a11yEnabled.toString()}
+							auto-height={autoHeight.toString()}
+							free-mode={freeMode.toString()}
+							effect={effect}
+							breakpoints={`{
+								"1024": {
+									"slidesPerView": ${slidesPerViewDesktop},
+									"spaceBetween": ${spaceBetweenDesktop}
+								},
+								"768": {
+									"slidesPerView": ${slidesPerViewTablet},
+									"spaceBetween": ${spaceBetweenTablet}
+								},
+								"0": {
+									"slidesPerView": ${slidesPerViewMobile},
+									"spaceBetween": ${spaceBetweenMobile}
 								}
-							}}
+							}`}
+							role="region"
+							aria-label={__('Carousel', 'prolific-blocks')}
+							class="editor-carousel-new"
 						>
-							{customNavPrevSvg ? (
-								<span dangerouslySetInnerHTML={{ __html: customNavPrevSvg }} />
+							{innerBlocksProps.children}
+						</swiper-container>
+					)}
+
+					{/* Navigation when NOT grouped */}
+					{!groupControls && navigation && (
+						<div className={`carousel-new-nav-wrapper nav-position-${navigationPosition || 'center'}`}>
+							<div className="carousel-new-nav-buttons">
+								<button
+									className={`carousel-new-nav-prev custom-prev-${uniqueId.current}`}
+									aria-label={__('Previous slide', 'prolific-blocks')}
+									role="button"
+									onClick={(e) => {
+										e.preventDefault();
+										e.stopPropagation();
+										if (swiperElRef.current && swiperElRef.current.swiper) {
+											swiperElRef.current.swiper.slidePrev();
+										}
+									}}
+								>
+									{customNavigation && customNavPrevSvg ? (
+										<span dangerouslySetInnerHTML={{ __html: customNavPrevSvg }} />
+									) : (
+										<span aria-hidden="true">&#10094;</span>
+									)}
+									<span className="screen-reader-text">{__('Previous', 'prolific-blocks')}</span>
+								</button>
+								<button
+									className={`carousel-new-nav-next custom-next-${uniqueId.current}`}
+									aria-label={__('Next slide', 'prolific-blocks')}
+									role="button"
+									onClick={(e) => {
+										e.preventDefault();
+										e.stopPropagation();
+										if (swiperElRef.current && swiperElRef.current.swiper) {
+											swiperElRef.current.swiper.slideNext();
+										}
+									}}
+								>
+									{customNavigation && customNavNextSvg ? (
+										<span dangerouslySetInnerHTML={{ __html: customNavNextSvg }} />
+									) : (
+										<span aria-hidden="true">&#10095;</span>
+									)}
+									<span className="screen-reader-text">{__('Next', 'prolific-blocks')}</span>
+								</button>
+							</div>
+						</div>
+					)}
+
+					{/* Pagination when NOT grouped */}
+					{!groupControls && pagination && (
+						<div className={`swiper-pagination pagination-position-${paginationPosition || 'bottom'}`}></div>
+					)}
+
+					{/* Grouped controls */}
+					{groupControls && (navigation || pagination) && (
+						<div className={`carousel-new-controls-group grouped grouped-position-${groupedPosition || 'bottom'} grouped-layout-${groupedLayout || 'split'}`}>
+							{groupedLayout === 'split' ? (
+								<>
+									{/* Split layout: individual buttons for proper ordering */}
+									{navigation && (
+										<button
+											className={`carousel-new-nav-prev custom-prev-${uniqueId.current}`}
+											aria-label={__('Previous slide', 'prolific-blocks')}
+											role="button"
+											onClick={(e) => {
+												e.preventDefault();
+												e.stopPropagation();
+												if (swiperElRef.current && swiperElRef.current.swiper) {
+													swiperElRef.current.swiper.slidePrev();
+												}
+											}}
+										>
+											{customNavigation && customNavPrevSvg ? (
+												<span dangerouslySetInnerHTML={{ __html: customNavPrevSvg }} />
+											) : (
+												<span aria-hidden="true">&#10094;</span>
+											)}
+											<span className="screen-reader-text">{__('Previous', 'prolific-blocks')}</span>
+										</button>
+									)}
+									{pagination && (
+										<div className={`swiper-pagination custom-pagination-${uniqueId.current} grouped`}></div>
+									)}
+									{navigation && (
+										<button
+											className={`carousel-new-nav-next custom-next-${uniqueId.current}`}
+											aria-label={__('Next slide', 'prolific-blocks')}
+											role="button"
+											onClick={(e) => {
+												e.preventDefault();
+												e.stopPropagation();
+												if (swiperElRef.current && swiperElRef.current.swiper) {
+													swiperElRef.current.swiper.slideNext();
+												}
+											}}
+										>
+											{customNavigation && customNavNextSvg ? (
+												<span dangerouslySetInnerHTML={{ __html: customNavNextSvg }} />
+											) : (
+												<span aria-hidden="true">&#10095;</span>
+											)}
+											<span className="screen-reader-text">{__('Next', 'prolific-blocks')}</span>
+										</button>
+									)}
+								</>
 							) : (
-								<span aria-hidden="true">&#10094;</span>
+								<>
+									{/* Left/Right layouts: buttons grouped in wrapper */}
+									{navigation && (
+										<div className="carousel-new-nav-buttons">
+											<button
+												className={`carousel-new-nav-prev custom-prev-${uniqueId.current}`}
+												aria-label={__('Previous slide', 'prolific-blocks')}
+												role="button"
+												onClick={(e) => {
+													e.preventDefault();
+													e.stopPropagation();
+													if (swiperElRef.current && swiperElRef.current.swiper) {
+														swiperElRef.current.swiper.slidePrev();
+													}
+												}}
+											>
+												{customNavigation && customNavPrevSvg ? (
+													<span dangerouslySetInnerHTML={{ __html: customNavPrevSvg }} />
+												) : (
+													<span aria-hidden="true">&#10094;</span>
+												)}
+												<span className="screen-reader-text">{__('Previous', 'prolific-blocks')}</span>
+											</button>
+											<button
+												className={`carousel-new-nav-next custom-next-${uniqueId.current}`}
+												aria-label={__('Next slide', 'prolific-blocks')}
+												role="button"
+												onClick={(e) => {
+													e.preventDefault();
+													e.stopPropagation();
+													if (swiperElRef.current && swiperElRef.current.swiper) {
+														swiperElRef.current.swiper.slideNext();
+													}
+												}}
+											>
+												{customNavigation && customNavNextSvg ? (
+													<span dangerouslySetInnerHTML={{ __html: customNavNextSvg }} />
+												) : (
+													<span aria-hidden="true">&#10095;</span>
+												)}
+												<span className="screen-reader-text">{__('Next', 'prolific-blocks')}</span>
+											</button>
+										</div>
+									)}
+									{pagination && (
+										<div className={`swiper-pagination custom-pagination-${uniqueId.current} grouped`}></div>
+									)}
+								</>
 							)}
-							<span className="screen-reader-text">{__('Previous', 'prolific-blocks')}</span>
-						</button>
-						<button
-							className={`custom-next custom-next-${uniqueId.current}`}
-							aria-label={__('Next slide', 'prolific-blocks')}
-							role="button"
-							onClick={(e) => {
-								e.preventDefault();
-								e.stopPropagation();
-								if (swiperElRef.current && swiperElRef.current.swiper) {
-									swiperElRef.current.swiper.slideNext();
-								}
-							}}
-						>
-							{customNavNextSvg ? (
-								<span dangerouslySetInnerHTML={{ __html: customNavNextSvg }} />
-							) : (
-								<span aria-hidden="true">&#10095;</span>
-							)}
-							<span className="screen-reader-text">{__('Next', 'prolific-blocks')}</span>
-						</button>
-					</>
-				)}
+						</div>
+					)}
+				</div>
 				{autoplay && pauseButton && (
 					<button className="carousel-new-pause-button" aria-label={__('Pause carousel', 'prolific-blocks')} role="button">
 						<span aria-hidden="true">⏸</span>

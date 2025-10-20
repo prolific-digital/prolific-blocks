@@ -40,6 +40,7 @@
 			if (!swiper) return;
 
 			setupCustomNavigation(carousel, swiper);
+			setupCustomPagination(carousel, swiper);
 			setupPauseButton(carousel, swiper);
 			setupFocusManagement(swiper);
 			setupA11yAttributes(swiper);
@@ -54,8 +55,15 @@
 	 * @param {Object} swiper - The Swiper instance.
 	 */
 	function setupCustomNavigation(carousel, swiper) {
-		const prevButton = carousel.querySelector('.carousel-new-nav-prev');
-		const nextButton = carousel.querySelector('.carousel-new-nav-next');
+		// Look for nav buttons in both regular wrapper and grouped controls
+		let prevButton = carousel.querySelector('.carousel-new-nav-wrapper .carousel-new-nav-prev');
+		let nextButton = carousel.querySelector('.carousel-new-nav-wrapper .carousel-new-nav-next');
+
+		// If not found in wrapper, check grouped controls
+		if (!prevButton || !nextButton) {
+			prevButton = carousel.querySelector('.carousel-new-controls-group .carousel-new-nav-prev');
+			nextButton = carousel.querySelector('.carousel-new-controls-group .carousel-new-nav-next');
+		}
 
 		if (!prevButton || !nextButton) return;
 
@@ -73,6 +81,29 @@
 		swiper.on('slideChange', function () {
 			updateNavigationState(swiper, prevButton, nextButton);
 		});
+	}
+
+	/**
+	 * Set up custom pagination element for grouped controls.
+	 *
+	 * @param {HTMLElement} carousel - The carousel container.
+	 * @param {Object} swiper - The Swiper instance.
+	 */
+	function setupCustomPagination(carousel, swiper) {
+		// Check if pagination is in grouped controls
+		const groupedPagination = carousel.querySelector('.carousel-new-controls-group .swiper-pagination');
+
+		if (groupedPagination && swiper.params.pagination) {
+			// Manually initialize pagination to the custom element
+			if (swiper.pagination && swiper.pagination.el !== groupedPagination) {
+				swiper.params.pagination.el = groupedPagination;
+				if (swiper.pagination.init) {
+					swiper.pagination.init();
+					swiper.pagination.render();
+					swiper.pagination.update();
+				}
+			}
+		}
 	}
 
 	/**

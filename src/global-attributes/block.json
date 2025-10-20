@@ -6,6 +6,9 @@
 	"title": "Global Custom Attributes",
 	"category": "prolific",
 	"description": "Global enhancement that adds custom HTML attributes to all blocks.",
+	"supports": {
+		"align": false
+	},
 	"textdomain": "prolific-blocks",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./editor.css"

@@ -9,7 +9,7 @@
   "description": "Display PDF files inline with configurable viewer options.",
   "example": {},
   "supports": {
-    "align": ["left", "center", "right", "wide", "full"],
+    "align": false,
     "ariaLabel": true,
     "className": true,
     "customClassName": true,
@@ -50,10 +50,6 @@
       "type": "boolean",
       "default": true
     },
-    "enableFullscreen": {
-      "type": "boolean",
-      "default": false
-    },
     "aspectRatio": {
       "type": "string",
       "default": "16-9"
@@ -63,10 +59,6 @@
       "default": 600
     },
     "showToolbar": {
-      "type": "boolean",
-      "default": true
-    },
-    "enableZoom": {
       "type": "boolean",
       "default": true
     },

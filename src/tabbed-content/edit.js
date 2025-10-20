@@ -66,8 +66,8 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		[clientId]
 	);
 
-	// Get block insertion and selection functions
-	const { insertBlock, selectBlock } = useDispatch('core/block-editor');
+	// Get block insertion, removal, selection, and move functions
+	const { insertBlock, removeBlock, selectBlock, moveBlocksToPosition } = useDispatch('core/block-editor');
 
 	// Function to select the parent tabbed content block
 	const selectParentBlock = useCallback(() => {
@@ -121,13 +121,33 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 			return; // Don't allow removing the last tab
 		}
 
+		// First update the tabs array
 		const newTabs = tabs.filter((_, i) => i !== index);
-		setAttributes({ tabs: newTabs });
 
-		// Adjust active tab if needed
+		// Adjust active tab BEFORE removing the block
+		let newActiveTab = activeTab;
 		if (activeTab >= newTabs.length) {
-			setAttributes({ activeTab: newTabs.length - 1 });
+			newActiveTab = newTabs.length - 1;
+		} else if (activeTab === index && index > 0) {
+			newActiveTab = index - 1;
+		} else if (activeTab > index) {
+			// If active tab is after the removed tab, decrement it
+			newActiveTab = activeTab - 1;
 		}
+
+		// Update attributes FIRST
+		setAttributes({
+			tabs: newTabs,
+			activeTab: newActiveTab
+		});
+
+		// THEN remove the corresponding inner block
+		// Use setTimeout to ensure the state update happens first
+		setTimeout(() => {
+			if (innerBlocks[index]) {
+				removeBlock(innerBlocks[index].clientId, false);
+			}
+		}, 0);
 	};
 
 	/**
@@ -144,18 +164,32 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 	 */
 	const moveTabUp = (index) => {
 		if (index === 0) return;
+
+		// Swap tabs in array
 		const newTabs = [...tabs];
 		[newTabs[index - 1], newTabs[index]] = [
 			newTabs[index],
 			newTabs[index - 1],
 		];
-		setAttributes({ tabs: newTabs });
 
 		// Update active tab if needed
+		let newActiveTab = activeTab;
 		if (activeTab === index) {
-			setAttributes({ activeTab: index - 1 });
+			newActiveTab = index - 1;
 		} else if (activeTab === index - 1) {
-			setAttributes({ activeTab: index });
+			newActiveTab = index;
+		}
+
+		setAttributes({ tabs: newTabs, activeTab: newActiveTab });
+
+		// Move the corresponding inner blocks to match
+		if (innerBlocks[index]) {
+			moveBlocksToPosition(
+				[innerBlocks[index].clientId],
+				clientId,
+				clientId,
+				index - 1
+			);
 		}
 	};
 
@@ -164,18 +198,32 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 	 */
 	const moveTabDown = (index) => {
 		if (index === tabs.length - 1) return;
+
+		// Swap tabs in array
 		const newTabs = [...tabs];
 		[newTabs[index], newTabs[index + 1]] = [
 			newTabs[index + 1],
 			newTabs[index],
 		];
-		setAttributes({ tabs: newTabs });
 
 		// Update active tab if needed
+		let newActiveTab = activeTab;
 		if (activeTab === index) {
-			setAttributes({ activeTab: index + 1 });
+			newActiveTab = index + 1;
 		} else if (activeTab === index + 1) {
-			setAttributes({ activeTab: index });
+			newActiveTab = index;
+		}
+
+		setAttributes({ tabs: newTabs, activeTab: newActiveTab });
+
+		// Move the corresponding inner blocks to match
+		if (innerBlocks[index]) {
+			moveBlocksToPosition(
+				[innerBlocks[index].clientId],
+				clientId,
+				clientId,
+				index + 1
+			);
 		}
 	};
 

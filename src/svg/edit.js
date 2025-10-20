@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls, BlockControls, BlockAlignmentToolbar, MediaPlaceholder } from '@wordpress/block-editor';
+import { useBlockProps, InspectorControls, BlockControls, BlockAlignmentToolbar, MediaPlaceholder, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import {
 	PanelBody,
 	RangeControl,
@@ -66,6 +66,7 @@ export default function Edit({ attributes, setAttributes }) {
 
 	// Fetch SVG content when URL changes
 	useEffect(() => {
+		// Only fetch if we have a URL but no content
 		if (svgUrl && !svgContent) {
 			setIsLoading(true);
 			setLoadError('');
@@ -87,7 +88,7 @@ export default function Edit({ attributes, setAttributes }) {
 					setIsLoading(false);
 				});
 		}
-	}, [svgUrl]);
+	}, [svgUrl, svgContent, setAttributes]);
 
 	/**
 	 * Handle media selection
@@ -97,19 +98,26 @@ export default function Edit({ attributes, setAttributes }) {
 			return;
 		}
 
-		// Check if file is SVG
-		if (media.mime !== 'image/svg+xml') {
+		// Check if file is SVG (WordPress uses 'mime' or 'subtype' properties)
+		const mimeType = media.mime || media.mimeType || media.type || '';
+		const fileExtension = media.url.split('.').pop().toLowerCase();
+
+		// Check both mime type and file extension
+		if (mimeType !== 'image/svg+xml' && fileExtension !== 'svg') {
 			setLoadError(__('Please select an SVG file.', 'prolific-blocks'));
 			return;
 		}
 
+		// Clear error
+		setLoadError('');
+
+		// Update attributes - clearing svgContent triggers the fetch in useEffect
 		setAttributes({
 			svgUrl: media.url,
 			mediaId: media.id,
-			svgContent: '', // Clear content to trigger reload
-			altText: media.alt || altText
+			svgContent: '', // Clear content to trigger reload in useEffect
+			altText: media.alt || altText || ''
 		});
-		setLoadError('');
 	};
 
 	/**
@@ -172,39 +180,36 @@ export default function Edit({ attributes, setAttributes }) {
 		);
 	};
 
-	// If no SVG is selected, show placeholder
-	if (!svgUrl) {
-		return (
-			<div {...blockProps}>
-				<MediaPlaceholder
-					icon="format-image"
-					labels={{
-						title: __('SVG', 'prolific-blocks'),
-						instructions: __('Upload an SVG file or select one from your media library.', 'prolific-blocks')
-					}}
-					onSelect={onSelectMedia}
-					accept="image/svg+xml"
-					allowedTypes={['image/svg+xml']}
-					multiple={false}
-				/>
-			</div>
-		);
-	}
-
 	return (
 		<>
-			<BlockControls>
-				<BlockAlignmentToolbar
-					value={alignment}
-					onChange={(value) => setAttributes({ alignment: value })}
-					controls={['left', 'center', 'right', 'wide', 'full']}
-				/>
-			</BlockControls>
+			{svgUrl && (
+				<BlockControls>
+					<BlockAlignmentToolbar
+						value={alignment}
+						onChange={(value) => setAttributes({ alignment: value })}
+						controls={['left', 'center', 'right', 'wide', 'full']}
+					/>
+				</BlockControls>
+			)}
 
 			<div {...blockProps}>
-				<div className="prolific-svg-container">
-					{renderSVG()}
-				</div>
+				{!svgUrl ? (
+					<MediaPlaceholder
+						icon="format-image"
+						labels={{
+							title: __('SVG', 'prolific-blocks'),
+							instructions: __('Upload an SVG file or select one from your media library.', 'prolific-blocks')
+						}}
+						onSelect={onSelectMedia}
+						accept="image/svg+xml"
+						allowedTypes={['image/svg+xml']}
+						multiple={false}
+					/>
+				) : (
+					<div className="prolific-svg-container">
+						{renderSVG()}
+					</div>
+				)}
 			</div>
 
 			<InspectorControls>
@@ -214,7 +219,7 @@ export default function Edit({ attributes, setAttributes }) {
 							label={__('SVG File', 'prolific-blocks')}
 							id="svg-media-control"
 						>
-							{svgUrl && (
+							{svgUrl && svgContent && (
 								<div className="prolific-svg-thumbnail">
 									<div
 										className="svg-preview"
@@ -223,24 +228,21 @@ export default function Edit({ attributes, setAttributes }) {
 								</div>
 							)}
 							<HStack>
-								<Button
-									variant="secondary"
-									onClick={() => {
-										const mediaFrame = wp.media({
-											title: __('Select SVG', 'prolific-blocks'),
-											button: { text: __('Select', 'prolific-blocks') },
-											multiple: false,
-											library: { type: 'image/svg+xml' }
-										});
-										mediaFrame.on('select', () => {
-											const attachment = mediaFrame.state().get('selection').first().toJSON();
-											onSelectMedia(attachment);
-										});
-										mediaFrame.open();
-									}}
-								>
-									{svgUrl ? __('Replace SVG', 'prolific-blocks') : __('Select SVG', 'prolific-blocks')}
-								</Button>
+								<MediaUploadCheck>
+									<MediaUpload
+										onSelect={onSelectMedia}
+										allowedTypes={['image/svg+xml']}
+										value={mediaId}
+										render={({ open }) => (
+											<Button
+												variant="secondary"
+												onClick={open}
+											>
+												{svgUrl ? __('Replace SVG', 'prolific-blocks') : __('Select SVG', 'prolific-blocks')}
+											</Button>
+										)}
+									/>
+								</MediaUploadCheck>
 								{svgUrl && (
 									<Button
 										isDestructive

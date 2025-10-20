@@ -9,7 +9,7 @@
   "description": "Display current weather and forecast using the National Weather Service API.",
   "example": {},
   "supports": {
-    "align": ["wide", "full"],
+    "align": false,
     "ariaLabel": true,
     "className": true,
     "customClassName": true,

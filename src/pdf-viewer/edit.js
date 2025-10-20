@@ -34,11 +34,9 @@ export default function Edit({ attributes, setAttributes }) {
 		pdfFilename,
 		displayMethod,
 		showDownloadButton,
-		enableFullscreen,
 		aspectRatio,
 		customHeight,
 		showToolbar,
-		enableZoom,
 		enableNavigation,
 		altText
 	} = attributes;
@@ -140,7 +138,6 @@ export default function Edit({ attributes, setAttributes }) {
 		if (displayMethod === 'iframe') {
 			const params = [];
 			if (!showToolbar) params.push('toolbar=0');
-			if (!enableZoom) params.push('zoom=100');
 			if (!enableNavigation) params.push('navpanes=0');
 			if (params.length > 0) {
 				iframeUrl += '#' + params.join('&');
@@ -329,13 +326,6 @@ export default function Edit({ attributes, setAttributes }) {
 						checked={showDownloadButton}
 						onChange={(value) => setAttributes({ showDownloadButton: value })}
 					/>
-
-					<ToggleControl
-						label={__('Enable Fullscreen', 'prolific-blocks')}
-						help={__('Allow PDF to open in fullscreen mode', 'prolific-blocks')}
-						checked={enableFullscreen}
-						onChange={(value) => setAttributes({ enableFullscreen: value })}
-					/>
 				</PanelBody>
 
 				{displayMethod === 'iframe' && (
@@ -349,13 +339,6 @@ export default function Edit({ attributes, setAttributes }) {
 							help={__('Display PDF toolbar with controls', 'prolific-blocks')}
 							checked={showToolbar}
 							onChange={(value) => setAttributes({ showToolbar: value })}
-						/>
-
-						<ToggleControl
-							label={__('Enable Zoom Controls', 'prolific-blocks')}
-							help={__('Allow users to zoom in/out', 'prolific-blocks')}
-							checked={enableZoom}
-							onChange={(value) => setAttributes({ enableZoom: value })}
 						/>
 
 						<ToggleControl

@@ -9,7 +9,7 @@
   "description": "Display a breadcrumb navigation trail showing the current page location.",
   "example": {},
   "supports": {
-    "align": ["wide", "full"],
+    "align": false,
     "ariaLabel": true,
     "className": true,
     "customClassName": true,

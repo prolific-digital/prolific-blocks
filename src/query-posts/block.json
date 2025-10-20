@@ -9,7 +9,7 @@
   "description": "Display posts with advanced query options, carousel mode, search and filter capabilities. Perfect for post grids, lists, and dynamic content.",
   "keywords": ["query", "posts", "carousel", "search", "filter", "grid", "list", "custom post type"],
   "supports": {
-    "align": ["left", "center", "right", "wide", "full"],
+    "align": false,
     "anchor": true,
     "spacing": {
       "padding": true,

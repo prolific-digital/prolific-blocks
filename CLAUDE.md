@@ -359,17 +359,23 @@ When updating versions, update both files and create corresponding GitHub releas
 ### Carousel New Block
 - Enhanced Swiper.js carousel with advanced controls
 - **Navigation Buttons Always Grouped:** Prev/next buttons always wrapped in `.carousel-new-nav-buttons` div
-- **Control Grouping:** Option to group navigation and pagination together
-- **Position Control:** Place grouped controls on top or bottom
-- **Navigation Layouts:**
-  - Split: `[← Prev] [Pagination] [Next →]` - arrows on sides
-  - Left: `[←→ Arrows] [Pagination]` - arrows grouped left
-  - Right: `[Pagination] [←→ Arrows]` - arrows grouped right
-- Custom navigation SVG support
+- **Navigation Position Control:** Position navigation buttons (left/center/right) when not grouped
+- **Control Grouping:** Option to group navigation and pagination together with `groupControls` attribute
+- **Grouped Controls Position:** Place grouped controls on top or bottom of carousel
+- **Grouped Controls Layouts:**
+  - Split: `[← Prev] [Pagination] [Next →]` - arrows on sides, pagination center
+  - Left: `[←→ Arrows] [Pagination]` - arrows grouped left, pagination right
+  - Right: `[Pagination] [←→ Arrows]` - pagination left, arrows grouped right
+- **Custom Navigation:** Upload SVG icons for prev/next buttons
+- **Frontend Navigation Fix:** Custom navigation properly connected to Swiper instance in view.js
 - Pagination styles display in editor preview (all types: bullets, fraction, progress bar)
 - Responsive behavior on all screen sizes
-- **Grouped Controls Frontend:** Proper Swiper Element initialization with data attributes for pagination type
-- Helper text uses transparent backgrounds for readability
+- **Proper Swiper Element initialization:** Data attributes for pagination type and all settings
+- **CSS Classes for Styling:**
+  - `.nav-position-{left|center|right}` - navigation positioning
+  - `.grouped` - when controls are grouped
+  - `.group-layout-{split|left|right}` - grouped layout style
+  - `.group-position-{top|bottom}` - grouped controls position
 
 ### Table of Contents Block
 - **Scroll Offset Fix:** CSS `scroll-margin-top: 100px` + JavaScript offset for proper heading visibility

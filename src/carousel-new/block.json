@@ -178,6 +178,26 @@
     "pauseButton": {
       "type": "boolean",
       "default": true
+    },
+    "navigationPosition": {
+      "type": "string",
+      "default": "center"
+    },
+    "paginationPosition": {
+      "type": "string",
+      "default": "bottom"
+    },
+    "groupControls": {
+      "type": "boolean",
+      "default": false
+    },
+    "groupedPosition": {
+      "type": "string",
+      "default": "bottom"
+    },
+    "groupedLayout": {
+      "type": "string",
+      "default": "split"
     }
   },
   "textdomain": "prolific-blocks",

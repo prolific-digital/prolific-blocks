@@ -9,7 +9,7 @@
   "description": "Add social media sharing buttons for the current page.",
   "example": {},
   "supports": {
-    "align": ["wide", "full"],
+    "align": false,
     "ariaLabel": true,
     "className": true,
     "customClassName": true,

@@ -9,6 +9,7 @@
   "parent": ["prolific/carousel"],
   "description": "An individual slide for the Carousel block, used to display media content within the carousel.",
   "supports": {
+    "align": false,
     "customClassName": true
   },
   "attributes": {

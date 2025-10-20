@@ -127,8 +127,8 @@ if (is_singular()) {
   );
 }
 
-// Don't render if only home is in breadcrumbs
-if (count($breadcrumbs) <= 1) {
+// Don't render if no breadcrumbs at all
+if (count($breadcrumbs) === 0) {
   return '';
 }
 

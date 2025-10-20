@@ -239,49 +239,154 @@ $custom_nav_next = pb_carousel_new_get_attribute($attributes, 'customNavNextSvg'
 // Check for autoplay pause button
 $has_autoplay = pb_carousel_new_get_attribute($attributes, 'autoplay');
 $show_pause_button = pb_carousel_new_get_attribute($attributes, 'pauseButton');
+
+// Get positioning attributes
+$navigation_position = pb_carousel_new_get_attribute($attributes, 'navigationPosition') ?: 'center';
+$pagination_position = pb_carousel_new_get_attribute($attributes, 'paginationPosition') ?: 'bottom';
+$group_controls = pb_carousel_new_get_attribute($attributes, 'groupControls');
+$grouped_position = pb_carousel_new_get_attribute($attributes, 'groupedPosition') ?: 'bottom';
+$grouped_layout = pb_carousel_new_get_attribute($attributes, 'groupedLayout') ?: 'split';
+
+// Check if navigation and pagination are enabled
+$has_navigation = pb_carousel_new_get_attribute($attributes, 'navigation');
+$has_pagination = pb_carousel_new_get_attribute($attributes, 'pagination');
 ?>
 
 <section <?php echo $wrapper_attributes; ?>>
-	<swiper-container
-		<?php echo $swiper_html_attrs; ?>
-		role="region"
-		aria-label="<?php esc_attr_e('Carousel', 'prolific-blocks'); ?>"
-		class="carousel-new-swiper-container"
-	>
-		<?php echo $content; ?>
-	</swiper-container>
-
-	<?php if ($has_custom_nav) : ?>
-		<button
-			class="carousel-new-nav-prev"
-			aria-label="<?php esc_attr_e('Previous slide', 'prolific-blocks'); ?>"
-			role="button"
+	<div class="carousel-new-swiper-wrapper">
+		<swiper-container
+			<?php echo $swiper_html_attrs; ?>
+			role="region"
+			aria-label="<?php esc_attr_e('Carousel', 'prolific-blocks'); ?>"
+			class="carousel-new-swiper-container"
 		>
-			<?php if ($custom_nav_prev) : ?>
-				<span class="carousel-new-nav-icon">
-					<?php echo pb_carousel_new_sanitize_svg($custom_nav_prev); ?>
-				</span>
-			<?php else : ?>
-				<span class="carousel-new-nav-icon" aria-hidden="true">‹</span>
-			<?php endif; ?>
-			<span class="screen-reader-text"><?php esc_html_e('Previous', 'prolific-blocks'); ?></span>
-		</button>
+			<?php echo $content; ?>
+		</swiper-container>
 
-		<button
-			class="carousel-new-nav-next"
-			aria-label="<?php esc_attr_e('Next slide', 'prolific-blocks'); ?>"
-			role="button"
-		>
-			<?php if ($custom_nav_next) : ?>
-				<span class="carousel-new-nav-icon">
-					<?php echo pb_carousel_new_sanitize_svg($custom_nav_next); ?>
-				</span>
-			<?php else : ?>
-				<span class="carousel-new-nav-icon" aria-hidden="true">›</span>
-			<?php endif; ?>
-			<span class="screen-reader-text"><?php esc_html_e('Next', 'prolific-blocks'); ?></span>
-		</button>
-	<?php endif; ?>
+		<?php if (!$group_controls && $has_navigation) : ?>
+			<div class="carousel-new-nav-wrapper nav-position-<?php echo esc_attr($navigation_position); ?>">
+				<div class="carousel-new-nav-buttons">
+					<button
+						class="carousel-new-nav-prev"
+						aria-label="<?php esc_attr_e('Previous slide', 'prolific-blocks'); ?>"
+						role="button"
+					>
+						<?php if ($has_custom_nav && $custom_nav_prev) : ?>
+							<span class="carousel-new-nav-icon">
+								<?php echo pb_carousel_new_sanitize_svg($custom_nav_prev); ?>
+							</span>
+						<?php else : ?>
+							<span class="carousel-new-nav-icon" aria-hidden="true">‹</span>
+						<?php endif; ?>
+						<span class="screen-reader-text"><?php esc_html_e('Previous', 'prolific-blocks'); ?></span>
+					</button>
+
+					<button
+						class="carousel-new-nav-next"
+						aria-label="<?php esc_attr_e('Next slide', 'prolific-blocks'); ?>"
+						role="button"
+					>
+						<?php if ($has_custom_nav && $custom_nav_next) : ?>
+							<span class="carousel-new-nav-icon">
+								<?php echo pb_carousel_new_sanitize_svg($custom_nav_next); ?>
+							</span>
+						<?php else : ?>
+							<span class="carousel-new-nav-icon" aria-hidden="true">›</span>
+						<?php endif; ?>
+						<span class="screen-reader-text"><?php esc_html_e('Next', 'prolific-blocks'); ?></span>
+					</button>
+				</div>
+			</div>
+		<?php endif; ?>
+
+		<?php if (!$group_controls && $has_pagination) : ?>
+			<div class="swiper-pagination pagination-position-<?php echo esc_attr($pagination_position); ?>"></div>
+		<?php endif; ?>
+
+		<?php if ($group_controls && ($has_navigation || $has_pagination)) : ?>
+			<div class="carousel-new-controls-group grouped grouped-position-<?php echo esc_attr($grouped_position); ?> grouped-layout-<?php echo esc_attr($grouped_layout); ?>">
+				<?php if ($grouped_layout === 'split') : ?>
+					<?php // Split layout: individual buttons for proper ordering ?>
+					<?php if ($has_navigation) : ?>
+						<button
+							class="carousel-new-nav-prev"
+							aria-label="<?php esc_attr_e('Previous slide', 'prolific-blocks'); ?>"
+							role="button"
+						>
+							<?php if ($has_custom_nav && $custom_nav_prev) : ?>
+								<span class="carousel-new-nav-icon">
+									<?php echo pb_carousel_new_sanitize_svg($custom_nav_prev); ?>
+								</span>
+							<?php else : ?>
+								<span class="carousel-new-nav-icon" aria-hidden="true">‹</span>
+							<?php endif; ?>
+							<span class="screen-reader-text"><?php esc_html_e('Previous', 'prolific-blocks'); ?></span>
+						</button>
+					<?php endif; ?>
+
+					<?php if ($has_pagination) : ?>
+						<div class="swiper-pagination grouped"></div>
+					<?php endif; ?>
+
+					<?php if ($has_navigation) : ?>
+						<button
+							class="carousel-new-nav-next"
+							aria-label="<?php esc_attr_e('Next slide', 'prolific-blocks'); ?>"
+							role="button"
+						>
+							<?php if ($has_custom_nav && $custom_nav_next) : ?>
+								<span class="carousel-new-nav-icon">
+									<?php echo pb_carousel_new_sanitize_svg($custom_nav_next); ?>
+								</span>
+							<?php else : ?>
+								<span class="carousel-new-nav-icon" aria-hidden="true">›</span>
+							<?php endif; ?>
+							<span class="screen-reader-text"><?php esc_html_e('Next', 'prolific-blocks'); ?></span>
+						</button>
+					<?php endif; ?>
+				<?php else : ?>
+					<?php // Left/Right layouts: buttons grouped in wrapper ?>
+					<?php if ($has_navigation) : ?>
+						<div class="carousel-new-nav-buttons">
+							<button
+								class="carousel-new-nav-prev"
+								aria-label="<?php esc_attr_e('Previous slide', 'prolific-blocks'); ?>"
+								role="button"
+							>
+								<?php if ($has_custom_nav && $custom_nav_prev) : ?>
+									<span class="carousel-new-nav-icon">
+										<?php echo pb_carousel_new_sanitize_svg($custom_nav_prev); ?>
+									</span>
+								<?php else : ?>
+									<span class="carousel-new-nav-icon" aria-hidden="true">‹</span>
+								<?php endif; ?>
+								<span class="screen-reader-text"><?php esc_html_e('Previous', 'prolific-blocks'); ?></span>
+							</button>
+
+							<button
+								class="carousel-new-nav-next"
+								aria-label="<?php esc_attr_e('Next slide', 'prolific-blocks'); ?>"
+								role="button"
+							>
+								<?php if ($has_custom_nav && $custom_nav_next) : ?>
+									<span class="carousel-new-nav-icon">
+										<?php echo pb_carousel_new_sanitize_svg($custom_nav_next); ?>
+									</span>
+								<?php else : ?>
+									<span class="carousel-new-nav-icon" aria-hidden="true">›</span>
+								<?php endif; ?>
+								<span class="screen-reader-text"><?php esc_html_e('Next', 'prolific-blocks'); ?></span>
+							</button>
+						</div>
+					<?php endif; ?>
+
+					<?php if ($has_pagination) : ?>
+						<div class="swiper-pagination grouped"></div>
+					<?php endif; ?>
+				<?php endif; ?>
+			</div>
+		<?php endif; ?>
+	</div>
 
 	<?php if ($has_autoplay && $show_pause_button) : ?>
 		<button

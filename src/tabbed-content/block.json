@@ -15,7 +15,7 @@
 		"customClassName": true,
 		"html": false,
 		"anchor": true,
-		"align": ["wide", "full"],
+		"align": false,
 		"color": {
 			"background": true,
 			"text": true,

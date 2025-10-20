@@ -10,7 +10,7 @@
   "keywords": ["anchor", "navigation", "jump links", "menu", "toc"],
   "example": {},
   "supports": {
-    "align": ["wide", "full"],
+    "align": false,
     "ariaLabel": true,
     "className": true,
     "customClassName": true,

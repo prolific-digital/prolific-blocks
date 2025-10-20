@@ -10,7 +10,7 @@
   "keywords": ["reading", "time", "estimate", "words", "duration"],
   "example": {},
   "supports": {
-    "align": true,
+    "align": false,
     "ariaLabel": true,
     "className": true,
     "customClassName": true,

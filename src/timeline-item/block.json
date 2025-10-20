@@ -10,6 +10,7 @@
   "parent": ["prolific/timeline"],
   "example": {},
   "supports": {
+    "align": false,
     "ariaLabel": true,
     "className": true,
     "customClassName": true,

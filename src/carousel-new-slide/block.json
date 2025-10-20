@@ -9,6 +9,7 @@
   "parent": ["prolific/carousel-new"],
   "description": "An individual slide for the Carousel New block. Add any blocks you want inside each slide.",
   "supports": {
+    "align": false,
     "customClassName": true,
     "spacing": {
       "padding": true,

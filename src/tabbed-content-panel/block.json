@@ -11,6 +11,7 @@
 	"parent": ["prolific/tabbed-content"],
 	"example": {},
 	"supports": {
+		"align": false,
 		"ariaLabel": true,
 		"className": true,
 		"customClassName": true,

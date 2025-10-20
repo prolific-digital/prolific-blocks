@@ -9,6 +9,7 @@
   "description": "A block that allows you to create a tabbed content.",
   "example": {},
   "supports": {
+    "align": false,
     "ariaLabel": true,
     "className": true,
     "customClassName": true,

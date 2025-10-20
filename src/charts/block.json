@@ -10,7 +10,7 @@
   "keywords": ["chart", "graph", "data", "visualization", "d3", "analytics", "statistics"],
   "example": {},
   "supports": {
-    "align": ["left", "center", "right", "wide", "full"],
+    "align": false,
     "ariaLabel": true,
     "className": true,
     "customClassName": true,

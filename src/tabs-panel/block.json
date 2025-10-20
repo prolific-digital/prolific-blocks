@@ -10,6 +10,7 @@
   "example": {},
   "parent": ["prolific/tabs"],
   "supports": {
+    "align": false,
     "ariaLabel": true,
     "className": true,
     "customClassName": true,
