@@ -26,6 +26,7 @@ import { createBlock } from "@wordpress/blocks";
 import { debounce } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
+import SupportCard from "../components/SupportCard";
 import "./editor.scss";
 
 /**
@@ -327,26 +328,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
   return (
     <>
       <InspectorControls>
-        {/* Documentation Card */}
-        <Card>
-          <CardBody>
-            <div style={{ marginBottom: "4px" }}>
-              {__("Need help?", "prolific-blocks")}
-            </div>
-            <a
-              href="https://prolificdigital.notion.site/Carousel-2905efcd8c5f8046bfbcc568c0144038?source=copy_link"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                color: "#007cba",
-                textDecoration: "underline",
-                fontWeight: "500",
-              }}
-            >
-              {__("View Documentation", "prolific-blocks")}
-            </a>
-          </CardBody>
-        </Card>
+        <SupportCard />
 
         <Card>
           <CardBody>

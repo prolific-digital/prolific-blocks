@@ -13,7 +13,7 @@ import { Card, CardBody } from '@wordpress/components';
 
 const SupportCard = ({ docUrl }) => {
 	// Default to main Prolific Blocks documentation if no specific URL provided
-	const documentationUrl = docUrl || 'https://www.notion.so/prolificdigital/Prolific-Blocks-19f5efcd8c5f807f951ac38f50e90f0d';
+	const documentationUrl = docUrl || 'https://prolificdigital.notion.site/Prolific-Blocks-19f5efcd8c5f807f951ac38f50e90f0d?pvs=74';
 
 	return (
 		<Card>
