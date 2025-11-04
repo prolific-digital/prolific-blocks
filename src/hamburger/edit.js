@@ -61,7 +61,7 @@ import SupportCard from '../components/SupportCard';
 import { useState } from "@wordpress/element";
 
 export default function Edit({ attributes, setAttributes }) {
-  const { hamburgerClass, ariaControls } = attributes;
+  const { hamburgerClass, ariaControls, showLabel, labelText, labelTextActive } = attributes;
   const blockProps = useBlockProps();
   const [isActive, setIsActive] = useState(false);
 
@@ -124,6 +124,39 @@ export default function Edit({ attributes, setAttributes }) {
             )}
           />
         </PanelBody>
+        <PanelBody title={__("Label Settings", "text-domain")} initialOpen={false}>
+          <ToggleControl
+            label={__("Show Label", "text-domain")}
+            checked={showLabel}
+            onChange={(value) => setAttributes({ showLabel: value })}
+            help={__(
+              "Display text label alongside the hamburger button.",
+              "text-domain"
+            )}
+          />
+          {showLabel && (
+            <>
+              <TextControl
+                label={__("Default Label Text", "text-domain")}
+                value={labelText}
+                onChange={(value) => setAttributes({ labelText: value })}
+                help={__(
+                  "Text displayed when menu is closed.",
+                  "text-domain"
+                )}
+              />
+              <TextControl
+                label={__("Active Label Text", "text-domain")}
+                value={labelTextActive}
+                onChange={(value) => setAttributes({ labelTextActive: value })}
+                help={__(
+                  "Text displayed when menu is open.",
+                  "text-domain"
+                )}
+              />
+            </>
+          )}
+        </PanelBody>
       </InspectorControls>
       <div {...blockProps}>
         <button
@@ -137,6 +170,16 @@ export default function Edit({ attributes, setAttributes }) {
           <span className="hamburger-box">
             <span className="hamburger-inner"></span>
           </span>
+          {showLabel && (
+            <span className="hamburger-label">
+              <span className={`hamburger-label-text ${isActive ? "is-hidden" : ""}`}>
+                {labelText}
+              </span>
+              <span className={`hamburger-label-text hamburger-label-text-active ${!isActive ? "is-hidden" : ""}`}>
+                {labelTextActive}
+              </span>
+            </span>
+          )}
         </button>
       </div>
     </>
