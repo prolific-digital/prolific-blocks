@@ -31,6 +31,18 @@
     "ariaControls": {
       "type": "string",
       "default": ""
+    },
+    "showLabel": {
+      "type": "boolean",
+      "default": false
+    },
+    "labelText": {
+      "type": "string",
+      "default": "Menu"
+    },
+    "labelTextActive": {
+      "type": "string",
+      "default": "Close"
     }
   },
   "textdomain": "prolific-blocks",

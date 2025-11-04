@@ -16,7 +16,7 @@ Prolific Blocks is a WordPress plugin that extends the block editor with advance
 - Timeline (with Timeline Item child blocks) - Vertical event timeline with customizable styling
 
 **Navigation:**
-- Hamburger Menu - Animated hamburger toggle button
+- Hamburger Menu - Animated hamburger toggle button with optional text labels and 29 animation styles
 - Breadcrumbs - Auto-generated breadcrumb navigation
 - Table of Contents - Dynamic TOC from page headings (H1-H6) with filtering and scroll offset
 - Anchor Navigation - Horizontal jump-link menu with sticky support and scroll offset
@@ -273,6 +273,46 @@ Current version: 1.0.0 (managed in both `package.json` and `prolific-blocks.php`
 When updating versions, update both files and create corresponding GitHub release for auto-update system.
 
 ## Block-Specific Notes
+
+### Hamburger Menu
+- **29 Animation Styles** - Full hamburgers library (v1.2.1) integration with styles like 3DX, Arrow, Collapse, Elastic, Spin, Squeeze, Vortex, etc.
+- **Optional Text Labels** - Display customizable text alongside hamburger icon
+  - Separate text for default and active states
+  - Default text when menu is closed (e.g., "Menu")
+  - Active text when menu is open (e.g., "Close")
+  - Toggle to show/hide labels completely
+- **HTML Structure** - Label is contained INSIDE the button element for styling control:
+  ```html
+  <button class="hamburger">
+    <span class="hamburger-box">
+      <span class="hamburger-inner"></span>
+    </span>
+    <span class="hamburger-label">
+      <span class="hamburger-label-text">Menu</span>
+      <span class="hamburger-label-text-active is-hidden">Close</span>
+    </span>
+  </button>
+  ```
+- **CSS Styling** - Uses `:has()` selector for conditional flexbox layout
+  - Only applies flex layout when label is present: `.hamburger:has(.hamburger-label)`
+  - Smooth opacity transitions (0.3s) between label states
+  - Absolute positioning for hidden text prevents layout shift
+- **Accessibility Features**:
+  - `aria-label` dynamically updates to match visible text state
+  - `aria-expanded` toggles between "true"/"false" to announce menu state
+  - `aria-controls` to associate button with controlled menu element
+  - `aria-hidden="true"` on visible label prevents duplicate screen reader announcements
+- **Frontend Behavior** (`view.js`):
+  - Toggles `is-active` class on button
+  - Toggles `menu-is-active` class on body element
+  - Switches label text visibility by toggling `.is-hidden` class
+  - Updates ARIA attributes for screen reader support
+- **Block Attributes** (`block.json`):
+  - `hamburgerClass` - Animation style (default: "hamburger--boring")
+  - `ariaControls` - ID of controlled element
+  - `showLabel` - Enable/disable label display (default: false)
+  - `labelText` - Default state text (default: "Menu")
+  - `labelTextActive` - Active state text (default: "Close")
 
 ### Table of Contents
 - Automatically generates from H1-H6 headings

@@ -1,121 +1,23 @@
-# Menu Icon Block
+# Hamburger Menu Block
 
-A versatile and feature-rich menu icon block for WordPress Gutenberg, offering multiple icon types, extensive animations, and comprehensive customization options.
+An animated hamburger menu toggle button for WordPress Gutenberg with extensive animation styles and optional text labels.
 
 ## Overview
 
-The Menu Icon block (formerly "Hamburger" block) provides a professional, accessible menu toggle button with support for various icon styles including hamburger, close (X), dots menus, grid, plus, and chevron icons. Each icon type comes with its own set of animations and full customization capabilities.
+The Hamburger Menu block provides a professional, accessible menu toggle button with 29 different animation styles from the Hamburgers library. The block supports optional text labels that can display different text for open and closed states, making it perfect for navigation menus and toggleable content.
 
 ## Features
 
-### Icon Types
+### Animation Styles (29 Options)
 
-1. **Hamburger (3 Lines)** - Classic hamburger menu icon with 29+ animation styles
-2. **Close (X)** - X/Close icon with spin, collapse, and fade animations
-3. **Dots Vertical (Kebab)** - 3 vertical dots with fade, scale, and slide animations
-4. **Dots Horizontal (Meatballs)** - 3 horizontal dots with fade, scale, and slide animations
-5. **Grid (3x3)** - 9-dot grid with morph and rotate animations
-6. **Plus (+)** - Plus icon with rotate and morph to X animations
-7. **Chevron (Arrow)** - Arrow/chevron with rotate up/down animations
-
-### Customization Options
-
-#### Icon Type Panel
-- Radio control for selecting icon type
-- Visual preview of selected icon in editor
-
-#### Animation Panel
-- Dynamic animation options based on icon type
-- Animation speed control (100-1000ms)
-- All 29 original hamburger animations preserved
-
-#### Size & Spacing Panel
-- Icon size: 16-80px (default: 32px)
-- Icon thickness/stroke width: 1-6px (default: 2px)
-- Line spacing for hamburger: 3-12px (default: 6px)
-
-#### Colors Panel
-- Theme color support (default)
-- Custom icon color
-- Custom hover color
-- Custom active state color
-- Full WordPress color palette integration
-
-#### Accessibility Panel
-- Customizable ARIA label (default: "Toggle menu")
-- ARIA controls ID for associating with menu element
-- Optional visible label with text customization
-- Label position options (left, right, top, bottom)
-
-### Frontend Features
-
-- Click to toggle active state
-- Keyboard support (Enter and Space keys)
-- Escape key to close menu
-- State persistence via sessionStorage
-- Automatic controlled element visibility management
-- Focus management and proper focus styles
-- Custom event dispatching for integration
-- Minimum 44x44px touch target size
-
-### Accessibility
-
-- Proper ARIA labels and roles
-- ARIA-controls for associating with menu elements
-- ARIA-expanded state management
-- Keyboard navigation support
-- Focus-visible styles
-- Screen reader friendly
-
-## File Structure
-
-```
-/src/menu-icon/
-├── block.json          # Block configuration and attributes
-├── edit.js             # Block editor component
-├── save.js             # Save function (returns null for dynamic block)
-├── render.php          # PHP render template
-├── style.scss          # Frontend styles
-├── editor.scss         # Editor-specific styles
-├── view.js             # Frontend JavaScript
-├── index.js            # Block registration with deprecation
-└── README.md           # This file
-```
-
-## Attributes
-
-```json
-{
-  "iconType": "string (default: 'hamburger')",
-  "animationStyle": "string (default: 'hamburger--boring')",
-  "animationSpeed": "number (default: 300)",
-  "iconSize": "number (default: 32)",
-  "iconThickness": "number (default: 2)",
-  "lineSpacing": "number (default: 6)",
-  "iconColor": "string (default: '')",
-  "iconColorHover": "string (default: '')",
-  "iconColorActive": "string (default: '')",
-  "useThemeColors": "boolean (default: true)",
-  "ariaLabel": "string (default: 'Toggle menu')",
-  "ariaControls": "string (default: '')",
-  "showLabel": "boolean (default: false)",
-  "labelText": "string (default: 'Menu')",
-  "labelPosition": "string (default: 'right')",
-  "hamburgerClass": "string (deprecated, for backward compatibility)"
-}
-```
-
-## Hamburger Animation Styles
-
-All 29 original hamburger animations are preserved:
-
+All 29 animations from the [Hamburgers](https://github.com/jonsuh/hamburgers) library:
 - 3D X / 3D X Reverse
 - 3D Y / 3D Y Reverse
 - 3D XY / 3D XY Reverse
 - Arrow / Arrow Reverse
 - Arrow Alt / Arrow Alt Reverse
 - Arrow Turn / Arrow Turn Reverse
-- Boring
+- Boring (default)
 - Collapse / Collapse Reverse
 - Elastic / Elastic Reverse
 - Emphatic / Emphatic Reverse
@@ -127,92 +29,170 @@ All 29 original hamburger animations are preserved:
 - Squeeze
 - Vortex / Vortex Reverse
 
-## New Icon Animations
+### Optional Text Labels
 
-### Close Icon
-- Spin - Rotates 180°
-- Collapse - Scales in/out
-- Fade - Opacity change
+- **Show/Hide Toggle** - Enable or disable text labels
+- **Customizable Text** - Different text for each state
+  - Default text when menu is closed (e.g., "Menu")
+  - Active text when menu is open (e.g., "Close")
+- **Label Position** - Contained inside button element for flexible styling
+- **Smooth Transitions** - 0.3s fade transition between states
 
-### Dots Icons
-- Fade - Dots fade in/out
-- Scale - Dots scale up/down
-- Slide - Dots slide position
+### Customization Options
 
-### Grid Icon
-- Morph - Grid morphs to X shape
-- Rotate - Grid rotates 90°
+#### Hamburger Settings Panel
+- **Animation Style** - Dropdown with all 29 animation styles
+- **ARIA Controls ID** - Associate button with controlled menu element
 
-### Plus Icon
-- Rotate - Rotates to X
-- Morph - Morphs to X
+#### Label Settings Panel
+- **Show Label** - Toggle to display text alongside icon
+- **Default Label Text** - Text shown when menu is closed
+- **Active Label Text** - Text shown when menu is open
 
-### Chevron Icon
-- Rotate Up - Arrow points up
-- Rotate Down - Arrow points down
+### Frontend Features
+
+- Click to toggle active state
+- Adds `is-active` class to button
+- Adds `menu-is-active` class to body element
+- Automatic ARIA attribute updates
+- Label text automatically switches on toggle
+- Compatible with any menu/navigation system
+
+### Accessibility
+
+- **ARIA Labels** - Dynamic `aria-label` updates to match current state
+- **ARIA Expanded** - Toggles between "true"/"false" to announce menu state
+- **ARIA Controls** - Associates button with controlled menu element via ID
+- **ARIA Hidden** - Visible label marked `aria-hidden="true"` to prevent duplicate announcements
+- Screen reader friendly with proper state announcements
+
+## File Structure
+
+```
+/src/hamburger/
+├── block.json          # Block configuration and attributes
+├── edit.js             # Block editor component
+├── save.js             # Save function (returns null for dynamic block)
+├── render.php          # PHP render template
+├── style.scss          # Frontend styles
+├── editor.scss         # Editor-specific styles
+├── view.js             # Frontend JavaScript
+├── index.js            # Block registration
+└── README.md           # This file
+```
+
+## Attributes
+
+```json
+{
+  "label": "string (default: 'Menu') - Legacy attribute",
+  "icon": "string (default: 'menu') - Legacy attribute",
+  "hamburgerClass": "string (default: 'hamburger--boring') - Animation style class",
+  "ariaControls": "string (default: '') - ID of controlled element",
+  "showLabel": "boolean (default: false) - Enable text label display",
+  "labelText": "string (default: 'Menu') - Text when closed",
+  "labelTextActive": "string (default: 'Close') - Text when open"
+}
+```
 
 ## Usage Examples
 
 ### Basic Usage
 
-Add the Menu Icon block to your template or page. The default settings provide a classic hamburger menu icon.
+Add the Hamburger Menu block to your template or page. The default settings provide a classic "boring" animation hamburger menu icon.
+
+### Select Animation Style
+
+1. Click the block to select it
+2. In the Block Inspector sidebar, open "Hamburger Settings"
+3. Choose from 29 animation styles in the dropdown
+4. Preview the animation by clicking the button in the editor
 
 ### With ARIA Controls
 
-1. Set the "ARIA Controls ID" to the ID of your menu element (e.g., "main-navigation")
-2. The block will automatically toggle visibility of the controlled element
-3. Proper ARIA states will be managed automatically
+1. In "Hamburger Settings", enter the ID of your menu element in "ARIA Controls ID" (e.g., "main-navigation")
+2. The button will automatically set `aria-controls` attribute
+3. ARIA states (`aria-expanded`) will be managed automatically on toggle
 
-### Custom Colors
+### With Text Labels
 
-1. Disable "Use Theme Colors" in the Colors panel
-2. Select custom colors for default, hover, and active states
-3. Colors will be applied using CSS custom properties
+1. In the Block Inspector sidebar, open "Label Settings"
+2. Enable "Show Label" toggle
+3. Customize the default text (shown when closed) - default: "Menu"
+4. Customize the active text (shown when open) - default: "Close"
+5. Labels will appear inside the button alongside the hamburger icon
 
-### With Visible Label
+## HTML Output
 
-1. Enable "Include Visible Label" in Accessibility panel
-2. Enter your label text (e.g., "Menu")
-3. Choose label position (left, right, top, bottom)
+### Without Label
+```html
+<div class="wp-block-prolific-hamburger">
+  <button class="hamburger hamburger--boring"
+          type="button"
+          aria-label="Menu"
+          aria-expanded="false">
+    <span class="hamburger-box">
+      <span class="hamburger-inner"></span>
+    </span>
+  </button>
+</div>
+```
 
-## CSS Custom Properties
+### With Label
+```html
+<div class="wp-block-prolific-hamburger">
+  <button class="hamburger hamburger--boring"
+          type="button"
+          aria-label="Menu"
+          aria-expanded="false">
+    <span class="hamburger-box">
+      <span class="hamburger-inner"></span>
+    </span>
+    <span class="hamburger-label" aria-hidden="true">
+      <span class="hamburger-label-text">Menu</span>
+      <span class="hamburger-label-text hamburger-label-text-active is-hidden">Close</span>
+    </span>
+  </button>
+</div>
+```
 
-The block uses CSS custom properties for easy theming:
+## CSS Classes
+
+The block applies the following classes:
+- `.hamburger` - Base button class
+- `.hamburger--{style}` - Animation style (e.g., `.hamburger--elastic`)
+- `.is-active` - Active state (toggled on click)
+- `.hamburger-label` - Label container
+- `.hamburger-label-text` - Label text elements
+- `.is-hidden` - Hidden state for inactive label text
+
+Body class:
+- `.menu-is-active` - Added to `<body>` when hamburger is active
+
+## Custom Styling
+
+The label is contained inside the button element, making it easy to style:
 
 ```css
-.menu-icon-button {
-  --menu-icon-size: 32px;
-  --menu-icon-thickness: 2px;
-  --menu-icon-spacing: 6px;
-  --menu-icon-animation-speed: 300ms;
-  --menu-icon-color: currentColor;
-  --menu-icon-color-hover: currentColor;
-  --menu-icon-color-active: currentColor;
+/* Style the button with label */
+.hamburger:has(.hamburger-label) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Style the label text */
+.hamburger-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: inherit;
+}
+
+/* Style active state */
+.hamburger.is-active {
+  color: #ff0000;
 }
 ```
-
-## JavaScript Events
-
-The block dispatches a custom event when toggled:
-
-```javascript
-document.addEventListener('menuIconToggle', (event) => {
-  console.log('Menu toggled:', event.detail);
-  // event.detail contains: { button, isActive, controlsId }
-});
-```
-
-## Backward Compatibility
-
-The block includes a deprecation layer to automatically migrate old `prolific/hamburger` blocks to the new `prolific/menu-icon` namespace. All existing hamburger blocks will continue to work without any manual intervention.
-
-### Migration
-
-When WordPress detects an old hamburger block, it will:
-1. Automatically migrate to the new menu-icon namespace
-2. Preserve all existing settings and animations
-3. Convert old attributes to the new structure
-4. Maintain visual appearance and functionality
 
 ## Development
 
@@ -231,27 +211,46 @@ npm run start
 ## Browser Support
 
 - Modern browsers with ES6 support
-- CSS Grid support for grid icon
-- CSS Custom Properties support
-- sessionStorage API support
+- CSS `:has()` selector for conditional label styling (graceful degradation in older browsers)
+- CSS transitions support
 
-## Version History
+## Technical Details
 
-### Version 1.0.0
-- Renamed from "Hamburger" to "Menu Icon"
-- Added 6 new icon types (close, dots-vertical, dots-horizontal, grid, plus, chevron)
-- Added comprehensive animation library for all icon types
-- Enhanced customization with size, spacing, and color controls
-- Improved accessibility with better ARIA support and keyboard navigation
-- Added visible label option with positioning
-- Implemented state persistence via sessionStorage
-- Added controlled element visibility management
-- Included deprecation support for backward compatibility
+### JavaScript Behavior (`view.js`)
+
+On click, the hamburger button:
+1. Toggles `is-active` class on the button
+2. Toggles `menu-is-active` class on the body element
+3. Updates `aria-expanded` attribute
+4. If label exists, toggles visibility of label texts
+5. Updates `aria-label` to match the currently visible text
+
+### CSS Implementation
+
+Uses modern CSS `:has()` pseudo-class to conditionally apply flexbox:
+```scss
+.hamburger:has(.hamburger-label) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+```
+
+Label text switching uses absolute positioning to prevent layout shift:
+```scss
+.hamburger-label-text.is-hidden {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+```
 
 ## Credits
 
-- Original hamburger animations from [hamburgers](https://github.com/jonsuh/hamburgers) by Jonathan Suh
-- Enhanced and extended by Prolific Digital
+- Hamburger animations from [hamburgers](https://github.com/jonsuh/hamburgers) by Jonathan Suh (v1.2.1)
+- Developed by Prolific Digital
 
 ## License
 
