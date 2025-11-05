@@ -490,3 +490,20 @@ When updating versions, update both files and create corresponding GitHub releas
   - Button state management with proper ARIA attributes
   - Loop detection for always-active navigation
   - Begin/end detection for disabling buttons at boundaries
+- **Custom CPT Layouts:**
+  - Extensible registry pattern for CPT-specific frontend layouts
+  - **Places CPT (`places`):**
+    - Label: Shows term from primary hierarchical taxonomy (e.g., "Park", "Facility") or falls back to "Place"
+    - Fields: Title, excerpt, address (ACF - supports string/Google Maps/field groups), hours (ACF - supports string/array), read more
+    - Address field handling: Automatically detects and formats Google Maps fields, field groups, or simple strings
+  - **Events CPT (`tribe_events`):**
+    - Label: Always shows "Event" (post type label)
+    - Fields: Title, excerpt, date, time, venue (from The Events Calendar plugin functions), read more
+  - Inline SVG icons for location (pin), time (clock), and dates (calendar)
+  - BEM-style markup with `.entry-head` and `.entry-meta` groups
+  - Automatic routing via `prolific_render_cpt_layout()` function
+  - Filter hook `prolific_query_posts_cpt_registry` for adding new CPTs
+  - Comprehensive accessibility: ARIA labels, focus states, semantic HTML
+  - Dark mode support and responsive design built-in
+  - Graceful fallbacks: Empty fields omitted, always shows a label even without terms
+  - See `QUERY-POSTS-CPT-LAYOUTS.md` for full implementation guide

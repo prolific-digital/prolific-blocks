@@ -41,6 +41,345 @@ if (!function_exists('pb_query_posts_sanitize_svg')) {
 	}
 }
 
+/**
+ * Returns SVG icon for location pin (outline style).
+ *
+ * @return string SVG markup.
+ */
+if (!function_exists('prolific_icon_location_pin')) {
+	function prolific_icon_location_pin() {
+		return '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>';
+	}
+}
+
+/**
+ * Returns SVG icon for calendar (outline style).
+ *
+ * @return string SVG markup.
+ */
+if (!function_exists('prolific_icon_calendar')) {
+	function prolific_icon_calendar() {
+		return '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>';
+	}
+}
+
+/**
+ * Returns SVG icon for clock (outline style).
+ *
+ * @return string SVG markup.
+ */
+if (!function_exists('prolific_icon_clock')) {
+	function prolific_icon_clock() {
+		return '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
+	}
+}
+
+/**
+ * Renders Places CPT custom layout.
+ *
+ * @param int   $post_id     The post ID.
+ * @param array $attributes  Block attributes.
+ * @return string HTML markup.
+ */
+if (!function_exists('prolific_render_places_layout')) {
+	function prolific_render_places_layout($post_id, $attributes) {
+		$output = '';
+
+		// Get primary hierarchical taxonomy for category label
+		$taxonomies = get_object_taxonomies('places', 'objects');
+		$primary_taxonomy = '';
+		$category_term = null;
+		$category_label = ''; // Will hold the final label text
+
+		// Find hierarchical, public taxonomy (prioritize those with show_in_rest)
+		foreach ($taxonomies as $tax) {
+			if ($tax->hierarchical && $tax->public) {
+				// Prefer taxonomies with REST support
+				if (!empty($tax->rest_base)) {
+					$primary_taxonomy = $tax->name;
+					break;
+				}
+				// Fallback to first hierarchical public taxonomy
+				if (empty($primary_taxonomy)) {
+					$primary_taxonomy = $tax->name;
+				}
+			}
+		}
+
+		// Get first term from primary taxonomy
+		if ($primary_taxonomy) {
+			$terms = get_the_terms($post_id, $primary_taxonomy);
+			if ($terms && !is_wp_error($terms)) {
+				$category_term = $terms[0];
+				$category_label = $category_term->name;
+			}
+		}
+
+		// Fallback: If no term assigned, show post type label
+		if (empty($category_label)) {
+			$post_type_obj = get_post_type_object('places');
+			$category_label = $post_type_obj ? $post_type_obj->labels->singular_name : __('Place', 'prolific-blocks');
+		}
+
+		// Get ACF fields
+		$address_field = get_field('address', $post_id);
+		$hours_display = get_field('hours_display', $post_id);
+
+		// Handle address field - could be string, array (Google Maps), or field group
+		$address = '';
+		if (!empty($address_field)) {
+			if (is_array($address_field)) {
+				// Check if it's a Google Maps field (has 'address' key)
+				if (isset($address_field['address'])) {
+					$address = $address_field['address'];
+				}
+				// Check if it's a field group with common address field names
+				elseif (isset($address_field['street_address'])) {
+					$parts = [];
+					if (!empty($address_field['street_address'])) $parts[] = $address_field['street_address'];
+					if (!empty($address_field['city'])) $parts[] = $address_field['city'];
+					if (!empty($address_field['state'])) $parts[] = $address_field['state'];
+					if (!empty($address_field['zip'])) $parts[] = $address_field['zip'];
+					$address = implode(', ', $parts);
+				}
+				// Try common alternative field names
+				elseif (isset($address_field['street']) || isset($address_field['line_1'])) {
+					$parts = [];
+					if (!empty($address_field['street'])) $parts[] = $address_field['street'];
+					if (!empty($address_field['line_1'])) $parts[] = $address_field['line_1'];
+					if (!empty($address_field['city'])) $parts[] = $address_field['city'];
+					if (!empty($address_field['state'])) $parts[] = $address_field['state'];
+					if (!empty($address_field['zip']) || !empty($address_field['postal_code'])) {
+						$parts[] = $address_field['zip'] ?? $address_field['postal_code'];
+					}
+					$address = implode(', ', $parts);
+				}
+			} else {
+				// Simple string field
+				$address = $address_field;
+			}
+		}
+
+		// Get read more text from attributes
+		$read_more_text = $attributes['readMoreText'] ?? __('Read More', 'prolific-blocks');
+		$show_excerpt = $attributes['showExcerpt'] ?? true;
+		$excerpt_length = $attributes['excerptLength'] ?? 55;
+
+		// Start output
+		$output .= '<div class="entry-head">';
+
+		// Category label (always show - either term or post type)
+		if (!empty($category_label)) {
+			$output .= '<div class="entry-head__label">' . esc_html($category_label) . '</div>';
+		}
+
+		// Title
+		$title_tag = $attributes['titleTag'] ?? 'h2';
+		$output .= '<' . esc_attr($title_tag) . ' class="entry-head__title">';
+		$output .= '<a href="' . esc_url(get_permalink($post_id)) . '">';
+		$output .= esc_html(get_the_title($post_id));
+		$output .= '</a>';
+		$output .= '</' . esc_attr($title_tag) . '>';
+
+		$output .= '</div>'; // .entry-head
+
+		// Content group
+		$output .= '<div class="entry-meta">';
+
+		// Excerpt
+		if ($show_excerpt) {
+			$excerpt = get_the_excerpt($post_id);
+			if (!empty($excerpt)) {
+				$excerpt = wp_trim_words($excerpt, $excerpt_length, '...');
+				$output .= '<div class="entry-meta__excerpt">' . wp_kses_post($excerpt) . '</div>';
+			}
+		}
+
+		// Address
+		if (!empty($address)) {
+			$output .= '<div class="entry-meta__row entry-meta__row--address">';
+			$output .= '<span class="entry-meta__icon">' . prolific_icon_location_pin() . '</span>';
+			$output .= '<span class="entry-meta__text">' . esc_html($address) . '</span>';
+			$output .= '</div>';
+		}
+
+		// Hours (can be multiple lines)
+		if (!empty($hours_display)) {
+			$output .= '<div class="entry-meta__row entry-meta__row--hours">';
+			$output .= '<span class="entry-meta__icon">' . prolific_icon_clock() . '</span>';
+
+			// Check if hours_display is an array (repeater) or string
+			if (is_array($hours_display)) {
+				$output .= '<div class="entry-meta__text-group">';
+				foreach ($hours_display as $hours_line) {
+					if (is_string($hours_line)) {
+						$output .= '<span class="entry-meta__text">' . esc_html($hours_line) . '</span>';
+					} elseif (isset($hours_line['hours'])) {
+						$output .= '<span class="entry-meta__text">' . esc_html($hours_line['hours']) . '</span>';
+					}
+				}
+				$output .= '</div>';
+			} else {
+				// Single line or textarea
+				$output .= '<span class="entry-meta__text">' . wp_kses_post(wpautop($hours_display)) . '</span>';
+			}
+
+			$output .= '</div>';
+		}
+
+		// Read More link
+		$output .= '<a class="entry-meta__more" href="' . esc_url(get_permalink($post_id)) . '">';
+		$output .= esc_html($read_more_text);
+		$output .= '<span class="screen-reader-text"> ' . esc_html(get_the_title($post_id)) . '</span>';
+		$output .= '</a>';
+
+		$output .= '</div>'; // .entry-meta
+
+		return $output;
+	}
+}
+
+/**
+ * Renders Events CPT custom layout (from The Events Calendar plugin).
+ *
+ * @param int   $post_id     The post ID.
+ * @param array $attributes  Block attributes.
+ * @return string HTML markup.
+ */
+if (!function_exists('prolific_render_events_layout')) {
+	function prolific_render_events_layout($post_id, $attributes) {
+		$output = '';
+
+		// Get post type label (singular name)
+		$post_type_obj = get_post_type_object('tribe_events');
+		$post_type_label = $post_type_obj ? $post_type_obj->labels->singular_name : __('Event', 'prolific-blocks');
+
+		// Get event meta from The Events Calendar
+		$event_date = '';
+		$event_time = '';
+		$event_venue = '';
+
+		// Check if The Events Calendar functions exist
+		if (function_exists('tribe_get_start_date')) {
+			$event_date = tribe_get_start_date($post_id, false, 'F j, Y');
+		}
+
+		if (function_exists('tribe_get_start_time') && function_exists('tribe_get_end_time')) {
+			$start_time = tribe_get_start_time($post_id, 'g:i A');
+			$end_time = tribe_get_end_time($post_id, 'g:i A');
+			if ($start_time && $end_time) {
+				$event_time = $start_time . ' – ' . $end_time;
+			} elseif ($start_time) {
+				$event_time = $start_time;
+			}
+		}
+
+		if (function_exists('tribe_get_venue')) {
+			$event_venue = tribe_get_venue($post_id);
+		}
+
+		// Get settings from attributes
+		$read_more_text = $attributes['readMoreText'] ?? __('Read More', 'prolific-blocks');
+		$show_excerpt = $attributes['showExcerpt'] ?? true;
+		$excerpt_length = $attributes['excerptLength'] ?? 55;
+
+		// Start output
+		$output .= '<div class="entry-head">';
+
+		// Post type label (always "Event")
+		$output .= '<div class="entry-head__label">' . esc_html($post_type_label) . '</div>';
+
+		// Title
+		$title_tag = $attributes['titleTag'] ?? 'h2';
+		$output .= '<' . esc_attr($title_tag) . ' class="entry-head__title">';
+		$output .= '<a href="' . esc_url(get_permalink($post_id)) . '">';
+		$output .= esc_html(get_the_title($post_id));
+		$output .= '</a>';
+		$output .= '</' . esc_attr($title_tag) . '>';
+
+		$output .= '</div>'; // .entry-head
+
+		// Content group
+		$output .= '<div class="entry-meta">';
+
+		// Excerpt
+		if ($show_excerpt) {
+			$excerpt = get_the_excerpt($post_id);
+			if (!empty($excerpt)) {
+				$excerpt = wp_trim_words($excerpt, $excerpt_length, '...');
+				$output .= '<div class="entry-meta__excerpt">' . wp_kses_post($excerpt) . '</div>';
+			}
+		}
+
+		// Event Date
+		if (!empty($event_date)) {
+			$output .= '<div class="entry-meta__row entry-meta__row--date">';
+			$output .= '<span class="entry-meta__icon">' . prolific_icon_calendar() . '</span>';
+			$output .= '<span class="entry-meta__text">' . esc_html($event_date) . '</span>';
+			$output .= '</div>';
+		}
+
+		// Event Time
+		if (!empty($event_time)) {
+			$output .= '<div class="entry-meta__row entry-meta__row--time">';
+			$output .= '<span class="entry-meta__icon">' . prolific_icon_clock() . '</span>';
+			$output .= '<span class="entry-meta__text">' . esc_html($event_time) . '</span>';
+			$output .= '</div>';
+		}
+
+		// Event Venue
+		if (!empty($event_venue)) {
+			$output .= '<div class="entry-meta__row entry-meta__row--venue">';
+			$output .= '<span class="entry-meta__icon">' . prolific_icon_location_pin() . '</span>';
+			$output .= '<span class="entry-meta__text">' . esc_html($event_venue) . '</span>';
+			$output .= '</div>';
+		}
+
+		// Read More link
+		$output .= '<a class="entry-meta__more" href="' . esc_url(get_permalink($post_id)) . '">';
+		$output .= esc_html($read_more_text);
+		$output .= '<span class="screen-reader-text"> ' . esc_html(get_the_title($post_id)) . '</span>';
+		$output .= '</a>';
+
+		$output .= '</div>'; // .entry-meta
+
+		return $output;
+	}
+}
+
+/**
+ * Router function to determine which layout to use based on post type.
+ * Extensible registry pattern for adding new CPT layouts.
+ *
+ * @param int   $post_id     The post ID.
+ * @param array $attributes  Block attributes.
+ * @return string|null HTML markup or null if no custom layout exists.
+ */
+if (!function_exists('prolific_render_cpt_layout')) {
+	function prolific_render_cpt_layout($post_id, $attributes) {
+		$post_type = get_post_type($post_id);
+
+		/**
+		 * CPT Layout Registry
+		 * Add new CPT layouts here by mapping post type slug to renderer function.
+		 *
+		 * Example:
+		 * 'rental' => 'prolific_render_rental_layout',
+		 */
+		$cpt_registry = apply_filters('prolific_query_posts_cpt_registry', [
+			'places'       => 'prolific_render_places_layout',
+			'tribe_events' => 'prolific_render_events_layout',
+		]);
+
+		// Check if custom layout exists for this post type
+		if (isset($cpt_registry[$post_type]) && function_exists($cpt_registry[$post_type])) {
+			return call_user_func($cpt_registry[$post_type], $post_id, $attributes);
+		}
+
+		return null; // No custom layout, use default
+	}
+}
+
 // Extract attributes
 $block_id = $attributes['blockId'] ?? 'query-posts-' . wp_unique_id();
 $post_type = $attributes['postType'] ?? 'post';
@@ -456,93 +795,104 @@ echo $custom_css;
 					<article class="<?php echo esc_attr(implode(' ', $post_classes)); ?>" id="post-<?php echo esc_attr($post_id); ?>">
 				<?php endif; ?>
 
-					<?php if ($show_featured_image && has_post_thumbnail()) : ?>
-						<div class="post-thumbnail">
-							<a href="<?php echo esc_url(get_permalink()); ?>" aria-label="<?php echo esc_attr(get_the_title()); ?>">
-								<?php the_post_thumbnail($image_size); ?>
-							</a>
+					<?php
+					// Check if custom CPT layout exists
+					$custom_layout = prolific_render_cpt_layout($post_id, $attributes);
+
+					if ($custom_layout !== null) :
+						// Use custom CPT layout
+						echo $custom_layout;
+					else :
+						// Use default layout
+					?>
+						<?php if ($show_featured_image && has_post_thumbnail()) : ?>
+							<div class="post-thumbnail">
+								<a href="<?php echo esc_url(get_permalink()); ?>" aria-label="<?php echo esc_attr(get_the_title()); ?>">
+									<?php the_post_thumbnail($image_size); ?>
+								</a>
+							</div>
+						<?php endif; ?>
+
+						<div class="post-content">
+							<?php if ($show_title) : ?>
+								<<?php echo esc_attr($title_tag); ?> class="post-title">
+									<a href="<?php echo esc_url(get_permalink()); ?>">
+										<?php the_title(); ?>
+									</a>
+								</<?php echo esc_attr($title_tag); ?>>
+							<?php endif; ?>
+
+							<?php if ($show_meta) : ?>
+								<div class="post-meta">
+									<?php if ($show_author) : ?>
+										<span class="post-author">
+											<?php echo esc_html__('By', 'prolific-blocks'); ?>
+											<a href="<?php echo esc_url(get_author_posts_url(get_the_author_meta('ID'))); ?>">
+												<?php echo esc_html(get_the_author()); ?>
+											</a>
+										</span>
+									<?php endif; ?>
+
+									<?php if ($show_date) : ?>
+										<span class="post-date">
+											<time datetime="<?php echo esc_attr(get_the_date('c')); ?>">
+												<?php echo esc_html(get_the_date()); ?>
+											</time>
+										</span>
+									<?php endif; ?>
+
+									<?php if ($post_type === 'post' && $show_categories) : ?>
+										<?php
+										$post_categories = get_the_category();
+										if (!empty($post_categories)) :
+										?>
+											<span class="post-categories">
+												<?php
+												foreach ($post_categories as $cat) {
+													echo '<a href="' . esc_url(get_category_link($cat->term_id)) . '">' . esc_html($cat->name) . '</a>';
+												}
+												?>
+											</span>
+										<?php endif; ?>
+									<?php endif; ?>
+
+									<?php if ($post_type === 'post' && $show_tags) : ?>
+										<?php
+										$post_tags = get_the_tags();
+										if (!empty($post_tags)) :
+										?>
+											<span class="post-tags">
+												<?php
+												foreach ($post_tags as $tag) {
+													echo '<a href="' . esc_url(get_tag_link($tag->term_id)) . '">' . esc_html($tag->name) . '</a>';
+												}
+												?>
+											</span>
+										<?php endif; ?>
+									<?php endif; ?>
+								</div>
+							<?php endif; ?>
+
+							<?php if ($show_excerpt) : ?>
+								<div class="post-excerpt">
+									<?php
+									$excerpt = get_the_excerpt();
+									$excerpt = wp_trim_words($excerpt, $excerpt_length, '...');
+									echo wp_kses_post($excerpt);
+									?>
+								</div>
+							<?php endif; ?>
+
+							<?php if ($show_read_more) : ?>
+								<div class="post-read-more">
+									<a href="<?php echo esc_url(get_permalink()); ?>" class="read-more-link">
+										<?php echo esc_html($read_more_text); ?>
+										<span class="screen-reader-text"><?php the_title(); ?></span>
+									</a>
+								</div>
+							<?php endif; ?>
 						</div>
 					<?php endif; ?>
-
-					<div class="post-content">
-						<?php if ($show_title) : ?>
-							<<?php echo esc_attr($title_tag); ?> class="post-title">
-								<a href="<?php echo esc_url(get_permalink()); ?>">
-									<?php the_title(); ?>
-								</a>
-							</<?php echo esc_attr($title_tag); ?>>
-						<?php endif; ?>
-
-						<?php if ($show_meta) : ?>
-							<div class="post-meta">
-								<?php if ($show_author) : ?>
-									<span class="post-author">
-										<?php echo esc_html__('By', 'prolific-blocks'); ?>
-										<a href="<?php echo esc_url(get_author_posts_url(get_the_author_meta('ID'))); ?>">
-											<?php echo esc_html(get_the_author()); ?>
-										</a>
-									</span>
-								<?php endif; ?>
-
-								<?php if ($show_date) : ?>
-									<span class="post-date">
-										<time datetime="<?php echo esc_attr(get_the_date('c')); ?>">
-											<?php echo esc_html(get_the_date()); ?>
-										</time>
-									</span>
-								<?php endif; ?>
-
-								<?php if ($post_type === 'post' && $show_categories) : ?>
-									<?php
-									$post_categories = get_the_category();
-									if (!empty($post_categories)) :
-									?>
-										<span class="post-categories">
-											<?php
-											foreach ($post_categories as $cat) {
-												echo '<a href="' . esc_url(get_category_link($cat->term_id)) . '">' . esc_html($cat->name) . '</a>';
-											}
-											?>
-										</span>
-									<?php endif; ?>
-								<?php endif; ?>
-
-								<?php if ($post_type === 'post' && $show_tags) : ?>
-									<?php
-									$post_tags = get_the_tags();
-									if (!empty($post_tags)) :
-									?>
-										<span class="post-tags">
-											<?php
-											foreach ($post_tags as $tag) {
-												echo '<a href="' . esc_url(get_tag_link($tag->term_id)) . '">' . esc_html($tag->name) . '</a>';
-											}
-											?>
-										</span>
-									<?php endif; ?>
-								<?php endif; ?>
-							</div>
-						<?php endif; ?>
-
-						<?php if ($show_excerpt) : ?>
-							<div class="post-excerpt">
-								<?php
-								$excerpt = get_the_excerpt();
-								$excerpt = wp_trim_words($excerpt, $excerpt_length, '...');
-								echo wp_kses_post($excerpt);
-								?>
-							</div>
-						<?php endif; ?>
-
-						<?php if ($show_read_more) : ?>
-							<div class="post-read-more">
-								<a href="<?php echo esc_url(get_permalink()); ?>" class="read-more-link">
-									<?php echo esc_html($read_more_text); ?>
-									<span class="screen-reader-text"><?php the_title(); ?></span>
-								</a>
-							</div>
-						<?php endif; ?>
-					</div>
 
 				<?php if ($enable_carousel) : ?>
 					</swiper-slide>
