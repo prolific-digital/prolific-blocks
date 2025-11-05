@@ -5,6 +5,8 @@ import { __ } from '@wordpress/i18n';
 import {
 	useBlockProps,
 	InspectorControls,
+	MediaUpload,
+	MediaUploadCheck,
 } from '@wordpress/block-editor';
 import {
 	PanelBody,
@@ -21,8 +23,62 @@ import {
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
+import { upload } from '@wordpress/icons';
 import ServerSideRender from '@wordpress/server-side-render';
 import SupportCard from '../components/SupportCard';
+
+/**
+ * Sanitize SVG content by removing potentially dangerous content.
+ * Based on Carousel New implementation.
+ */
+const sanitizeSvg = (svgContent) => {
+	svgContent = svgContent.replace(/<!--[\s\S]*?-->/g, '');
+
+	try {
+		const parser = new DOMParser();
+		const doc = parser.parseFromString(svgContent, 'image/svg+xml');
+
+		const scripts = doc.querySelectorAll('script');
+		scripts.forEach((script) => script.remove());
+
+		const dangerousElements = doc.querySelectorAll('foreignObject, iframe');
+		dangerousElements.forEach((el) => el.remove());
+
+		const elements = doc.querySelectorAll('*');
+		elements.forEach((el) => {
+			Array.from(el.attributes).forEach((attr) => {
+				if (attr.name.startsWith('on')) {
+					el.removeAttribute(attr.name);
+				}
+			});
+
+			if (el.hasAttribute('href')) {
+				const href = el.getAttribute('href');
+				if (href.toLowerCase().startsWith('javascript:')) {
+					el.removeAttribute('href');
+				}
+			}
+
+			if (el.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')) {
+				const xlinkHref = el.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+				if (xlinkHref.toLowerCase().startsWith('javascript:')) {
+					el.removeAttributeNS('http://www.w3.org/1999/xlink', 'href');
+				}
+			}
+
+			el.removeAttribute('style');
+
+			if (el.tagName.toLowerCase() === 'svg') {
+				el.removeAttribute('width');
+				el.removeAttribute('height');
+			}
+		});
+
+		return new XMLSerializer().serializeToString(doc);
+	} catch (e) {
+		return '';
+	}
+};
 
 /**
  * Edit component for Query Posts block
@@ -65,6 +121,17 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		pauseOnHover,
 		grabCursor,
 		keyboard,
+		navigationPosition,
+		paginationPosition,
+		groupControls,
+		groupedPosition,
+		groupedLayout,
+		scrollbar,
+		customNavigation,
+		customNavPrev,
+		customNavNext,
+		customNavPrevSvg,
+		customNavNextSvg,
 		showSearch,
 		searchPlaceholder,
 		showCategoryFilter,
@@ -98,17 +165,78 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		}
 	}, [clientId]);
 
-	// Fetch available post types
+	// Clear taxonomy filters when post type changes
+	useEffect(() => {
+		if (attributes.taxonomyFilters && Object.keys(attributes.taxonomyFilters).length > 0) {
+			setAttributes({ taxonomyFilters: {} });
+		}
+	}, [postType]);
+
+	// Fetch available post types (public + show_in_rest, excluding attachment)
 	const postTypes = useSelect((select) => {
 		const { getPostTypes } = select('core');
 		const types = getPostTypes({ per_page: -1 }) || [];
-		return types.filter((type) => type.viewable).map((type) => ({
-			label: type.name,
-			value: type.slug,
-		}));
+		return types
+			.filter((type) => {
+				// Only show post types that are viewable (public & queryable),
+				// support REST API, and are not attachment
+				return (
+					type.viewable &&
+					type.rest_base &&
+					type.slug !== 'attachment'
+				);
+			})
+			.map((type) => ({
+				label: type.labels?.singular_name || type.name || type.slug,
+				value: type.slug,
+			}));
 	}, []);
 
-	// Fetch categories for the selected post type
+	// Fetch taxonomies for the selected post type
+	const availableTaxonomies = useSelect(
+		(select) => {
+			const { getTaxonomies } = select('core');
+			const taxonomies = getTaxonomies({ per_page: -1 }) || [];
+			return taxonomies
+				.filter((tax) => {
+					// Only show hierarchical taxonomies that have REST API support
+					// and are associated with the selected post type
+					return (
+						tax.hierarchical &&
+						tax.rest_base &&
+						tax.types?.includes(postType)
+					);
+				})
+				.map((tax) => ({
+					label: tax.labels?.singular_name || tax.name || tax.slug,
+					value: tax.slug,
+				}));
+		},
+		[postType]
+	);
+
+	// Get the selected taxonomy (use first available if none selected)
+	const selectedTaxonomy = attributes.taxonomyFilters?.taxonomy ||
+		(availableTaxonomies.length > 0 ? availableTaxonomies[0]?.value : '');
+
+	// Fetch terms for the selected taxonomy
+	const availableTerms = useSelect(
+		(select) => {
+			if (!selectedTaxonomy) return [];
+			const { getEntityRecords } = select('core');
+			const terms = getEntityRecords('taxonomy', selectedTaxonomy, {
+				per_page: -1,
+				hide_empty: false
+			}) || [];
+			return terms.map((term) => ({
+				label: term.name,
+				value: term.id,
+			}));
+		},
+		[selectedTaxonomy]
+	);
+
+	// Fetch categories for the selected post type (kept for backward compatibility)
 	const categoryOptions = useSelect(
 		(select) => {
 			if (postType !== 'post') return [];
@@ -122,7 +250,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		[postType]
 	);
 
-	// Fetch tags
+	// Fetch tags (kept for backward compatibility)
 	const tagOptions = useSelect(
 		(select) => {
 			if (postType !== 'post') return [];
@@ -156,6 +284,47 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 			{ slug: 'full', name: 'Full Size' },
 		];
 	}, []);
+
+	// Handle custom navigation SVG uploads
+	const onSelectPrevSvg = (media) => {
+		if (media && media.url) {
+			fetch(media.url)
+				.then((response) => response.text())
+				.then((svgText) => {
+					const sanitizedSvg = sanitizeSvg(svgText);
+					setAttributes({
+						customNavPrevSvg: media.url,
+						customNavPrev: sanitizedSvg,
+					});
+				})
+				.catch(() => {
+					setAttributes({
+						customNavPrevSvg: media.url,
+						customNavPrev: '',
+					});
+				});
+		}
+	};
+
+	const onSelectNextSvg = (media) => {
+		if (media && media.url) {
+			fetch(media.url)
+				.then((response) => response.text())
+				.then((svgText) => {
+					const sanitizedSvg = sanitizeSvg(svgText);
+					setAttributes({
+						customNavNextSvg: media.url,
+						customNavNext: sanitizedSvg,
+					});
+				})
+				.catch(() => {
+					setAttributes({
+						customNavNextSvg: media.url,
+						customNavNext: '',
+					});
+				});
+		}
+	};
 
 	const blockProps = useBlockProps({
 		className: 'prolific-query-posts-editor',
@@ -261,6 +430,69 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 						onChange={(value) => setAttributes({ excludeIds: value })}
 						help={__('Comma-separated list of post IDs to exclude', 'prolific-blocks')}
 					/>
+
+					{/* Dynamic Taxonomy/Term Filtering */}
+					{availableTaxonomies.length > 0 && (
+						<>
+							<hr />
+							{availableTaxonomies.length > 1 && (
+								<SelectControl
+									label={__('Filter by Taxonomy', 'prolific-blocks')}
+									value={selectedTaxonomy}
+									options={availableTaxonomies}
+									onChange={(value) => {
+										setAttributes({
+											taxonomyFilters: {
+												taxonomy: value,
+												terms: []
+											}
+										});
+									}}
+									help={__('Select which taxonomy to use for filtering', 'prolific-blocks')}
+								/>
+							)}
+
+							{selectedTaxonomy && availableTerms.length > 0 && (
+								<div className="prolific-checkbox-group">
+									<p className="components-base-control__label">
+										{availableTaxonomies.find(t => t.value === selectedTaxonomy)?.label || __('Terms', 'prolific-blocks')}
+									</p>
+									{availableTerms.map((term) => (
+										<CheckboxControl
+											key={term.value}
+											label={term.label}
+											checked={(attributes.taxonomyFilters?.terms || []).includes(term.value)}
+											onChange={(checked) => {
+												const currentTerms = attributes.taxonomyFilters?.terms || [];
+												const newTerms = checked
+													? [...currentTerms, term.value]
+													: currentTerms.filter((id) => id !== term.value);
+												setAttributes({
+													taxonomyFilters: {
+														taxonomy: selectedTaxonomy,
+														terms: newTerms
+													}
+												});
+											}}
+										/>
+									))}
+								</div>
+							)}
+
+							{selectedTaxonomy && availableTerms.length === 0 && (
+								<p className="components-base-control__help">
+									{__('No terms available for this taxonomy.', 'prolific-blocks')}
+								</p>
+							)}
+							<hr />
+						</>
+					)}
+
+					{availableTaxonomies.length === 0 && postType !== 'post' && (
+						<p className="components-base-control__help" style={{ fontStyle: 'italic', color: '#757575' }}>
+							{__('No hierarchical taxonomies (categories) available for this post type.', 'prolific-blocks')}
+						</p>
+					)}
 
 					{postType === 'post' && categoryOptions.length > 0 && (
 						<div className="prolific-checkbox-group">
@@ -507,6 +739,228 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 							checked={keyboard}
 							onChange={(value) => setAttributes({ keyboard: value })}
 							help={__('Enable keyboard navigation', 'prolific-blocks')}
+						/>
+					</PanelBody>
+				)}
+
+				{/* Control Positioning Panel - Only show when carousel is enabled */}
+				{enableCarousel && (
+					<PanelBody
+						title={__('Control Positioning', 'prolific-blocks')}
+						initialOpen={false}
+					>
+						<ToggleControl
+							label={__('Group Controls Together', 'prolific-blocks')}
+							checked={groupControls}
+							onChange={(value) => setAttributes({ groupControls: value })}
+							help={__(
+								'Group navigation and pagination controls together',
+								'prolific-blocks'
+							)}
+						/>
+
+						{groupControls ? (
+							<>
+								<SelectControl
+									label={__('Grouped Controls Position', 'prolific-blocks')}
+									value={groupedPosition}
+									options={[
+										{ label: __('Top', 'prolific-blocks'), value: 'top' },
+										{ label: __('Bottom', 'prolific-blocks'), value: 'bottom' },
+									]}
+									onChange={(value) => setAttributes({ groupedPosition: value })}
+									help={__(
+										'Position of grouped navigation and pagination controls',
+										'prolific-blocks'
+									)}
+								/>
+
+								<SelectControl
+									label={__('Grouped Controls Layout', 'prolific-blocks')}
+									value={groupedLayout}
+									options={[
+										{
+											label: __('Split (Nav on sides, pagination center)', 'prolific-blocks'),
+											value: 'split',
+										},
+										{
+											label: __('Left (Nav left, pagination right)', 'prolific-blocks'),
+											value: 'left',
+										},
+										{
+											label: __('Right (Pagination left, nav right)', 'prolific-blocks'),
+											value: 'right',
+										},
+									]}
+									onChange={(value) => setAttributes({ groupedLayout: value })}
+									help={__(
+										'How to arrange navigation and pagination when grouped',
+										'prolific-blocks'
+									)}
+								/>
+							</>
+						) : (
+							<>
+								{carouselNavigation && (
+									<SelectControl
+										label={__('Navigation Position', 'prolific-blocks')}
+										value={navigationPosition}
+										options={[
+											{ label: __('Top', 'prolific-blocks'), value: 'top' },
+											{ label: __('Center', 'prolific-blocks'), value: 'center' },
+											{ label: __('Bottom', 'prolific-blocks'), value: 'bottom' },
+										]}
+										onChange={(value) => setAttributes({ navigationPosition: value })}
+										help={__(
+											'Vertical position of navigation arrows over carousel',
+											'prolific-blocks'
+										)}
+									/>
+								)}
+
+								{carouselPagination && (
+									<SelectControl
+										label={__('Pagination Position', 'prolific-blocks')}
+										value={paginationPosition}
+										options={[
+											{ label: __('Top', 'prolific-blocks'), value: 'top' },
+											{ label: __('Bottom', 'prolific-blocks'), value: 'bottom' },
+										]}
+										onChange={(value) => setAttributes({ paginationPosition: value })}
+										help={__(
+											'Position of pagination relative to carousel',
+											'prolific-blocks'
+										)}
+									/>
+								)}
+							</>
+						)}
+					</PanelBody>
+				)}
+
+				{/* Enhanced Navigation & Controls Panel - Only show when carousel is enabled */}
+				{enableCarousel && (
+					<PanelBody
+						title={__('Additional Navigation Controls', 'prolific-blocks')}
+						initialOpen={false}
+					>
+						{carouselNavigation && (
+							<>
+								<ToggleControl
+									label={__('Custom Navigation Icons', 'prolific-blocks')}
+									checked={customNavigation}
+									onChange={(value) => setAttributes({ customNavigation: value })}
+									help={__(
+										'Upload custom SVG icons for navigation arrows',
+										'prolific-blocks'
+									)}
+								/>
+
+								{customNavigation && (
+									<div className="carousel-custom-nav-upload">
+										<MediaUploadCheck>
+											<MediaUpload
+												onSelect={onSelectPrevSvg}
+												allowedTypes={['image/svg+xml']}
+												value={customNavPrevSvg}
+												render={({ open }) => (
+													<div style={{ marginBottom: '12px' }}>
+														<Button onClick={open} variant="secondary" icon={upload}>
+															{customNavPrevSvg
+																? __('Change Previous Arrow', 'prolific-blocks')
+																: __('Upload Previous Arrow SVG', 'prolific-blocks')}
+														</Button>
+														{customNavPrevSvg && (
+															<>
+																<Button
+																	onClick={() =>
+																		setAttributes({
+																			customNavPrev: '',
+																			customNavPrevSvg: '',
+																		})
+																	}
+																	variant="link"
+																	isDestructive
+																	style={{ marginLeft: '8px' }}
+																>
+																	{__('Remove', 'prolific-blocks')}
+																</Button>
+																{customNavPrev && (
+																	<img
+																		src={customNavPrevSvg}
+																		alt={__('Custom Previous Button', 'prolific-blocks')}
+																		style={{
+																			display: 'block',
+																			marginTop: '10px',
+																			maxWidth: '50px',
+																			maxHeight: '50px',
+																		}}
+																	/>
+																)}
+															</>
+														)}
+													</div>
+												)}
+											/>
+										</MediaUploadCheck>
+
+										<MediaUploadCheck>
+											<MediaUpload
+												onSelect={onSelectNextSvg}
+												allowedTypes={['image/svg+xml']}
+												value={customNavNextSvg}
+												render={({ open }) => (
+													<div>
+														<Button onClick={open} variant="secondary" icon={upload}>
+															{customNavNextSvg
+																? __('Change Next Arrow', 'prolific-blocks')
+																: __('Upload Next Arrow SVG', 'prolific-blocks')}
+														</Button>
+														{customNavNextSvg && (
+															<>
+																<Button
+																	onClick={() =>
+																		setAttributes({
+																			customNavNext: '',
+																			customNavNextSvg: '',
+																		})
+																	}
+																	variant="link"
+																	isDestructive
+																	style={{ marginLeft: '8px' }}
+																>
+																	{__('Remove', 'prolific-blocks')}
+																</Button>
+																{customNavNext && (
+																	<img
+																		src={customNavNextSvg}
+																		alt={__('Custom Next Button', 'prolific-blocks')}
+																		style={{
+																			display: 'block',
+																			marginTop: '10px',
+																			maxWidth: '50px',
+																			maxHeight: '50px',
+																		}}
+																	/>
+																)}
+															</>
+														)}
+													</div>
+												)}
+											/>
+										</MediaUploadCheck>
+									</div>
+								)}
+
+								<hr />
+							</>
+						)}
+
+						<ToggleControl
+							label={__('Show Scrollbar', 'prolific-blocks')}
+							checked={scrollbar}
+							onChange={(value) => setAttributes({ scrollbar: value })}
+							help={__('Display a draggable scrollbar', 'prolific-blocks')}
 						/>
 					</PanelBody>
 				)}

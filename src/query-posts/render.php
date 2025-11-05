@@ -13,6 +13,34 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
+/**
+ * Sanitizes SVG content to prevent XSS vulnerabilities.
+ *
+ * @param string $svg The SVG content to sanitize.
+ * @return string The sanitized SVG.
+ */
+if (!function_exists('pb_query_posts_sanitize_svg')) {
+	function pb_query_posts_sanitize_svg($svg) {
+		if (empty($svg)) {
+			return '';
+		}
+
+		// Remove PHP tags
+		$svg = preg_replace('/<\?(=|php)(.+?)\?>/si', '', $svg);
+
+		// Remove script tags
+		$svg = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $svg);
+
+		// Remove JavaScript event attributes
+		$svg = preg_replace('/on\w+\s*=\s*(["\'])?[^"\']*\1/i', '', $svg);
+
+		// Remove potentially dangerous attributes
+		$svg = preg_replace('/(xlink:href|href)\s*=\s*(["\'])\s*(javascript|data):/i', '$1=$2#$3:', $svg);
+
+		return $svg;
+	}
+}
+
 // Extract attributes
 $block_id = $attributes['blockId'] ?? 'query-posts-' . wp_unique_id();
 $post_type = $attributes['postType'] ?? 'post';
@@ -29,6 +57,19 @@ $post_status = $attributes['postStatus'] ?? 'publish';
 $sticky_posts = $attributes['stickyPosts'] ?? 'include';
 $display_mode = $attributes['displayMode'] ?? 'grid';
 $enable_carousel = $attributes['enableCarousel'] ?? false;
+
+// Carousel control attributes
+$has_navigation = ($attributes['carouselNavigation'] ?? true) && $enable_carousel;
+$has_pagination = ($attributes['carouselPagination'] ?? true) && $enable_carousel;
+$has_scrollbar = ($attributes['scrollbar'] ?? false) && $enable_carousel;
+$navigation_position = $attributes['navigationPosition'] ?? 'center';
+$pagination_position = $attributes['paginationPosition'] ?? 'bottom';
+$group_controls = $attributes['groupControls'] ?? false;
+$grouped_position = $attributes['groupedPosition'] ?? 'bottom';
+$grouped_layout = $attributes['groupedLayout'] ?? 'split';
+$has_custom_nav = $attributes['customNavigation'] ?? false;
+$custom_nav_prev = $attributes['customNavPrev'] ?? '';
+$custom_nav_next = $attributes['customNavNext'] ?? '';
 
 // Build WP_Query arguments
 $query_args = [
@@ -71,6 +112,23 @@ if ($sticky_posts === 'exclude') {
 // Handle taxonomy filters
 $tax_query = [];
 
+// New dynamic taxonomy filtering (works for any post type)
+$taxonomy_filters = $attributes['taxonomyFilters'] ?? [];
+if (!empty($taxonomy_filters) && is_array($taxonomy_filters)) {
+	$selected_taxonomy = $taxonomy_filters['taxonomy'] ?? '';
+	$selected_terms = $taxonomy_filters['terms'] ?? [];
+
+	if (!empty($selected_taxonomy) && !empty($selected_terms) && is_array($selected_terms)) {
+		$tax_query[] = [
+			'taxonomy' => $selected_taxonomy,
+			'field' => 'term_id',
+			'terms' => $selected_terms,
+			'operator' => 'IN', // OR behavior - match ANY selected term
+		];
+	}
+}
+
+// Legacy category/tag filtering for backward compatibility
 if ($post_type === 'post') {
 	if (!empty($categories) && is_array($categories)) {
 		$tax_query[] = [
@@ -89,8 +147,14 @@ if ($post_type === 'post') {
 	}
 }
 
+// Add multiple taxonomy queries if present
 if (!empty($tax_query)) {
-	$query_args['tax_query'] = $tax_query;
+	if (count($tax_query) > 1) {
+		// If multiple tax queries, use AND relation
+		$query_args['tax_query'] = array_merge(['relation' => 'AND'], $tax_query);
+	} else {
+		$query_args['tax_query'] = $tax_query;
+	}
 }
 
 // Handle author filter
@@ -153,6 +217,25 @@ if ($enable_carousel) {
 	$data_attrs['data-pause-on-hover'] = ($attributes['pauseOnHover'] ?? true) ? 'true' : 'false';
 	$data_attrs['data-grab-cursor'] = ($attributes['grabCursor'] ?? true) ? 'true' : 'false';
 	$data_attrs['data-keyboard'] = ($attributes['keyboard'] ?? true) ? 'true' : 'false';
+
+	// Control Positioning attributes (from Carousel New)
+	$data_attrs['data-navigation-position'] = $attributes['navigationPosition'] ?? 'center';
+	$data_attrs['data-pagination-position'] = $attributes['paginationPosition'] ?? 'bottom';
+	$data_attrs['data-group-controls'] = ($attributes['groupControls'] ?? false) ? 'true' : 'false';
+	$data_attrs['data-grouped-position'] = $attributes['groupedPosition'] ?? 'bottom';
+	$data_attrs['data-grouped-layout'] = $attributes['groupedLayout'] ?? 'split';
+
+	// Additional Navigation Controls (from Carousel New)
+	$data_attrs['data-scrollbar'] = ($attributes['scrollbar'] ?? false) ? 'true' : 'false';
+	$data_attrs['data-custom-navigation'] = ($attributes['customNavigation'] ?? false) ? 'true' : 'false';
+
+	// Custom navigation SVG content
+	if (!empty($attributes['customNavPrev'])) {
+		$data_attrs['data-custom-nav-prev'] = esc_attr($attributes['customNavPrev']);
+	}
+	if (!empty($attributes['customNavNext'])) {
+		$data_attrs['data-custom-nav-next'] = esc_attr($attributes['customNavNext']);
+	}
 }
 
 $data_attrs_string = '';
@@ -470,6 +553,139 @@ echo $custom_css;
 
 		<?php if ($enable_carousel) : ?>
 			</swiper-container>
+
+			<?php // Custom navigation (not grouped) ?>
+			<?php if (!$group_controls && $has_navigation) : ?>
+				<div class="query-posts-nav-wrapper nav-position-<?php echo esc_attr($navigation_position); ?>">
+					<div class="query-posts-nav-buttons">
+						<button
+							class="query-posts-nav-prev"
+							aria-label="<?php esc_attr_e('Previous slide', 'prolific-blocks'); ?>"
+							role="button"
+						>
+							<?php if ($has_custom_nav && $custom_nav_prev) : ?>
+								<span class="query-posts-nav-icon">
+									<?php echo pb_query_posts_sanitize_svg($custom_nav_prev); ?>
+								</span>
+							<?php else : ?>
+								<span class="query-posts-nav-icon" aria-hidden="true">‹</span>
+							<?php endif; ?>
+							<span class="screen-reader-text"><?php esc_html_e('Previous', 'prolific-blocks'); ?></span>
+						</button>
+
+						<button
+							class="query-posts-nav-next"
+							aria-label="<?php esc_attr_e('Next slide', 'prolific-blocks'); ?>"
+							role="button"
+						>
+							<?php if ($has_custom_nav && $custom_nav_next) : ?>
+								<span class="query-posts-nav-icon">
+									<?php echo pb_query_posts_sanitize_svg($custom_nav_next); ?>
+								</span>
+							<?php else : ?>
+								<span class="query-posts-nav-icon" aria-hidden="true">›</span>
+							<?php endif; ?>
+							<span class="screen-reader-text"><?php esc_html_e('Next', 'prolific-blocks'); ?></span>
+						</button>
+					</div>
+				</div>
+			<?php endif; ?>
+
+			<?php // Custom pagination (not grouped) ?>
+			<?php if (!$group_controls && $has_pagination) : ?>
+				<div class="swiper-pagination pagination-position-<?php echo esc_attr($pagination_position); ?>"></div>
+			<?php endif; ?>
+
+			<?php // Scrollbar ?>
+			<?php if ($has_scrollbar) : ?>
+				<div class="swiper-scrollbar"></div>
+			<?php endif; ?>
+
+			<?php // Grouped controls ?>
+			<?php if ($group_controls && ($has_navigation || $has_pagination)) : ?>
+				<div class="query-posts-controls-group grouped grouped-position-<?php echo esc_attr($grouped_position); ?> grouped-layout-<?php echo esc_attr($grouped_layout); ?>">
+					<?php if ($grouped_layout === 'split') : ?>
+						<?php // Split layout: individual buttons for proper ordering ?>
+						<?php if ($has_navigation) : ?>
+							<button
+								class="query-posts-nav-prev"
+								aria-label="<?php esc_attr_e('Previous slide', 'prolific-blocks'); ?>"
+								role="button"
+							>
+								<?php if ($has_custom_nav && $custom_nav_prev) : ?>
+									<span class="query-posts-nav-icon">
+										<?php echo pb_query_posts_sanitize_svg($custom_nav_prev); ?>
+									</span>
+								<?php else : ?>
+									<span class="query-posts-nav-icon" aria-hidden="true">‹</span>
+								<?php endif; ?>
+								<span class="screen-reader-text"><?php esc_html_e('Previous', 'prolific-blocks'); ?></span>
+							</button>
+						<?php endif; ?>
+
+						<?php if ($has_pagination) : ?>
+							<div class="swiper-pagination grouped"></div>
+						<?php endif; ?>
+
+						<?php if ($has_navigation) : ?>
+							<button
+								class="query-posts-nav-next"
+								aria-label="<?php esc_attr_e('Next slide', 'prolific-blocks'); ?>"
+								role="button"
+							>
+								<?php if ($has_custom_nav && $custom_nav_next) : ?>
+									<span class="query-posts-nav-icon">
+										<?php echo pb_query_posts_sanitize_svg($custom_nav_next); ?>
+									</span>
+								<?php else : ?>
+									<span class="query-posts-nav-icon" aria-hidden="true">›</span>
+								<?php endif; ?>
+								<span class="screen-reader-text"><?php esc_html_e('Next', 'prolific-blocks'); ?></span>
+							</button>
+						<?php endif; ?>
+					<?php else : ?>
+						<?php // Left/Right layouts: buttons grouped in wrapper ?>
+						<?php if ($has_navigation) : ?>
+							<div class="query-posts-nav-buttons">
+								<button
+									class="query-posts-nav-prev"
+									aria-label="<?php esc_attr_e('Previous slide', 'prolific-blocks'); ?>"
+									role="button"
+								>
+									<?php if ($has_custom_nav && $custom_nav_prev) : ?>
+										<span class="query-posts-nav-icon">
+											<?php echo pb_query_posts_sanitize_svg($custom_nav_prev); ?>
+										</span>
+									<?php else : ?>
+										<span class="query-posts-nav-icon" aria-hidden="true">‹</span>
+									<?php endif; ?>
+									<span class="screen-reader-text"><?php esc_html_e('Previous', 'prolific-blocks'); ?></span>
+								</button>
+
+								<button
+									class="query-posts-nav-next"
+									aria-label="<?php esc_attr_e('Next slide', 'prolific-blocks'); ?>"
+									role="button"
+								>
+									<?php if ($has_custom_nav && $custom_nav_next) : ?>
+										<span class="query-posts-nav-icon">
+											<?php echo pb_query_posts_sanitize_svg($custom_nav_next); ?>
+										</span>
+									<?php else : ?>
+										<span class="query-posts-nav-icon" aria-hidden="true">›</span>
+									<?php endif; ?>
+									<span class="screen-reader-text"><?php esc_html_e('Next', 'prolific-blocks'); ?></span>
+								</button>
+							</div>
+						<?php endif; ?>
+
+						<?php if ($has_pagination) : ?>
+							<div class="swiper-pagination grouped"></div>
+						<?php endif; ?>
+					<?php endif; ?>
+				</div>
+			<?php endif; ?>
+
 		<?php else : ?>
 			</div>
 		<?php endif; ?>

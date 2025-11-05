@@ -184,6 +184,50 @@
       "type": "boolean",
       "default": true
     },
+    "navigationPosition": {
+      "type": "string",
+      "default": "center"
+    },
+    "paginationPosition": {
+      "type": "string",
+      "default": "bottom"
+    },
+    "groupControls": {
+      "type": "boolean",
+      "default": false
+    },
+    "groupedPosition": {
+      "type": "string",
+      "default": "bottom"
+    },
+    "groupedLayout": {
+      "type": "string",
+      "default": "split"
+    },
+    "scrollbar": {
+      "type": "boolean",
+      "default": false
+    },
+    "customNavigation": {
+      "type": "boolean",
+      "default": false
+    },
+    "customNavPrev": {
+      "type": "string",
+      "default": ""
+    },
+    "customNavNext": {
+      "type": "string",
+      "default": ""
+    },
+    "customNavPrevSvg": {
+      "type": "string",
+      "default": ""
+    },
+    "customNavNextSvg": {
+      "type": "string",
+      "default": ""
+    },
     "showSearch": {
       "type": "boolean",
       "default": false

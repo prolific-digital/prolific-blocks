@@ -34,6 +34,9 @@
 		const paginationEnabled = blockElement.dataset.carouselPagination === 'true';
 		const paginationType = blockElement.dataset.paginationType || 'bullets';
 
+		// New carousel controls from Carousel New
+		const scrollbarEnabled = blockElement.dataset.scrollbar === 'true';
+
 		// Configure Swiper Element parameters
 		const swiperParams = {
 			slidesPerView: slidesPerViewMobile,
@@ -66,15 +69,27 @@
 			};
 		}
 
-		// Add navigation if enabled
-		if (navigationEnabled) {
+		// Only enable built-in navigation if custom navigation is NOT being used
+		// Custom navigation is detected by presence of custom nav wrapper or grouped controls
+		const hasCustomNavWrapper = blockElement.querySelector('.query-posts-nav-wrapper');
+		const hasGroupedControls = blockElement.querySelector('.query-posts-controls-group');
+		const hasCustomNav = hasCustomNavWrapper || hasGroupedControls;
+
+		if (navigationEnabled && !hasCustomNav) {
 			swiperParams.navigation = true;
+		} else {
+			swiperParams.navigation = false;
 		}
 
-		// Add pagination if enabled
+		// Handle pagination - always use custom pagination element when it exists
 		if (paginationEnabled) {
+			const paginationEl = hasGroupedControls
+				? '.query-posts-controls-group .swiper-pagination'
+				: '.swiper-pagination.pagination-position-' + (blockElement.dataset.paginationPosition || 'bottom');
+
 			swiperParams.pagination = {
 				clickable: true,
+				el: paginationEl,
 			};
 
 			// Set pagination type
@@ -85,6 +100,15 @@
 			} else {
 				swiperParams.pagination.type = 'bullets';
 			}
+		} else {
+			swiperParams.pagination = false;
+		}
+
+		// Add scrollbar if enabled
+		if (scrollbarEnabled) {
+			swiperParams.scrollbar = {
+				draggable: true,
+			};
 		}
 
 		// Assign parameters to swiper-container element
@@ -92,6 +116,86 @@
 
 		// Initialize the swiper
 		carouselElement.initialize();
+
+		// Set up custom navigation after initialization
+		setupCustomNavigation(blockElement, carouselElement);
+	}
+
+	/**
+	 * Set up custom navigation buttons for Query Posts carousel
+	 */
+	function setupCustomNavigation(blockElement, carouselElement) {
+		// Wait for Swiper to be ready
+		const checkSwiper = () => {
+			if (carouselElement.swiper) {
+				const swiper = carouselElement.swiper;
+
+				// Find custom navigation buttons
+				let prevButton = blockElement.querySelector(
+					'.query-posts-nav-wrapper .query-posts-nav-prev, .query-posts-controls-group .query-posts-nav-prev'
+				);
+				let nextButton = blockElement.querySelector(
+					'.query-posts-nav-wrapper .query-posts-nav-next, .query-posts-controls-group .query-posts-nav-next'
+				);
+
+				if (prevButton && nextButton) {
+					// Add click handlers
+					prevButton.addEventListener('click', function (e) {
+						e.preventDefault();
+						e.stopPropagation();
+						swiper.slidePrev();
+					});
+
+					nextButton.addEventListener('click', function (e) {
+						e.preventDefault();
+						e.stopPropagation();
+						swiper.slideNext();
+					});
+
+					// Update button states
+					const updateNavigationState = () => {
+						// If loop is enabled, buttons are always active
+						if (swiper.params.loop) {
+							prevButton.disabled = false;
+							nextButton.disabled = false;
+							prevButton.setAttribute('aria-disabled', 'false');
+							nextButton.setAttribute('aria-disabled', 'false');
+							return;
+						}
+
+						// Disable prev button on first slide
+						if (swiper.isBeginning) {
+							prevButton.disabled = true;
+							prevButton.setAttribute('aria-disabled', 'true');
+						} else {
+							prevButton.disabled = false;
+							prevButton.setAttribute('aria-disabled', 'false');
+						}
+
+						// Disable next button on last slide
+						if (swiper.isEnd) {
+							nextButton.disabled = true;
+							nextButton.setAttribute('aria-disabled', 'true');
+						} else {
+							nextButton.disabled = false;
+							nextButton.setAttribute('aria-disabled', 'false');
+						}
+					};
+
+					// Initial state
+					updateNavigationState();
+
+					// Update on slide change
+					swiper.on('slideChange', updateNavigationState);
+				}
+			} else {
+				// Swiper not ready yet, try again
+				setTimeout(checkSwiper, 100);
+			}
+		};
+
+		// Start checking
+		checkSwiper();
 	}
 
 	/**
