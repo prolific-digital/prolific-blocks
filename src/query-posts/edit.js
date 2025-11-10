@@ -22,7 +22,7 @@ import {
 	Spinner,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useState, useRef } from '@wordpress/element';
 import { upload } from '@wordpress/icons';
 import ServerSideRender from '@wordpress/server-side-render';
 import SupportCard from '../components/SupportCard';
@@ -165,11 +165,18 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		}
 	}, [clientId]);
 
-	// Clear taxonomy filters when post type changes
+	// Track previous post type to detect actual changes (not initial load)
+	const prevPostTypeRef = useRef();
+
+	// Clear taxonomy filters when post type changes (but not on initial load)
 	useEffect(() => {
-		if (attributes.taxonomyFilters && Object.keys(attributes.taxonomyFilters).length > 0) {
-			setAttributes({ taxonomyFilters: {} });
+		// Only clear if post type actually changed (not on initial load)
+		if (prevPostTypeRef.current && prevPostTypeRef.current !== postType) {
+			if (attributes.taxonomyFilters && Object.keys(attributes.taxonomyFilters).length > 0) {
+				setAttributes({ taxonomyFilters: {} });
+			}
 		}
+		prevPostTypeRef.current = postType;
 	}, [postType]);
 
 	// Fetch available post types (public + show_in_rest, excluding attachment)
