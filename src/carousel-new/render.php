@@ -107,6 +107,9 @@ if (!empty($attributes['anchor'])) {
 	$carousel_id = 'carousel-new-' . $attributes['anchor'];
 }
 
+// Create unique pagination ID for this carousel instance
+$pagination_id = 'swiper-pagination-' . $attributes['blockId'];
+
 // Build responsive breakpoints configuration
 $breakpoints = [
 	0 => [
@@ -163,8 +166,8 @@ if (pb_carousel_new_get_attribute($attributes, 'pagination')) {
 	if ($pagination_type) {
 		$swiper_attrs['pagination-type'] = $pagination_type;
 	}
-	// Tell Swiper which element to use for pagination
-	$swiper_attrs['pagination-el'] = '.swiper-pagination';
+	// Tell Swiper which element to use for pagination - use unique ID for this carousel instance
+	$swiper_attrs['pagination-el'] = '#' . $pagination_id;
 	$swiper_attrs['pagination-clickable'] = 'true';
 } else {
 	$swiper_attrs['pagination'] = 'false';
@@ -307,7 +310,7 @@ $has_pagination = pb_carousel_new_get_attribute($attributes, 'pagination');
 		<?php endif; ?>
 
 		<?php if (!$group_controls && $has_pagination) : ?>
-			<div class="swiper-pagination pagination-position-<?php echo esc_attr($pagination_position); ?>"></div>
+			<div id="<?php echo esc_attr($pagination_id); ?>" class="swiper-pagination pagination-position-<?php echo esc_attr($pagination_position); ?>"></div>
 		<?php endif; ?>
 
 		<?php if ($group_controls && ($has_navigation || $has_pagination)) : ?>
@@ -332,7 +335,7 @@ $has_pagination = pb_carousel_new_get_attribute($attributes, 'pagination');
 					<?php endif; ?>
 
 					<?php if ($has_pagination) : ?>
-						<div class="swiper-pagination grouped"></div>
+						<div id="<?php echo esc_attr($pagination_id); ?>" class="swiper-pagination grouped"></div>
 					<?php endif; ?>
 
 					<?php if ($has_navigation) : ?>
@@ -388,7 +391,7 @@ $has_pagination = pb_carousel_new_get_attribute($attributes, 'pagination');
 					<?php endif; ?>
 
 					<?php if ($has_pagination) : ?>
-						<div class="swiper-pagination grouped"></div>
+						<div id="<?php echo esc_attr($pagination_id); ?>" class="swiper-pagination grouped"></div>
 					<?php endif; ?>
 				<?php endif; ?>
 			</div>
