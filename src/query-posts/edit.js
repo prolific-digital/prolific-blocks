@@ -87,6 +87,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 	const {
 		postType,
 		postsPerPage,
+		showAllPosts,
 		orderBy,
 		order,
 		offset,
@@ -116,6 +117,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		carouselNavigation,
 		carouselPagination,
 		paginationType,
+		dynamicBullets,
 		carouselSpeed,
 		centeredSlides,
 		pauseOnHover,
@@ -353,14 +355,22 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 						/>
 					)}
 
-					<RangeControl
-						label={__('Number of Posts', 'prolific-blocks')}
-						value={postsPerPage}
-						onChange={(value) => setAttributes({ postsPerPage: value })}
-						min={1}
-						max={100}
-						help={__('Maximum number of posts to display', 'prolific-blocks')}
+					<ToggleControl
+						label={__('Show All Posts', 'prolific-blocks')}
+						checked={showAllPosts}
+						onChange={(value) => setAttributes({ showAllPosts: value })}
+						help={__('Display all posts for this post type', 'prolific-blocks')}
 					/>
+
+					{!showAllPosts && (
+						<RangeControl
+							label={__('Number of Posts', 'prolific-blocks')}
+							value={postsPerPage}
+							onChange={(value) => setAttributes({ postsPerPage: value })}
+							min={1}
+							max={100}
+						/>
+					)}
 
 					<SelectControl
 						label={__('Order By', 'prolific-blocks')}
@@ -713,6 +723,15 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 									{ label: __('Progress Bar', 'prolific-blocks'), value: 'progressbar' },
 								]}
 								onChange={(value) => setAttributes({ paginationType: value })}
+							/>
+						)}
+
+						{carouselPagination && paginationType === 'bullets' && (
+							<ToggleControl
+								label={__('Dynamic Bullets', 'prolific-blocks')}
+								checked={dynamicBullets}
+								onChange={(value) => setAttributes({ dynamicBullets: value })}
+								help={__('Show only a few bullets at a time to prevent overflow', 'prolific-blocks')}
 							/>
 						)}
 

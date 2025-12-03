@@ -33,6 +33,7 @@
 		const navigationEnabled = blockElement.dataset.carouselNavigation === 'true';
 		const paginationEnabled = blockElement.dataset.carouselPagination === 'true';
 		const paginationType = blockElement.dataset.paginationType || 'bullets';
+		const dynamicBullets = blockElement.dataset.dynamicBullets === 'true';
 
 		// New carousel controls from Carousel New
 		const scrollbarEnabled = blockElement.dataset.scrollbar === 'true';
@@ -99,6 +100,10 @@
 				swiperParams.pagination.type = 'progressbar';
 			} else {
 				swiperParams.pagination.type = 'bullets';
+				if (dynamicBullets) {
+					swiperParams.pagination.dynamicBullets = true;
+					swiperParams.pagination.dynamicMainBullets = 3;
+				}
 			}
 		} else {
 			swiperParams.pagination = false;
