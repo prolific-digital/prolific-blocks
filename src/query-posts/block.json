@@ -44,6 +44,10 @@
       "type": "number",
       "default": 10
     },
+    "showAllPosts": {
+      "type": "boolean",
+      "default": false
+    },
     "orderBy": {
       "type": "string",
       "default": "date"
@@ -163,6 +167,10 @@
     "paginationType": {
       "type": "string",
       "default": "bullets"
+    },
+    "dynamicBullets": {
+      "type": "boolean",
+      "default": true
     },
     "carouselSpeed": {
       "type": "number",

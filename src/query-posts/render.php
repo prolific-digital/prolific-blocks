@@ -383,7 +383,8 @@ if (!function_exists('prolific_render_cpt_layout')) {
 // Extract attributes
 $block_id = $attributes['blockId'] ?? 'query-posts-' . wp_unique_id();
 $post_type = $attributes['postType'] ?? 'post';
-$posts_per_page = $attributes['postsPerPage'] ?? 10;
+$show_all_posts = $attributes['showAllPosts'] ?? false;
+$posts_per_page = $show_all_posts ? -1 : ($attributes['postsPerPage'] ?? 10);
 $order_by = $attributes['orderBy'] ?? 'date';
 $order = $attributes['order'] ?? 'desc';
 $offset = $attributes['offset'] ?? 0;
@@ -551,6 +552,7 @@ if ($enable_carousel) {
 	$data_attrs['data-carousel-navigation'] = ($attributes['carouselNavigation'] ?? true) ? 'true' : 'false';
 	$data_attrs['data-carousel-pagination'] = ($attributes['carouselPagination'] ?? true) ? 'true' : 'false';
 	$data_attrs['data-pagination-type'] = $attributes['paginationType'] ?? 'bullets';
+	$data_attrs['data-dynamic-bullets'] = ($attributes['dynamicBullets'] ?? true) ? 'true' : 'false';
 	$data_attrs['data-carousel-speed'] = $attributes['carouselSpeed'] ?? 300;
 	$data_attrs['data-centered-slides'] = ($attributes['centeredSlides'] ?? false) ? 'true' : 'false';
 	$data_attrs['data-pause-on-hover'] = ($attributes['pauseOnHover'] ?? true) ? 'true' : 'false';
