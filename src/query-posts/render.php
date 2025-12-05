@@ -540,6 +540,8 @@ $data_attrs = [
 ];
 
 if ($enable_carousel) {
+	// Add slide count for virtual active index support
+	$data_attrs['data-slide-count'] = $query->post_count;
 	$data_attrs['data-slides-desktop'] = $attributes['slidesPerViewDesktop'] ?? 3;
 	$data_attrs['data-slides-tablet'] = $attributes['slidesPerViewTablet'] ?? 2;
 	$data_attrs['data-slides-mobile'] = $attributes['slidesPerViewMobile'] ?? 1;
