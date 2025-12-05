@@ -798,3 +798,21 @@
 		}
 	}
 }
+
+// Fix for block selection when nested in parent blocks
+// Ensures the block wrapper can receive focus and clicks from the Block List View
+.wp-block[data-type="prolific/carousel-new"] {
+	// Ensure the block wrapper is focusable and receives click events
+	&:focus {
+		outline: 2px solid var(--wp-admin-theme-color, #007cba);
+		outline-offset: 1px;
+	}
+
+	// Ensure click area for block selection
+	> .wp-block-prolific-carousel-new {
+		// Make clickable areas work properly
+		&:focus {
+			outline: none; // Parent handles focus outline
+		}
+	}
+}
