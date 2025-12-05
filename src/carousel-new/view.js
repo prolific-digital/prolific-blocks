@@ -418,58 +418,61 @@
 		const state = carouselStates.get(carousel.id);
 		if (!state) return;
 
-		const { actualSlideCount, slidesPerView, maxPhysicalIndex } = state;
+		const { actualSlideCount, maxPhysicalIndex } = state;
 		const isLoop = swiper.params.loop;
 
-		// If using bullets pagination, ensure correct count
+		// If using bullets pagination, ensure correct count and attach handlers
 		if (swiper.params.pagination && swiper.params.pagination.type === 'bullets') {
 			const paginationEl = swiper.pagination.el;
-			let bullets = paginationEl.querySelectorAll('.swiper-pagination-bullet');
 
-			// If bullet count doesn't match, recreate pagination
-			if (bullets.length !== actualSlideCount) {
-				// Clear existing bullets
-				paginationEl.innerHTML = '';
+			// Always recreate bullets to ensure our custom click handlers are attached
+			// Clear existing bullets
+			paginationEl.innerHTML = '';
 
-				// Create one bullet per slide
-				for (let i = 0; i < actualSlideCount; i++) {
-					const bullet = document.createElement('span');
-					bullet.className = 'swiper-pagination-bullet';
-					bullet.setAttribute('role', 'button');
-					bullet.setAttribute('aria-label', 'Go to slide ' + (i + 1));
-					bullet.setAttribute('tabindex', '0');
-					bullet.dataset.index = i;
-
-					// Make bullet clickable - navigates to make that slide the active one
-					bullet.addEventListener('click', function () {
-						const targetSlideIndex = parseInt(this.dataset.index, 10);
-						const state = carouselStates.get(carousel.id);
-						if (!state) return;
-
-						if (isLoop) {
-							swiper.slideToLoop(targetSlideIndex);
-							state.virtualActiveIndex = targetSlideIndex;
-						} else {
-							// Calculate physical position needed to show this slide
-							// If target is beyond maxPhysicalIndex, go to max and set virtual
-							const physicalTarget = Math.min(targetSlideIndex, maxPhysicalIndex);
-							swiper.slideTo(physicalTarget);
-							state.virtualActiveIndex = targetSlideIndex;
-						}
-
-						updateActiveStates(carousel, swiper);
-					});
-
-					// Keyboard support
-					bullet.addEventListener('keydown', function (e) {
-						if (e.key === 'Enter' || e.key === ' ') {
-							e.preventDefault();
-							this.click();
-						}
-					});
-
-					paginationEl.appendChild(bullet);
+			// Create one bullet per slide
+			for (let i = 0; i < actualSlideCount; i++) {
+				const bullet = document.createElement('span');
+				bullet.className = 'swiper-pagination-bullet';
+				if (i === 0) {
+					bullet.classList.add('swiper-pagination-bullet-active');
 				}
+				bullet.setAttribute('role', 'button');
+				bullet.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+				bullet.setAttribute('tabindex', '0');
+				bullet.dataset.index = i;
+
+				// Make bullet clickable - navigates to make that slide the active one
+				bullet.addEventListener('click', function (e) {
+					e.preventDefault();
+					e.stopPropagation();
+
+					const targetSlideIndex = parseInt(this.dataset.index, 10);
+					const state = carouselStates.get(carousel.id);
+					if (!state) return;
+
+					if (isLoop) {
+						swiper.slideToLoop(targetSlideIndex);
+						state.virtualActiveIndex = targetSlideIndex;
+					} else {
+						// Calculate physical position needed to show this slide
+						// If target is beyond maxPhysicalIndex, go to max and set virtual
+						const physicalTarget = Math.min(targetSlideIndex, maxPhysicalIndex);
+						swiper.slideTo(physicalTarget);
+						state.virtualActiveIndex = targetSlideIndex;
+					}
+
+					updateActiveStates(carousel, swiper);
+				});
+
+				// Keyboard support
+				bullet.addEventListener('keydown', function (e) {
+					if (e.key === 'Enter' || e.key === ' ') {
+						e.preventDefault();
+						this.click();
+					}
+				});
+
+				paginationEl.appendChild(bullet);
 			}
 		}
 	}

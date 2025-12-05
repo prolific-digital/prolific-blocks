@@ -7,6 +7,11 @@
 	'use strict';
 
 	/**
+	 * Store for carousel state (virtual active index per carousel)
+	 */
+	const carouselStates = new Map();
+
+	/**
 	 * Initialize carousel for a query posts block using Swiper Element
 	 */
 	function initCarousel(blockElement) {
@@ -127,13 +132,32 @@
 	}
 
 	/**
-	 * Set up custom navigation buttons for Query Posts carousel
+	 * Set up custom navigation buttons for Query Posts carousel with virtual active index
 	 */
 	function setupCustomNavigation(blockElement, carouselElement) {
 		// Wait for Swiper to be ready
 		const checkSwiper = () => {
 			if (carouselElement.swiper) {
 				const swiper = carouselElement.swiper;
+
+				// Get slide count and initialize state
+				let actualSlideCount = parseInt(blockElement.dataset.slideCount, 10);
+				if (!actualSlideCount || isNaN(actualSlideCount)) {
+					const originalSlides = carouselElement.querySelectorAll(
+						'swiper-slide:not(.swiper-slide-duplicate)'
+					);
+					actualSlideCount = originalSlides.length;
+				}
+
+				const slidesPerView = Math.floor(swiper.params.slidesPerView) || 1;
+
+				// Initialize carousel state with virtual active index
+				carouselStates.set(blockElement.id, {
+					virtualActiveIndex: 0,
+					actualSlideCount: actualSlideCount,
+					slidesPerView: slidesPerView,
+					maxPhysicalIndex: Math.max(0, actualSlideCount - slidesPerView),
+				});
 
 				// Find custom navigation buttons
 				let prevButton = blockElement.querySelector(
@@ -144,55 +168,110 @@
 				);
 
 				if (prevButton && nextButton) {
-					// Add click handlers
-					prevButton.addEventListener('click', function (e) {
-						e.preventDefault();
-						e.stopPropagation();
-						swiper.slidePrev();
-					});
+					// Store button references in state
+					const state = carouselStates.get(blockElement.id);
+					if (state) {
+						state.prevButton = prevButton;
+						state.nextButton = nextButton;
+					}
 
+					// Next button click handler with virtual index support
 					nextButton.addEventListener('click', function (e) {
 						e.preventDefault();
 						e.stopPropagation();
-						swiper.slideNext();
+
+						const state = carouselStates.get(blockElement.id);
+						if (!state) return;
+
+						const { virtualActiveIndex, actualSlideCount, maxPhysicalIndex } =
+							state;
+						const currentPhysicalIndex =
+							swiper.realIndex !== undefined
+								? swiper.realIndex
+								: swiper.activeIndex;
+
+						// If we can still physically move AND virtual index matches physical position
+						if (
+							currentPhysicalIndex < maxPhysicalIndex &&
+							virtualActiveIndex <= currentPhysicalIndex
+						) {
+							// Normal slide - move carousel and update virtual index
+							swiper.slideNext();
+							state.virtualActiveIndex =
+								swiper.realIndex !== undefined
+									? swiper.realIndex
+									: swiper.activeIndex;
+						} else if (virtualActiveIndex < actualSlideCount - 1) {
+							// At physical end but can still increment virtual index
+							state.virtualActiveIndex++;
+						}
+
+						updateActiveStates(blockElement, swiper);
 					});
 
-					// Update button states
-					const updateNavigationState = () => {
-						// If loop is enabled, buttons are always active
-						if (swiper.params.loop) {
-							prevButton.disabled = false;
-							nextButton.disabled = false;
-							prevButton.setAttribute('aria-disabled', 'false');
-							nextButton.setAttribute('aria-disabled', 'false');
-							return;
+					// Previous button click handler with virtual index support
+					prevButton.addEventListener('click', function (e) {
+						e.preventDefault();
+						e.stopPropagation();
+
+						const state = carouselStates.get(blockElement.id);
+						if (!state) return;
+
+						const { virtualActiveIndex } = state;
+						const currentPhysicalIndex =
+							swiper.realIndex !== undefined
+								? swiper.realIndex
+								: swiper.activeIndex;
+
+						// If virtual index is ahead of physical position, just decrement virtual
+						if (virtualActiveIndex > currentPhysicalIndex) {
+							state.virtualActiveIndex--;
+						} else if (currentPhysicalIndex > 0) {
+							// Can physically move backward
+							swiper.slidePrev();
+							state.virtualActiveIndex =
+								swiper.realIndex !== undefined
+									? swiper.realIndex
+									: swiper.activeIndex;
 						}
 
-						// Disable prev button on first slide
-						if (swiper.isBeginning) {
-							prevButton.disabled = true;
-							prevButton.setAttribute('aria-disabled', 'true');
-						} else {
-							prevButton.disabled = false;
-							prevButton.setAttribute('aria-disabled', 'false');
+						updateActiveStates(blockElement, swiper);
+					});
+
+					// Sync virtual index when Swiper physically moves (e.g., via drag)
+					swiper.on('slideChange', function () {
+						const state = carouselStates.get(blockElement.id);
+						if (!state) return;
+
+						const newPhysicalIndex =
+							swiper.realIndex !== undefined
+								? swiper.realIndex
+								: swiper.activeIndex;
+
+						// If user drags/swipes, reset virtual index to match physical
+						if (state.virtualActiveIndex < newPhysicalIndex) {
+							state.virtualActiveIndex = newPhysicalIndex;
+						}
+						// If moving backward and virtual was ahead, keep virtual ahead but within visible range
+						else if (newPhysicalIndex < state.virtualActiveIndex) {
+							// Ensure virtual index is at least the physical index
+							// This handles backward swipes/drags
+							const maxVisibleIndex =
+								newPhysicalIndex + state.slidesPerView - 1;
+							if (state.virtualActiveIndex > maxVisibleIndex) {
+								state.virtualActiveIndex = newPhysicalIndex;
+							}
 						}
 
-						// Disable next button on last slide
-						if (swiper.isEnd) {
-							nextButton.disabled = true;
-							nextButton.setAttribute('aria-disabled', 'true');
-						} else {
-							nextButton.disabled = false;
-							nextButton.setAttribute('aria-disabled', 'false');
-						}
-					};
+						updateActiveStates(blockElement, swiper);
+					});
 
-					// Initial state
-					updateNavigationState();
-
-					// Update on slide change
-					swiper.on('slideChange', updateNavigationState);
+					// Initial state update
+					updateActiveStates(blockElement, swiper);
 				}
+
+				// Set up virtual pagination
+				setupVirtualPagination(blockElement, swiper);
 			} else {
 				// Swiper not ready yet, try again
 				setTimeout(checkSwiper, 100);
@@ -201,6 +280,159 @@
 
 		// Start checking
 		checkSwiper();
+	}
+
+	/**
+	 * Update all active states (slides, bullets, navigation) based on virtual active index.
+	 */
+	function updateActiveStates(blockElement, swiper) {
+		const state = carouselStates.get(blockElement.id);
+		if (!state) return;
+
+		const { virtualActiveIndex } = state;
+
+		// Update slide active classes
+		const swiperContainer = blockElement.querySelector('swiper-container');
+		if (swiperContainer) {
+			const slides = swiperContainer.querySelectorAll(
+				'swiper-slide:not(.swiper-slide-duplicate)'
+			);
+			slides.forEach(function (slide, index) {
+				if (index === virtualActiveIndex) {
+					slide.classList.add('swiper-slide-active');
+				} else {
+					slide.classList.remove('swiper-slide-active');
+				}
+			});
+		}
+
+		// Update bullet active states
+		const paginationEl = swiper.pagination && swiper.pagination.el;
+		if (paginationEl) {
+			const bullets = paginationEl.querySelectorAll(
+				'.swiper-pagination-bullet'
+			);
+			bullets.forEach(function (bullet, index) {
+				if (index === virtualActiveIndex) {
+					bullet.classList.add('swiper-pagination-bullet-active');
+				} else {
+					bullet.classList.remove('swiper-pagination-bullet-active');
+				}
+			});
+		}
+
+		// Update navigation button states
+		updateVirtualNavigationState(blockElement, swiper);
+	}
+
+	/**
+	 * Update navigation button states based on virtual active index.
+	 */
+	function updateVirtualNavigationState(blockElement, swiper) {
+		const state = carouselStates.get(blockElement.id);
+		if (!state || !state.prevButton || !state.nextButton) return;
+
+		const { prevButton, nextButton, virtualActiveIndex, actualSlideCount } =
+			state;
+
+		// If loop is enabled, buttons are always active
+		if (swiper.params.loop) {
+			prevButton.disabled = false;
+			nextButton.disabled = false;
+			prevButton.setAttribute('aria-disabled', 'false');
+			nextButton.setAttribute('aria-disabled', 'false');
+			return;
+		}
+
+		// Disable prev button when at virtual beginning (index 0)
+		if (virtualActiveIndex === 0) {
+			prevButton.disabled = true;
+			prevButton.setAttribute('aria-disabled', 'true');
+		} else {
+			prevButton.disabled = false;
+			prevButton.setAttribute('aria-disabled', 'false');
+		}
+
+		// Disable next button when at virtual end (last slide)
+		if (virtualActiveIndex >= actualSlideCount - 1) {
+			nextButton.disabled = true;
+			nextButton.setAttribute('aria-disabled', 'true');
+		} else {
+			nextButton.disabled = false;
+			nextButton.setAttribute('aria-disabled', 'false');
+		}
+	}
+
+	/**
+	 * Set up pagination with virtual active index support.
+	 */
+	function setupVirtualPagination(blockElement, swiper) {
+		if (!swiper.pagination || !swiper.pagination.el) return;
+
+		const state = carouselStates.get(blockElement.id);
+		if (!state) return;
+
+		const { actualSlideCount, maxPhysicalIndex } = state;
+		const isLoop = swiper.params.loop;
+
+		// If using bullets pagination, ensure correct count and attach handlers
+		if (
+			swiper.params.pagination &&
+			swiper.params.pagination.type === 'bullets'
+		) {
+			const paginationEl = swiper.pagination.el;
+			let bullets = paginationEl.querySelectorAll('.swiper-pagination-bullet');
+
+			// Always recreate bullets to ensure our custom click handlers are attached
+			// Clear existing bullets
+			paginationEl.innerHTML = '';
+
+			// Create one bullet per slide
+			for (let i = 0; i < actualSlideCount; i++) {
+				const bullet = document.createElement('span');
+				bullet.className = 'swiper-pagination-bullet';
+				if (i === 0) {
+					bullet.classList.add('swiper-pagination-bullet-active');
+				}
+				bullet.setAttribute('role', 'button');
+				bullet.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+				bullet.setAttribute('tabindex', '0');
+				bullet.dataset.index = i;
+
+				// Make bullet clickable - navigates to make that slide the active one
+				bullet.addEventListener('click', function (e) {
+					e.preventDefault();
+					e.stopPropagation();
+
+					const targetSlideIndex = parseInt(this.dataset.index, 10);
+					const state = carouselStates.get(blockElement.id);
+					if (!state) return;
+
+					if (isLoop) {
+						swiper.slideToLoop(targetSlideIndex);
+						state.virtualActiveIndex = targetSlideIndex;
+					} else {
+						// Calculate physical position needed to show this slide
+						// If target is beyond maxPhysicalIndex, go to max and set virtual
+						const physicalTarget = Math.min(targetSlideIndex, maxPhysicalIndex);
+						swiper.slideTo(physicalTarget);
+						state.virtualActiveIndex = targetSlideIndex;
+					}
+
+					updateActiveStates(blockElement, swiper);
+				});
+
+				// Keyboard support
+				bullet.addEventListener('keydown', function (e) {
+					if (e.key === 'Enter' || e.key === ' ') {
+						e.preventDefault();
+						this.click();
+					}
+				});
+
+				paginationEl.appendChild(bullet);
+			}
+		}
 	}
 
 	/**
