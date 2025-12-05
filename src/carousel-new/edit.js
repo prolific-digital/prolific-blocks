@@ -1071,9 +1071,10 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 
       <div
         {...blockProps}
-        className={`wp-block-prolific-carousel-new has-content-align-${
+        className={`${blockProps.className || ''} wp-block-prolific-carousel-new has-content-align-${
           contentAlign || "center"
         }`}
+        tabIndex={0}
       >
         {/* Add Slide Button - Above Carousel */}
         <div className="carousel-new-add-slide-wrapper">

@@ -159,6 +159,13 @@ foreach ($boolean_attrs as $attr) {
 // Always disable built-in navigation - we use custom controls
 $swiper_attrs['navigation'] = 'false';
 
+// Count actual slides in the content
+$slide_count = 0;
+if (!empty($content)) {
+	// Count swiper-slide elements in the content
+	$slide_count = substr_count($content, '<swiper-slide');
+}
+
 // Configure pagination
 if (pb_carousel_new_get_attribute($attributes, 'pagination')) {
 	$swiper_attrs['pagination'] = 'true';
@@ -169,6 +176,8 @@ if (pb_carousel_new_get_attribute($attributes, 'pagination')) {
 	// Tell Swiper which element to use for pagination - use unique ID for this carousel instance
 	$swiper_attrs['pagination-el'] = '#' . $pagination_id;
 	$swiper_attrs['pagination-clickable'] = 'true';
+	// Pass dynamic bullets setting to help with pagination
+	$swiper_attrs['pagination-dynamic-bullets'] = 'false';
 } else {
 	$swiper_attrs['pagination'] = 'false';
 }
@@ -239,6 +248,7 @@ $wrapper_classes = [
 $wrapper_attributes = get_block_wrapper_attributes([
 	'class' => implode(' ', $wrapper_classes),
 	'id' => $carousel_id,
+	'data-slide-count' => $slide_count,
 ]);
 
 // Check for custom navigation
