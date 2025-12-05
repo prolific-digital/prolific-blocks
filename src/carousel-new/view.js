@@ -62,6 +62,7 @@
 			});
 
 			setupVirtualNavigation(carousel, swiper);
+			setupVirtualKeyboardNavigation(carousel, swiper);
 			setupPauseButton(carousel, swiper);
 			setupFocusManagement(swiper);
 			setupA11yAttributes(swiper);
@@ -245,6 +246,76 @@
 
 		// Initial state update
 		updateVirtualNavigationState(carousel, swiper);
+	}
+
+	/**
+	 * Set up keyboard navigation with virtual active index support.
+	 * Intercepts arrow key presses to use virtual navigation instead of Swiper's native keyboard.
+	 *
+	 * @param {HTMLElement} carousel - The carousel container.
+	 * @param {Object} swiper - The Swiper instance.
+	 */
+	function setupVirtualKeyboardNavigation(carousel, swiper) {
+		// Disable Swiper's built-in keyboard navigation to prevent conflicts
+		if (swiper.keyboard) {
+			swiper.keyboard.disable();
+		}
+
+		// Add keyboard event listener to the carousel container
+		carousel.addEventListener('keydown', function (e) {
+			// Only handle arrow keys
+			if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+				return;
+			}
+
+			const state = carouselStates.get(carousel.id);
+			if (!state) return;
+
+			const { virtualActiveIndex, actualSlideCount, maxPhysicalIndex } = state;
+			const currentPhysicalIndex = swiper.realIndex !== undefined ? swiper.realIndex : swiper.activeIndex;
+			const isHorizontal = swiper.params.direction !== 'vertical';
+
+			// Determine if this is a "next" or "prev" action based on direction
+			const isNextKey = isHorizontal
+				? (e.key === 'ArrowRight')
+				: (e.key === 'ArrowDown');
+			const isPrevKey = isHorizontal
+				? (e.key === 'ArrowLeft')
+				: (e.key === 'ArrowUp');
+
+			if (isNextKey) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				// Same logic as next button click
+				if (currentPhysicalIndex < maxPhysicalIndex && virtualActiveIndex <= currentPhysicalIndex) {
+					swiper.slideNext();
+					state.virtualActiveIndex = (swiper.realIndex !== undefined ? swiper.realIndex : swiper.activeIndex);
+				} else if (virtualActiveIndex < actualSlideCount - 1) {
+					state.virtualActiveIndex++;
+				}
+
+				updateActiveStates(carousel, swiper);
+			} else if (isPrevKey) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				// Same logic as prev button click
+				if (virtualActiveIndex > currentPhysicalIndex) {
+					state.virtualActiveIndex--;
+				} else if (currentPhysicalIndex > 0) {
+					swiper.slidePrev();
+					state.virtualActiveIndex = (swiper.realIndex !== undefined ? swiper.realIndex : swiper.activeIndex);
+				}
+
+				updateActiveStates(carousel, swiper);
+			}
+		});
+
+		// Make carousel focusable if not already
+		if (!carousel.hasAttribute('tabindex')) {
+			carousel.setAttribute('tabindex', '0');
+		}
 	}
 
 	/**
