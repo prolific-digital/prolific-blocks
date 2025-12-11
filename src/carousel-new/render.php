@@ -244,11 +244,19 @@ $wrapper_classes = [
 	'has-content-align-' . $content_align,
 ];
 
+// Get virtual active index setting
+$virtual_active_index = pb_carousel_new_get_attribute($attributes, 'virtualActiveIndex');
+// Default to true if not set (backward compatibility)
+if ($virtual_active_index === '') {
+	$virtual_active_index = true;
+}
+
 // Get wrapper attributes
 $wrapper_attributes = get_block_wrapper_attributes([
 	'class' => implode(' ', $wrapper_classes),
 	'id' => $carousel_id,
 	'data-slide-count' => $slide_count,
+	'data-virtual-active-index' => $virtual_active_index ? 'true' : 'false',
 ]);
 
 // Check for custom navigation

@@ -561,6 +561,10 @@ if ($enable_carousel) {
 	$data_attrs['data-grab-cursor'] = ($attributes['grabCursor'] ?? true) ? 'true' : 'false';
 	$data_attrs['data-keyboard'] = ($attributes['keyboard'] ?? true) ? 'true' : 'false';
 
+	// Virtual Active Index - defaults to true for backward compatibility
+	$virtual_active_index = $attributes['virtualActiveIndex'] ?? true;
+	$data_attrs['data-virtual-active-index'] = $virtual_active_index ? 'true' : 'false';
+
 	// Control Positioning attributes (from Carousel New)
 	$data_attrs['data-navigation-position'] = $attributes['navigationPosition'] ?? 'center';
 	$data_attrs['data-pagination-position'] = $attributes['paginationPosition'] ?? 'bottom';

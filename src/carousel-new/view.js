@@ -40,9 +40,12 @@
 		const swiperContainer = carousel.querySelector('swiper-container');
 		if (!swiperContainer) return;
 
+		// Check if virtual active index is enabled (defaults to true for backward compatibility)
+		const virtualActiveIndexEnabled = carousel.dataset.virtualActiveIndex !== 'false';
+
 		// Function to initialize all features
 		function initializeFeatures(swiper) {
-			// Get slide count and initialize state
+			// Get slide count
 			let actualSlideCount = parseInt(carousel.dataset.slideCount, 10);
 			if (!actualSlideCount || isNaN(actualSlideCount)) {
 				const originalSlides = swiperContainer.querySelectorAll(
@@ -53,24 +56,36 @@
 
 			const slidesPerView = Math.floor(swiper.params.slidesPerView) || 1;
 
-			// Initialize carousel state with virtual active index
-			carouselStates.set(carousel.id, {
-				virtualActiveIndex: 0,
-				actualSlideCount: actualSlideCount,
-				slidesPerView: slidesPerView,
-				maxPhysicalIndex: Math.max(0, actualSlideCount - slidesPerView)
-			});
+			if (virtualActiveIndexEnabled) {
+				// Initialize carousel state with virtual active index
+				carouselStates.set(carousel.id, {
+					virtualActiveIndex: 0,
+					actualSlideCount: actualSlideCount,
+					slidesPerView: slidesPerView,
+					maxPhysicalIndex: Math.max(0, actualSlideCount - slidesPerView)
+				});
 
-			setupVirtualNavigation(carousel, swiper);
-			setupVirtualKeyboardNavigation(carousel, swiper);
+				setupVirtualNavigation(carousel, swiper);
+				setupVirtualKeyboardNavigation(carousel, swiper);
+				setupVirtualPagination(carousel, swiper);
+
+				// Set initial active states
+				updateActiveStates(carousel, swiper);
+			} else {
+				// Standard Swiper navigation - simpler, native behavior
+				setupStandardNavigation(carousel, swiper);
+			}
+
+			// These features work regardless of virtual active index setting
 			setupPauseButton(carousel, swiper);
-			setupFocusManagement(swiper);
-			setupA11yAttributes(swiper);
 			setupBrowserCompatibility(swiper);
-			setupVirtualPagination(carousel, swiper);
 
-			// Set initial active states
-			updateActiveStates(carousel, swiper);
+			// Focus management and a11y attributes only when using virtual active index
+			// When disabled, let Swiper handle accessibility natively to avoid conflicts
+			if (virtualActiveIndexEnabled) {
+				setupFocusManagement(swiper);
+				setupA11yAttributes(swiper);
+			}
 		}
 
 		// Check if Swiper is already initialized
@@ -546,6 +561,60 @@
 				paginationEl.appendChild(bullet);
 			}
 		}
+	}
+
+	/**
+	 * Set up standard navigation without virtual active index.
+	 * Uses Swiper's native navigation behavior.
+	 *
+	 * @param {HTMLElement} carousel - The carousel container.
+	 * @param {Object} swiper - The Swiper instance.
+	 */
+	function setupStandardNavigation(carousel, swiper) {
+		// Look for nav buttons in both regular wrapper and grouped controls
+		let prevButton = carousel.querySelector('.carousel-new-nav-wrapper .carousel-new-nav-prev');
+		let nextButton = carousel.querySelector('.carousel-new-nav-wrapper .carousel-new-nav-next');
+
+		// If not found in wrapper, check grouped controls
+		if (!prevButton || !nextButton) {
+			prevButton = carousel.querySelector('.carousel-new-controls-group .carousel-new-nav-prev');
+			nextButton = carousel.querySelector('.carousel-new-controls-group .carousel-new-nav-next');
+		}
+
+		if (!prevButton || !nextButton) return;
+
+		// Simple click handlers using Swiper's native navigation
+		nextButton.addEventListener('click', function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			swiper.slideNext();
+		});
+
+		prevButton.addEventListener('click', function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			swiper.slidePrev();
+		});
+
+		// Update button states using Swiper's native properties
+		function updateButtonStates() {
+			if (swiper.params.loop) {
+				prevButton.disabled = false;
+				nextButton.disabled = false;
+				prevButton.setAttribute('aria-disabled', 'false');
+				nextButton.setAttribute('aria-disabled', 'false');
+			} else {
+				prevButton.disabled = swiper.isBeginning;
+				nextButton.disabled = swiper.isEnd;
+				prevButton.setAttribute('aria-disabled', swiper.isBeginning ? 'true' : 'false');
+				nextButton.setAttribute('aria-disabled', swiper.isEnd ? 'true' : 'false');
+			}
+		}
+
+		swiper.on('slideChange', updateButtonStates);
+		swiper.on('reachBeginning', updateButtonStates);
+		swiper.on('reachEnd', updateButtonStates);
+		updateButtonStates();
 	}
 
 	/**
