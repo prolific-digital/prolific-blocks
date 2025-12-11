@@ -123,6 +123,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		pauseOnHover,
 		grabCursor,
 		keyboard,
+		virtualActiveIndex,
 		navigationPosition,
 		paginationPosition,
 		groupControls,
@@ -765,6 +766,16 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 							checked={keyboard}
 							onChange={(value) => setAttributes({ keyboard: value })}
 							help={__('Enable keyboard navigation', 'prolific-blocks')}
+						/>
+
+						<ToggleControl
+							label={__('Virtual Active Index', 'prolific-blocks')}
+							checked={virtualActiveIndex}
+							onChange={(value) => setAttributes({ virtualActiveIndex: value })}
+							help={__(
+								'When showing multiple slides, allows each slide to become individually active even after reaching the carousel\'s physical end.',
+								'prolific-blocks'
+							)}
 						/>
 					</PanelBody>
 				)}

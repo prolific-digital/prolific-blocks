@@ -132,149 +132,25 @@
 	}
 
 	/**
-	 * Set up custom navigation buttons for Query Posts carousel with virtual active index
+	 * Set up custom navigation buttons for Query Posts carousel
+	 * Uses virtual active index if enabled, otherwise standard Swiper navigation
 	 */
 	function setupCustomNavigation(blockElement, carouselElement) {
+		// Check if virtual active index is enabled (defaults to true for backward compatibility)
+		const virtualActiveIndexEnabled = blockElement.dataset.virtualActiveIndex !== 'false';
+
 		// Wait for Swiper to be ready
 		const checkSwiper = () => {
 			if (carouselElement.swiper) {
 				const swiper = carouselElement.swiper;
 
-				// Get slide count and initialize state
-				let actualSlideCount = parseInt(blockElement.dataset.slideCount, 10);
-				if (!actualSlideCount || isNaN(actualSlideCount)) {
-					const originalSlides = carouselElement.querySelectorAll(
-						'swiper-slide:not(.swiper-slide-duplicate)'
-					);
-					actualSlideCount = originalSlides.length;
+				if (virtualActiveIndexEnabled) {
+					// Use virtual active index navigation
+					setupVirtualActiveIndexNavigation(blockElement, carouselElement, swiper);
+				} else {
+					// Use standard Swiper navigation
+					setupStandardNavigation(blockElement, swiper);
 				}
-
-				const slidesPerView = Math.floor(swiper.params.slidesPerView) || 1;
-
-				// Initialize carousel state with virtual active index
-				carouselStates.set(blockElement.id, {
-					virtualActiveIndex: 0,
-					actualSlideCount: actualSlideCount,
-					slidesPerView: slidesPerView,
-					maxPhysicalIndex: Math.max(0, actualSlideCount - slidesPerView),
-				});
-
-				// Find custom navigation buttons
-				let prevButton = blockElement.querySelector(
-					'.query-posts-nav-wrapper .query-posts-nav-prev, .query-posts-controls-group .query-posts-nav-prev'
-				);
-				let nextButton = blockElement.querySelector(
-					'.query-posts-nav-wrapper .query-posts-nav-next, .query-posts-controls-group .query-posts-nav-next'
-				);
-
-				if (prevButton && nextButton) {
-					// Store button references in state
-					const state = carouselStates.get(blockElement.id);
-					if (state) {
-						state.prevButton = prevButton;
-						state.nextButton = nextButton;
-					}
-
-					// Next button click handler with virtual index support
-					nextButton.addEventListener('click', function (e) {
-						e.preventDefault();
-						e.stopPropagation();
-
-						const state = carouselStates.get(blockElement.id);
-						if (!state) return;
-
-						const { virtualActiveIndex, actualSlideCount, maxPhysicalIndex } =
-							state;
-						const currentPhysicalIndex =
-							swiper.realIndex !== undefined
-								? swiper.realIndex
-								: swiper.activeIndex;
-
-						// If we can still physically move AND virtual index matches physical position
-						if (
-							currentPhysicalIndex < maxPhysicalIndex &&
-							virtualActiveIndex <= currentPhysicalIndex
-						) {
-							// Normal slide - move carousel and update virtual index
-							swiper.slideNext();
-							state.virtualActiveIndex =
-								swiper.realIndex !== undefined
-									? swiper.realIndex
-									: swiper.activeIndex;
-						} else if (virtualActiveIndex < actualSlideCount - 1) {
-							// At physical end but can still increment virtual index
-							state.virtualActiveIndex++;
-						}
-
-						updateActiveStates(blockElement, swiper);
-					});
-
-					// Previous button click handler with virtual index support
-					prevButton.addEventListener('click', function (e) {
-						e.preventDefault();
-						e.stopPropagation();
-
-						const state = carouselStates.get(blockElement.id);
-						if (!state) return;
-
-						const { virtualActiveIndex } = state;
-						const currentPhysicalIndex =
-							swiper.realIndex !== undefined
-								? swiper.realIndex
-								: swiper.activeIndex;
-
-						// If virtual index is ahead of physical position, just decrement virtual
-						if (virtualActiveIndex > currentPhysicalIndex) {
-							state.virtualActiveIndex--;
-						} else if (currentPhysicalIndex > 0) {
-							// Can physically move backward
-							swiper.slidePrev();
-							state.virtualActiveIndex =
-								swiper.realIndex !== undefined
-									? swiper.realIndex
-									: swiper.activeIndex;
-						}
-
-						updateActiveStates(blockElement, swiper);
-					});
-
-					// Sync virtual index when Swiper physically moves (e.g., via drag)
-					swiper.on('slideChange', function () {
-						const state = carouselStates.get(blockElement.id);
-						if (!state) return;
-
-						const newPhysicalIndex =
-							swiper.realIndex !== undefined
-								? swiper.realIndex
-								: swiper.activeIndex;
-
-						// If user drags/swipes, reset virtual index to match physical
-						if (state.virtualActiveIndex < newPhysicalIndex) {
-							state.virtualActiveIndex = newPhysicalIndex;
-						}
-						// If moving backward and virtual was ahead, keep virtual ahead but within visible range
-						else if (newPhysicalIndex < state.virtualActiveIndex) {
-							// Ensure virtual index is at least the physical index
-							// This handles backward swipes/drags
-							const maxVisibleIndex =
-								newPhysicalIndex + state.slidesPerView - 1;
-							if (state.virtualActiveIndex > maxVisibleIndex) {
-								state.virtualActiveIndex = newPhysicalIndex;
-							}
-						}
-
-						updateActiveStates(blockElement, swiper);
-					});
-
-					// Initial state update
-					updateActiveStates(blockElement, swiper);
-				}
-
-				// Set up virtual keyboard navigation
-				setupVirtualKeyboardNavigation(blockElement, swiper);
-
-				// Set up virtual pagination
-				setupVirtualPagination(blockElement, swiper);
 			} else {
 				// Swiper not ready yet, try again
 				setTimeout(checkSwiper, 100);
@@ -283,6 +159,196 @@
 
 		// Start checking
 		checkSwiper();
+	}
+
+	/**
+	 * Set up virtual active index navigation for Query Posts carousel
+	 */
+	function setupVirtualActiveIndexNavigation(blockElement, carouselElement, swiper) {
+		// Get slide count and initialize state
+		let actualSlideCount = parseInt(blockElement.dataset.slideCount, 10);
+		if (!actualSlideCount || isNaN(actualSlideCount)) {
+			const originalSlides = carouselElement.querySelectorAll(
+				'swiper-slide:not(.swiper-slide-duplicate)'
+			);
+			actualSlideCount = originalSlides.length;
+		}
+
+		const slidesPerView = Math.floor(swiper.params.slidesPerView) || 1;
+
+		// Initialize carousel state with virtual active index
+		carouselStates.set(blockElement.id, {
+			virtualActiveIndex: 0,
+			actualSlideCount: actualSlideCount,
+			slidesPerView: slidesPerView,
+			maxPhysicalIndex: Math.max(0, actualSlideCount - slidesPerView),
+		});
+
+		// Find custom navigation buttons
+		let prevButton = blockElement.querySelector(
+			'.query-posts-nav-wrapper .query-posts-nav-prev, .query-posts-controls-group .query-posts-nav-prev'
+		);
+		let nextButton = blockElement.querySelector(
+			'.query-posts-nav-wrapper .query-posts-nav-next, .query-posts-controls-group .query-posts-nav-next'
+		);
+
+		if (prevButton && nextButton) {
+			// Store button references in state
+			const state = carouselStates.get(blockElement.id);
+			if (state) {
+				state.prevButton = prevButton;
+				state.nextButton = nextButton;
+			}
+
+			// Next button click handler with virtual index support
+			nextButton.addEventListener('click', function (e) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				const state = carouselStates.get(blockElement.id);
+				if (!state) return;
+
+				const { virtualActiveIndex, actualSlideCount, maxPhysicalIndex } =
+					state;
+				const currentPhysicalIndex =
+					swiper.realIndex !== undefined
+						? swiper.realIndex
+						: swiper.activeIndex;
+
+				// If we can still physically move AND virtual index matches physical position
+				if (
+					currentPhysicalIndex < maxPhysicalIndex &&
+					virtualActiveIndex <= currentPhysicalIndex
+				) {
+					// Normal slide - move carousel and update virtual index
+					swiper.slideNext();
+					state.virtualActiveIndex =
+						swiper.realIndex !== undefined
+							? swiper.realIndex
+							: swiper.activeIndex;
+				} else if (virtualActiveIndex < actualSlideCount - 1) {
+					// At physical end but can still increment virtual index
+					state.virtualActiveIndex++;
+				}
+
+				updateActiveStates(blockElement, swiper);
+			});
+
+			// Previous button click handler with virtual index support
+			prevButton.addEventListener('click', function (e) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				const state = carouselStates.get(blockElement.id);
+				if (!state) return;
+
+				const { virtualActiveIndex } = state;
+				const currentPhysicalIndex =
+					swiper.realIndex !== undefined
+						? swiper.realIndex
+						: swiper.activeIndex;
+
+				// If virtual index is ahead of physical position, just decrement virtual
+				if (virtualActiveIndex > currentPhysicalIndex) {
+					state.virtualActiveIndex--;
+				} else if (currentPhysicalIndex > 0) {
+					// Can physically move backward
+					swiper.slidePrev();
+					state.virtualActiveIndex =
+						swiper.realIndex !== undefined
+							? swiper.realIndex
+							: swiper.activeIndex;
+				}
+
+				updateActiveStates(blockElement, swiper);
+			});
+
+			// Sync virtual index when Swiper physically moves (e.g., via drag)
+			swiper.on('slideChange', function () {
+				const state = carouselStates.get(blockElement.id);
+				if (!state) return;
+
+				const newPhysicalIndex =
+					swiper.realIndex !== undefined
+						? swiper.realIndex
+						: swiper.activeIndex;
+
+				// If user drags/swipes, reset virtual index to match physical
+				if (state.virtualActiveIndex < newPhysicalIndex) {
+					state.virtualActiveIndex = newPhysicalIndex;
+				}
+				// If moving backward and virtual was ahead, keep virtual ahead but within visible range
+				else if (newPhysicalIndex < state.virtualActiveIndex) {
+					// Ensure virtual index is at least the physical index
+					// This handles backward swipes/drags
+					const maxVisibleIndex =
+						newPhysicalIndex + state.slidesPerView - 1;
+					if (state.virtualActiveIndex > maxVisibleIndex) {
+						state.virtualActiveIndex = newPhysicalIndex;
+					}
+				}
+
+				updateActiveStates(blockElement, swiper);
+			});
+
+			// Initial state update
+			updateActiveStates(blockElement, swiper);
+		}
+
+		// Set up virtual keyboard navigation
+		setupVirtualKeyboardNavigation(blockElement, swiper);
+
+		// Set up virtual pagination
+		setupVirtualPagination(blockElement, swiper);
+	}
+
+	/**
+	 * Set up standard navigation without virtual active index.
+	 * Uses Swiper's native navigation behavior.
+	 */
+	function setupStandardNavigation(blockElement, swiper) {
+		// Find custom navigation buttons
+		let prevButton = blockElement.querySelector(
+			'.query-posts-nav-wrapper .query-posts-nav-prev, .query-posts-controls-group .query-posts-nav-prev'
+		);
+		let nextButton = blockElement.querySelector(
+			'.query-posts-nav-wrapper .query-posts-nav-next, .query-posts-controls-group .query-posts-nav-next'
+		);
+
+		if (!prevButton || !nextButton) return;
+
+		// Simple click handlers using Swiper's native navigation
+		nextButton.addEventListener('click', function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			swiper.slideNext();
+		});
+
+		prevButton.addEventListener('click', function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			swiper.slidePrev();
+		});
+
+		// Update button states using Swiper's native properties
+		function updateButtonStates() {
+			if (swiper.params.loop) {
+				prevButton.disabled = false;
+				nextButton.disabled = false;
+				prevButton.setAttribute('aria-disabled', 'false');
+				nextButton.setAttribute('aria-disabled', 'false');
+			} else {
+				prevButton.disabled = swiper.isBeginning;
+				nextButton.disabled = swiper.isEnd;
+				prevButton.setAttribute('aria-disabled', swiper.isBeginning ? 'true' : 'false');
+				nextButton.setAttribute('aria-disabled', swiper.isEnd ? 'true' : 'false');
+			}
+		}
+
+		swiper.on('slideChange', updateButtonStates);
+		swiper.on('reachBeginning', updateButtonStates);
+		swiper.on('reachEnd', updateButtonStates);
+		updateButtonStates();
 	}
 
 	/**

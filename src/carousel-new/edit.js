@@ -105,6 +105,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
     pagination,
     paginationType,
     scrollbar,
+    virtualActiveIndex,
     customNavigation,
     customNavPrev,
     customNavNext,
@@ -805,6 +806,19 @@ export default function Edit({ attributes, setAttributes, clientId }) {
             checked={scrollbar}
             onChange={(value) => setAttributes({ scrollbar: value })}
             help={__("Display a draggable scrollbar", "prolific-blocks")}
+          />
+
+          <hr />
+
+          <ToggleControl
+            __nextHasNoMarginBottom
+            label={__("Virtual Active Index", "prolific-blocks")}
+            checked={virtualActiveIndex}
+            onChange={(value) => setAttributes({ virtualActiveIndex: value })}
+            help={__(
+              "When showing multiple slides, allows each slide to become individually active even after reaching the carousel's physical end.",
+              "prolific-blocks"
+            )}
           />
         </PanelBody>
 

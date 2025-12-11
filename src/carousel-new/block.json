@@ -87,6 +87,10 @@
       "type": "boolean",
       "default": false
     },
+    "virtualActiveIndex": {
+      "type": "boolean",
+      "default": true
+    },
     "customNavigation": {
       "type": "boolean",
       "default": false
