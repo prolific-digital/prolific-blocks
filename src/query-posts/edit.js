@@ -168,6 +168,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		}
 	}, [clientId]);
 
+
 	// Track previous post type to detect actual changes (not initial load)
 	const prevPostTypeRef = useRef();
 
@@ -1272,21 +1273,41 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 
 			<div {...blockProps}>
 				<div className="prolific-query-posts-preview">
-					<ServerSideRender
-						block="prolific/query-posts"
-						attributes={attributes}
-						LoadingResponsePlaceholder={() => (
-							<Placeholder>
-								<Spinner />
-								<p>{__('Loading posts...', 'prolific-blocks')}</p>
-							</Placeholder>
-						)}
-						ErrorResponsePlaceholder={() => (
-							<Placeholder>
-								<p>{__('Error loading posts. Please check your settings.', 'prolific-blocks')}</p>
-							</Placeholder>
-						)}
-					/>
+					{enableCarousel ? (
+						<div className="swiper-editor-notice">
+							<div className="swiper-editor-notice__icon">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" strokeWidth="1.5">
+									<rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+									<path d="M8 21h8"></path>
+									<path d="M12 17v4"></path>
+									<path d="M7 8l3 3-3 3"></path>
+									<line x1="13" y1="11" x2="17" y2="11"></line>
+								</svg>
+							</div>
+							<p className="swiper-editor-notice__text">
+								{__('This carousel will display your content on the live site.', 'prolific-blocks')}
+							</p>
+							<p className="swiper-editor-notice__subtext">
+								{__('Preview this page to see the full slider.', 'prolific-blocks')}
+							</p>
+						</div>
+					) : (
+						<ServerSideRender
+							block="prolific/query-posts"
+							attributes={attributes}
+							LoadingResponsePlaceholder={() => (
+								<Placeholder>
+									<Spinner />
+									<p>{__('Loading posts...', 'prolific-blocks')}</p>
+								</Placeholder>
+							)}
+							ErrorResponsePlaceholder={() => (
+								<Placeholder>
+									<p>{__('Error loading posts. Please check your settings.', 'prolific-blocks')}</p>
+								</Placeholder>
+							)}
+						/>
+					)}
 				</div>
 			</div>
 		</>

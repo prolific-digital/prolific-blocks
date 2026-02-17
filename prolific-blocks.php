@@ -123,7 +123,7 @@ function enqueue_swiper_scripts() {
 	// Check if we should load Swiper - if running in admin, or if the page has carousel blocks
 	$should_load = is_admin();
 
-	if (!$should_load && (has_block('prolific/carousel') || has_block('prolific/carousel-new'))) {
+	if (!$should_load && (has_block('prolific/carousel') || has_block('prolific/carousel-new') || has_block('prolific/query-posts'))) {
 		$should_load = true;
 	}
 
@@ -142,6 +142,64 @@ function enqueue_swiper_scripts() {
 	}
 }
 add_action('enqueue_block_assets', 'enqueue_swiper_scripts');
+
+/**
+ * Register third-party global attributes server-side for REST API compatibility.
+ *
+ * Plugins like AnimateWP inject attributes into all blocks via client-side JS filters
+ * (blocks.registerBlockType) but do NOT register them server-side. This causes the
+ * REST API block-renderer endpoint to reject ServerSideRender requests with 400 errors
+ * because the extra attributes fail schema validation.
+ *
+ * This filter mirrors those attributes server-side so the REST API accepts them.
+ */
+function prolific_register_third_party_block_attributes($args, $block_type) {
+	// Only run if animatewp plugin is active
+	if (!function_exists('is_plugin_active')) {
+		include_once ABSPATH . 'wp-admin/includes/plugin.php';
+	}
+	if (!is_plugin_active('animatewp/animatewp.php')) {
+		return $args;
+	}
+
+	$animation_attributes = [
+		'enableAnimation'          => ['type' => 'boolean', 'default' => false],
+		'animateLoop'              => ['type' => 'boolean', 'default' => false],
+		'animateAutoPlay'          => ['type' => 'boolean', 'default' => false],
+		'animateDuration'          => ['type' => 'number',  'default' => 1],
+		'animateDelay'             => ['type' => 'number',  'default' => 0],
+		'animateEasing'            => ['type' => 'string',  'default' => 'power1.inOut'],
+		'animateX'                 => ['type' => 'number',  'default' => 0],
+		'animateY'                 => ['type' => 'number',  'default' => 0],
+		'animateXPercent'          => ['type' => 'number',  'default' => 0],
+		'animateYPercent'          => ['type' => 'number',  'default' => 0],
+		'animateScale'             => ['type' => 'number',  'default' => 1],
+		'animateRotation'          => ['type' => 'number',  'default' => 0],
+		'animateSkew'              => ['type' => 'number',  'default' => 0],
+		'animateAutoAlpha'         => ['type' => 'number',  'default' => 1],
+		'animateRepeat'            => ['type' => 'number',  'default' => 0],
+		'animateYoYo'              => ['type' => 'boolean', 'default' => false],
+		'enableScrollTrigger'      => ['type' => 'boolean', 'default' => false],
+		'scrollTriggerStart'       => ['type' => 'string',  'default' => 'top bottom'],
+		'scrollTriggerEnd'         => ['type' => 'string',  'default' => 'bottom top'],
+		'scrollTriggerToggleActions' => ['type' => 'string', 'default' => 'play none none none'],
+		'scrollTriggerStartOffset' => ['type' => 'number',  'default' => 0],
+		'animateDirection'         => ['type' => 'string',  'default' => 'from'],
+	];
+
+	if (!isset($args['attributes'])) {
+		$args['attributes'] = [];
+	}
+
+	foreach ($animation_attributes as $key => $config) {
+		if (!isset($args['attributes'][$key])) {
+			$args['attributes'][$key] = $config;
+		}
+	}
+
+	return $args;
+}
+add_filter('register_block_type_args', 'prolific_register_third_party_block_attributes', 10, 2);
 
 function allow_json_uploads($mime_types) {
 	$mime_types['json'] = 'application/json'; // Adding .json extension to allowed mime types
