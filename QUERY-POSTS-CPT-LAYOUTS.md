@@ -8,7 +8,7 @@ The Query Posts block supports custom frontend layouts for specific Custom Post 
 
 ### 1. Places (`places`)
 - **Plugin:** WP Places
-- **Layout:** Category/Type label + Title, Excerpt, Address (ACF), Hours (ACF), Read More
+- **Layout:** Featured Image, Category/Type label + Title, Excerpt, Address (ACF), Hours (ACF), Read More
 - **Icons:** Location pin (address), Clock (hours)
 - **Label Behavior:**
   - Shows first term from primary hierarchical taxonomy (e.g., "Park", "Facility")
@@ -19,7 +19,7 @@ The Query Posts block supports custom frontend layouts for specific Custom Post 
 
 ### 2. Events (`tribe_events`)
 - **Plugin:** The Events Calendar
-- **Layout:** "Event" label + Title, Excerpt, Date, Time, Venue, Read More
+- **Layout:** Featured Image, "Event" label + Title, Excerpt, Date, Time, Venue, Read More
 - **Icons:** Calendar (date), Clock (time), Location pin (venue)
 - **Data Sources:**
   - `tribe_get_start_date()` - Event date
@@ -33,7 +33,7 @@ The Query Posts block supports custom frontend layouts for specific Custom Post 
 The system uses a registry pattern with a filter hook for extensibility:
 
 ```php
-// Located in src/query-posts/render.php, line 319
+// Located in src/query-posts/render.php, line 391
 $cpt_registry = apply_filters('prolific_query_posts_cpt_registry', [
     'places'       => 'prolific_render_places_layout',
     'tribe_events' => 'prolific_render_events_layout',
@@ -51,6 +51,12 @@ All custom CPT layouts follow a consistent BEM-style structure:
 ### HTML Markup
 
 ```html
+<div class="post-thumbnail">
+  <a href="[permalink]" aria-label="Post Title">
+    <img src="[image-url]" alt="Post Title" />
+  </a>
+</div>
+
 <div class="entry-head">
   <div class="entry-head__label">Category or Type Label</div>
   <h2 class="entry-head__title">
@@ -119,6 +125,17 @@ if (!function_exists('prolific_render_your_cpt_layout')) {
         $read_more_text = $attributes['readMoreText'] ?? __('Read More', 'prolific-blocks');
         $show_excerpt = $attributes['showExcerpt'] ?? true;
         $excerpt_length = $attributes['excerptLength'] ?? 55;
+        $show_featured_image = $attributes['showFeaturedImage'] ?? true;
+        $image_size = $attributes['imageSizeSlug'] ?? 'large';
+
+        // Featured Image
+        if ($show_featured_image && has_post_thumbnail($post_id)) {
+            $output .= '<div class="post-thumbnail">';
+            $output .= '<a href="' . esc_url(get_permalink($post_id)) . '" aria-label="' . esc_attr(get_the_title($post_id)) . '">';
+            $output .= get_the_post_thumbnail($post_id, $image_size);
+            $output .= '</a>';
+            $output .= '</div>';
+        }
 
         // Get taxonomy term for label (optional)
         $terms = get_the_terms($post_id, 'your_taxonomy');
@@ -184,7 +201,7 @@ add_filter('prolific_query_posts_cpt_registry', function($registry) {
 });
 ```
 
-**OR** add directly in `src/query-posts/render.php` at line 319:
+**OR** add directly in `src/query-posts/render.php` at line 391:
 
 ```php
 $cpt_registry = apply_filters('prolific_query_posts_cpt_registry', [
@@ -313,6 +330,8 @@ if (function_exists('plugin_specific_function')) {
 
 Custom layouts respect these Query Posts block attributes:
 
+- `showFeaturedImage` - Whether to show featured image
+- `imageSizeSlug` - Image size to use (e.g., 'large', 'medium', 'thumbnail')
 - `titleTag` - Heading level for post titles
 - `showExcerpt` - Whether to show excerpt
 - `excerptLength` - Word count for excerpt
@@ -387,6 +406,7 @@ The following CPTs could be added using this system:
 
 ## Version History
 
+- **v1.1.0** - Added featured image support to Places and Events layouts
 - **v1.0.0** - Initial implementation with Places and Events CPT support
 
 ---
@@ -394,15 +414,15 @@ The following CPTs could be added using this system:
 ## Quick Reference
 
 ### Function Locations
-- **Icon Functions:** `render.php` lines 44-75
-- **Places Renderer:** `render.php` lines 77-190
-- **Events Renderer:** `render.php` lines 192-298
-- **Router Function:** `render.php` lines 300-331
-- **CPT Registry:** `render.php` line 319
-- **Loop Integration:** `render.php` line 750
+- **Icon Functions:** `render.php` lines 49-75
+- **Places Renderer:** `render.php` lines 84-251
+- **Events Renderer:** `render.php` lines 260-369
+- **Router Function:** `render.php` lines 380-403
+- **CPT Registry:** `render.php` line 391
+- **Loop Integration:** `render.php` line 830
 
 ### CSS Locations
-- **Custom Layout Styles:** `style.scss` lines 844-1086
+- **Custom Layout Styles:** `style.scss` starting at line 850
 
 ### Key Files
 - `src/query-posts/render.php` - Renderer functions and routing

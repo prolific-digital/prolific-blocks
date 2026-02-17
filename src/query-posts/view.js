@@ -215,8 +215,14 @@
 						? swiper.realIndex
 						: swiper.activeIndex;
 
-				// If we can still physically move AND virtual index matches physical position
-				if (
+				if (swiper.params.loop) {
+					// In loop mode, use slideToLoop for reliable navigation
+					// slideNext() breaks after a full cycle in Swiper v11
+					const nextIndex =
+						(currentPhysicalIndex + 1) % actualSlideCount;
+					swiper.slideToLoop(nextIndex);
+					state.virtualActiveIndex = nextIndex;
+				} else if (
 					currentPhysicalIndex < maxPhysicalIndex &&
 					virtualActiveIndex <= currentPhysicalIndex
 				) {
@@ -242,14 +248,22 @@
 				const state = carouselStates.get(blockElement.id);
 				if (!state) return;
 
-				const { virtualActiveIndex } = state;
+				const { virtualActiveIndex, actualSlideCount } = state;
 				const currentPhysicalIndex =
 					swiper.realIndex !== undefined
 						? swiper.realIndex
 						: swiper.activeIndex;
 
-				// If virtual index is ahead of physical position, just decrement virtual
-				if (virtualActiveIndex > currentPhysicalIndex) {
+				if (swiper.params.loop) {
+					// In loop mode, use slideToLoop for reliable navigation
+					// slidePrev() breaks after a full cycle in Swiper v11
+					const prevIndex =
+						(currentPhysicalIndex - 1 + actualSlideCount) %
+						actualSlideCount;
+					swiper.slideToLoop(prevIndex);
+					state.virtualActiveIndex = prevIndex;
+				} else if (virtualActiveIndex > currentPhysicalIndex) {
+					// If virtual index is ahead of physical position, just decrement virtual
 					state.virtualActiveIndex--;
 				} else if (currentPhysicalIndex > 0) {
 					// Can physically move backward
@@ -317,17 +331,31 @@
 
 		if (!prevButton || !nextButton) return;
 
-		// Simple click handlers using Swiper's native navigation
+		// Get slide count for loop navigation
+		const slideCount = parseInt(blockElement.dataset.slideCount, 10) || swiper.slides.length;
+
+		// Click handlers - use slideToLoop in loop mode to avoid Swiper v11 bug
 		nextButton.addEventListener('click', function (e) {
 			e.preventDefault();
 			e.stopPropagation();
-			swiper.slideNext();
+			if (swiper.params.loop) {
+				const nextIndex = (swiper.realIndex + 1) % slideCount;
+				swiper.slideToLoop(nextIndex);
+			} else {
+				swiper.slideNext();
+			}
 		});
 
 		prevButton.addEventListener('click', function (e) {
 			e.preventDefault();
 			e.stopPropagation();
-			swiper.slidePrev();
+			if (swiper.params.loop) {
+				const prevIndex =
+					(swiper.realIndex - 1 + slideCount) % slideCount;
+				swiper.slideToLoop(prevIndex);
+			} else {
+				swiper.slidePrev();
+			}
 		});
 
 		// Update button states using Swiper's native properties
@@ -458,6 +486,7 @@
 			const currentPhysicalIndex =
 				swiper.realIndex !== undefined ? swiper.realIndex : swiper.activeIndex;
 			const isHorizontal = swiper.params.direction !== 'vertical';
+			const isLoop = swiper.params.loop;
 
 			// Determine if this is a "next" or "prev" action based on direction
 			const isNextKey = isHorizontal
@@ -472,7 +501,12 @@
 				e.stopPropagation();
 
 				// Same logic as next button click
-				if (
+				if (isLoop) {
+					const nextIndex =
+						(currentPhysicalIndex + 1) % actualSlideCount;
+					swiper.slideToLoop(nextIndex);
+					state.virtualActiveIndex = nextIndex;
+				} else if (
 					currentPhysicalIndex < maxPhysicalIndex &&
 					virtualActiveIndex <= currentPhysicalIndex
 				) {
@@ -491,7 +525,13 @@
 				e.stopPropagation();
 
 				// Same logic as prev button click
-				if (virtualActiveIndex > currentPhysicalIndex) {
+				if (isLoop) {
+					const prevIndex =
+						(currentPhysicalIndex - 1 + actualSlideCount) %
+						actualSlideCount;
+					swiper.slideToLoop(prevIndex);
+					state.virtualActiveIndex = prevIndex;
+				} else if (virtualActiveIndex > currentPhysicalIndex) {
 					state.virtualActiveIndex--;
 				} else if (currentPhysicalIndex > 0) {
 					swiper.slidePrev();
