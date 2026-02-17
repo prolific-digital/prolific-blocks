@@ -164,6 +164,17 @@ if (!function_exists('prolific_render_places_layout')) {
 		$read_more_text = $attributes['readMoreText'] ?? __('Read More', 'prolific-blocks');
 		$show_excerpt = $attributes['showExcerpt'] ?? true;
 		$excerpt_length = $attributes['excerptLength'] ?? 55;
+		$show_featured_image = $attributes['showFeaturedImage'] ?? true;
+		$image_size = $attributes['imageSizeSlug'] ?? 'large';
+
+		// Featured Image
+		if ($show_featured_image && has_post_thumbnail($post_id)) {
+			$output .= '<div class="post-thumbnail">';
+			$output .= '<a href="' . esc_url(get_permalink($post_id)) . '" aria-label="' . esc_attr(get_the_title($post_id)) . '">';
+			$output .= get_the_post_thumbnail($post_id, $image_size);
+			$output .= '</a>';
+			$output .= '</div>';
+		}
 
 		// Start output
 		$output .= '<div class="entry-head">';
@@ -282,6 +293,17 @@ if (!function_exists('prolific_render_events_layout')) {
 		$read_more_text = $attributes['readMoreText'] ?? __('Read More', 'prolific-blocks');
 		$show_excerpt = $attributes['showExcerpt'] ?? true;
 		$excerpt_length = $attributes['excerptLength'] ?? 55;
+		$show_featured_image = $attributes['showFeaturedImage'] ?? true;
+		$image_size = $attributes['imageSizeSlug'] ?? 'large';
+
+		// Featured Image
+		if ($show_featured_image && has_post_thumbnail($post_id)) {
+			$output .= '<div class="post-thumbnail">';
+			$output .= '<a href="' . esc_url(get_permalink($post_id)) . '" aria-label="' . esc_attr(get_the_title($post_id)) . '">';
+			$output .= get_the_post_thumbnail($post_id, $image_size);
+			$output .= '</a>';
+			$output .= '</div>';
+		}
 
 		// Start output
 		$output .= '<div class="entry-head">';
