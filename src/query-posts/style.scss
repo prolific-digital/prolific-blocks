@@ -72,6 +72,46 @@
 		}
 	}
 
+	// Pill / Button Filters
+	.filter-pills-control {
+		flex: 1 1 100%;
+	}
+
+	.filter-pills {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5em;
+
+		.filter-pill {
+			appearance: none;
+			padding: 0.5em 1.25em;
+			background: #fff;
+			border: 1px solid #ddd;
+			border-radius: 100px;
+			font-size: 0.9em;
+			font-family: inherit;
+			cursor: pointer;
+			transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+			white-space: nowrap;
+
+			&:hover {
+				border-color: #007cba;
+				background: rgba(0, 124, 186, 0.05);
+			}
+
+			&:focus {
+				outline: 2px solid #007cba;
+				outline-offset: 2px;
+			}
+
+			&.active {
+				background: #007cba;
+				border-color: #007cba;
+				color: #fff;
+			}
+		}
+	}
+
 	// Posts Grid Layout
 	.posts-grid {
 		display: grid;
@@ -792,6 +832,22 @@
 					border-color: #4a9eff;
 					box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.1);
 				}
+			}
+		}
+
+		.filter-pills .filter-pill {
+			background: #2a2a2a;
+			border-color: #444;
+			color: #fff;
+
+			&:hover {
+				border-color: #4a9eff;
+			}
+
+			&.active {
+				background: #4a9eff;
+				border-color: #4a9eff;
+				color: #fff;
 			}
 		}
 

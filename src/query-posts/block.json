@@ -335,6 +335,14 @@
     "noResultsText": {
       "type": "string",
       "default": "No posts found."
+    },
+    "ajaxPagination": {
+      "type": "boolean",
+      "default": false
+    },
+    "filterDisplayMode": {
+      "type": "string",
+      "default": "dropdown"
     }
   },
   "textdomain": "prolific-blocks",

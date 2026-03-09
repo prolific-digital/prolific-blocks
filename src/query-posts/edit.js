@@ -159,6 +159,8 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		showReadMore,
 		readMoreText,
 		noResultsText,
+		ajaxPagination,
+		filterDisplayMode,
 	} = attributes;
 
 	// Generate unique block ID
@@ -1259,6 +1261,27 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 						}}
 						help={__('Show page numbers', 'prolific-blocks')}
 					/>
+
+					{enablePagination && (
+						<ToggleControl
+							label={__('AJAX Pagination', 'prolific-blocks')}
+							checked={ajaxPagination}
+							onChange={(value) => setAttributes({ ajaxPagination: value })}
+							help={__('Load pages without full page refresh', 'prolific-blocks')}
+						/>
+					)}
+
+					{(showCategoryFilter || showTagFilter) && postType === 'post' && (
+						<SelectControl
+							label={__('Filter Display', 'prolific-blocks')}
+							value={filterDisplayMode}
+							options={[
+								{ label: __('Dropdown', 'prolific-blocks'), value: 'dropdown' },
+								{ label: __('Pills / Buttons', 'prolific-blocks'), value: 'pills' },
+							]}
+							onChange={(value) => setAttributes({ filterDisplayMode: value })}
+						/>
+					)}
 
 					<hr />
 

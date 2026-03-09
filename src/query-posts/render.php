@@ -419,6 +419,8 @@ $post_status = $attributes['postStatus'] ?? 'publish';
 $sticky_posts = $attributes['stickyPosts'] ?? 'include';
 $display_mode = $attributes['displayMode'] ?? 'grid';
 $enable_carousel = $attributes['enableCarousel'] ?? false;
+$filter_display_mode = $attributes['filterDisplayMode'] ?? 'dropdown';
+$ajax_pagination = $attributes['ajaxPagination'] ?? false;
 
 // Carousel control attributes
 $has_navigation = ($attributes['carouselNavigation'] ?? true) && $enable_carousel;
@@ -433,16 +435,26 @@ $has_custom_nav = $attributes['customNavigation'] ?? false;
 $custom_nav_prev = $attributes['customNavPrev'] ?? '';
 $custom_nav_next = $attributes['customNavNext'] ?? '';
 
+// Get current page for pagination
+$paged = get_query_var('paged') ? get_query_var('paged') : 1;
+
 // Build WP_Query arguments
 $query_args = [
 	'post_type' => $post_type,
 	'posts_per_page' => $posts_per_page,
 	'orderby' => $order_by,
 	'order' => $order,
-	'offset' => $offset,
 	'post_status' => $post_status,
 	'ignore_sticky_posts' => false,
 ];
+
+// Handle offset + paged interaction
+// WP_Query ignores 'paged' when 'offset' is set, so we calculate manually
+if ($offset > 0) {
+	$query_args['offset'] = $offset + (($paged - 1) * $posts_per_page);
+} else {
+	$query_args['paged'] = $paged;
+}
 
 // Handle include/exclude IDs
 if (!empty($include_ids)) {
@@ -527,6 +539,11 @@ if (!empty($author_ids) && is_array($author_ids)) {
 // Execute query
 $query = new WP_Query($query_args);
 
+// Fix max_num_pages when offset is used
+if ($offset > 0 && $posts_per_page > 0) {
+	$query->max_num_pages = ceil(max(0, $query->found_posts - $offset) / $posts_per_page);
+}
+
 // Get wrapper classes
 $wrapper_classes = ['prolific-query-posts'];
 $wrapper_classes[] = 'display-mode-' . $display_mode;
@@ -559,6 +576,27 @@ $data_attrs = [
 	'data-show-category-filter' => ($attributes['showCategoryFilter'] ?? false) ? 'true' : 'false',
 	'data-show-tag-filter' => ($attributes['showTagFilter'] ?? false) ? 'true' : 'false',
 	'data-enable-load-more' => ($attributes['enableLoadMore'] ?? false) ? 'true' : 'false',
+	'data-posts-per-page' => $posts_per_page,
+	'data-offset' => $offset,
+	'data-show-featured-image' => ($attributes['showFeaturedImage'] ?? true) ? 'true' : 'false',
+	'data-image-size-slug' => $attributes['imageSizeSlug'] ?? 'large',
+	'data-show-title' => ($attributes['showTitle'] ?? true) ? 'true' : 'false',
+	'data-title-tag' => $attributes['titleTag'] ?? 'h2',
+	'data-show-excerpt' => ($attributes['showExcerpt'] ?? true) ? 'true' : 'false',
+	'data-excerpt-length' => $attributes['excerptLength'] ?? 55,
+	'data-show-meta' => ($attributes['showMeta'] ?? true) ? 'true' : 'false',
+	'data-show-author' => ($attributes['showAuthor'] ?? true) ? 'true' : 'false',
+	'data-show-date' => ($attributes['showDate'] ?? true) ? 'true' : 'false',
+	'data-show-categories-display' => ($attributes['showCategories'] ?? true) ? 'true' : 'false',
+	'data-show-tags-display' => ($attributes['showTags'] ?? false) ? 'true' : 'false',
+	'data-show-read-more' => ($attributes['showReadMore'] ?? true) ? 'true' : 'false',
+	'data-read-more-text' => $attributes['readMoreText'] ?? __('Read More', 'prolific-blocks'),
+	'data-image-position' => $attributes['imagePosition'] ?? 'top',
+	'data-ajax-pagination' => $ajax_pagination ? 'true' : 'false',
+	'data-filter-display-mode' => $filter_display_mode,
+	'data-order-by' => $order_by,
+	'data-order' => $order,
+	'data-post-status' => $post_status,
 ];
 
 if ($enable_carousel) {
@@ -675,6 +713,19 @@ echo $custom_css;
 	$show_date_filter = $attributes['showDateFilter'] ?? false;
 	$show_sort_dropdown = $attributes['showSortDropdown'] ?? false;
 
+	// Fetch filter data upfront (needed for both dropdown and pills modes)
+	$all_categories = [];
+	$all_tags = [];
+	if ($post_type === 'post' && $show_category_filter) {
+		$all_categories = get_categories(['hide_empty' => true]);
+	}
+	if ($post_type === 'post' && $show_tag_filter) {
+		$all_tags = get_tags(['hide_empty' => true]);
+		if (!is_array($all_tags)) {
+			$all_tags = [];
+		}
+	}
+
 	if ($show_search || $show_category_filter || $show_tag_filter || $show_date_filter || $show_sort_dropdown) :
 	?>
 		<div class="query-controls">
@@ -689,36 +740,60 @@ echo $custom_css;
 				</div>
 			<?php endif; ?>
 
-			<?php if ($post_type === 'post' && $show_category_filter) : ?>
-				<div class="category-filter-control">
-					<select class="category-filter" aria-label="<?php echo esc_attr__('Filter by category', 'prolific-blocks'); ?>">
-						<option value=""><?php echo esc_html__('All Categories', 'prolific-blocks'); ?></option>
-						<?php
-						$all_categories = get_categories(['hide_empty' => true]);
-						foreach ($all_categories as $cat) :
-						?>
-							<option value="<?php echo esc_attr($cat->term_id); ?>">
-								<?php echo esc_html($cat->name); ?>
-							</option>
-						<?php endforeach; ?>
-					</select>
-				</div>
+			<?php if ($post_type === 'post' && $show_category_filter && !empty($all_categories)) : ?>
+				<?php if ($filter_display_mode === 'pills') : ?>
+					<div class="filter-pills-control">
+						<div class="filter-pills category-pills" data-taxonomy="category">
+							<button class="filter-pill active" data-term-id="" aria-pressed="true" type="button">
+								<?php echo esc_html__('All', 'prolific-blocks'); ?>
+							</button>
+							<?php foreach ($all_categories as $cat) : ?>
+								<button class="filter-pill" data-term-id="<?php echo esc_attr($cat->term_id); ?>" aria-pressed="false" type="button">
+									<?php echo esc_html($cat->name); ?>
+								</button>
+							<?php endforeach; ?>
+						</div>
+					</div>
+				<?php else : ?>
+					<div class="category-filter-control">
+						<select class="category-filter" aria-label="<?php echo esc_attr__('Filter by category', 'prolific-blocks'); ?>">
+							<option value=""><?php echo esc_html__('All Categories', 'prolific-blocks'); ?></option>
+							<?php foreach ($all_categories as $cat) : ?>
+								<option value="<?php echo esc_attr($cat->term_id); ?>">
+									<?php echo esc_html($cat->name); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+				<?php endif; ?>
 			<?php endif; ?>
 
-			<?php if ($post_type === 'post' && $show_tag_filter) : ?>
-				<div class="tag-filter-control">
-					<select class="tag-filter" aria-label="<?php echo esc_attr__('Filter by tag', 'prolific-blocks'); ?>">
-						<option value=""><?php echo esc_html__('All Tags', 'prolific-blocks'); ?></option>
-						<?php
-						$all_tags = get_tags(['hide_empty' => true]);
-						foreach ($all_tags as $tag) :
-						?>
-							<option value="<?php echo esc_attr($tag->term_id); ?>">
-								<?php echo esc_html($tag->name); ?>
-							</option>
-						<?php endforeach; ?>
-					</select>
-				</div>
+			<?php if ($post_type === 'post' && $show_tag_filter && !empty($all_tags)) : ?>
+				<?php if ($filter_display_mode === 'pills') : ?>
+					<div class="filter-pills-control">
+						<div class="filter-pills tag-pills" data-taxonomy="post_tag">
+							<button class="filter-pill active" data-term-id="" aria-pressed="true" type="button">
+								<?php echo esc_html__('All', 'prolific-blocks'); ?>
+							</button>
+							<?php foreach ($all_tags as $tag_item) : ?>
+								<button class="filter-pill" data-term-id="<?php echo esc_attr($tag_item->term_id); ?>" aria-pressed="false" type="button">
+									<?php echo esc_html($tag_item->name); ?>
+								</button>
+							<?php endforeach; ?>
+						</div>
+					</div>
+				<?php else : ?>
+					<div class="tag-filter-control">
+						<select class="tag-filter" aria-label="<?php echo esc_attr__('Filter by tag', 'prolific-blocks'); ?>">
+							<option value=""><?php echo esc_html__('All Tags', 'prolific-blocks'); ?></option>
+							<?php foreach ($all_tags as $tag_item) : ?>
+								<option value="<?php echo esc_attr($tag_item->term_id); ?>">
+									<?php echo esc_html($tag_item->name); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+				<?php endif; ?>
 			<?php endif; ?>
 
 			<?php if ($show_date_filter) : ?>
@@ -796,140 +871,9 @@ echo $custom_css;
 			<?php
 			while ($query->have_posts()) :
 				$query->the_post();
-				$post_id = get_the_ID();
-
-				// Get display settings
-				$show_featured_image = $attributes['showFeaturedImage'] ?? true;
-				$image_size = $attributes['imageSizeSlug'] ?? 'large';
-				$image_position = $attributes['imagePosition'] ?? 'top';
-				$show_title = $attributes['showTitle'] ?? true;
-				$title_tag = $attributes['titleTag'] ?? 'h2';
-				$show_excerpt = $attributes['showExcerpt'] ?? true;
-				$excerpt_length = $attributes['excerptLength'] ?? 55;
-				$show_meta = $attributes['showMeta'] ?? true;
-				$show_author = $attributes['showAuthor'] ?? true;
-				$show_date = $attributes['showDate'] ?? true;
-				$show_categories = $attributes['showCategories'] ?? true;
-				$show_tags = $attributes['showTags'] ?? false;
-				$show_read_more = $attributes['showReadMore'] ?? true;
-				$read_more_text = $attributes['readMoreText'] ?? __('Read More', 'prolific-blocks');
-
-				$post_classes = [$item_class];
-				if ($display_mode === 'list' && $show_featured_image) {
-					$post_classes[] = 'image-position-' . $image_position;
-				}
-			?>
-				<?php if ($enable_carousel) : ?>
-					<swiper-slide class="<?php echo esc_attr(implode(' ', $post_classes)); ?>">
-				<?php else : ?>
-					<article class="<?php echo esc_attr(implode(' ', $post_classes)); ?>" id="post-<?php echo esc_attr($post_id); ?>">
-				<?php endif; ?>
-
-					<?php
-					// Check if custom CPT layout exists
-					$custom_layout = prolific_render_cpt_layout($post_id, $attributes);
-
-					if ($custom_layout !== null) :
-						// Use custom CPT layout
-						echo $custom_layout;
-					else :
-						// Use default layout
-					?>
-						<?php if ($show_featured_image && has_post_thumbnail()) : ?>
-							<div class="post-thumbnail">
-								<a href="<?php echo esc_url(get_permalink()); ?>" aria-label="<?php echo esc_attr(get_the_title()); ?>">
-									<?php the_post_thumbnail($image_size); ?>
-								</a>
-							</div>
-						<?php endif; ?>
-
-						<div class="post-content">
-							<?php if ($show_title) : ?>
-								<<?php echo esc_attr($title_tag); ?> class="post-title">
-									<a href="<?php echo esc_url(get_permalink()); ?>">
-										<?php the_title(); ?>
-									</a>
-								</<?php echo esc_attr($title_tag); ?>>
-							<?php endif; ?>
-
-							<?php if ($show_meta) : ?>
-								<div class="post-meta">
-									<?php if ($show_author) : ?>
-										<span class="post-author">
-											<?php echo esc_html__('By', 'prolific-blocks'); ?>
-											<a href="<?php echo esc_url(get_author_posts_url(get_the_author_meta('ID'))); ?>">
-												<?php echo esc_html(get_the_author()); ?>
-											</a>
-										</span>
-									<?php endif; ?>
-
-									<?php if ($show_date) : ?>
-										<span class="post-date">
-											<time datetime="<?php echo esc_attr(get_the_date('c')); ?>">
-												<?php echo esc_html(get_the_date()); ?>
-											</time>
-										</span>
-									<?php endif; ?>
-
-									<?php if ($post_type === 'post' && $show_categories) : ?>
-										<?php
-										$post_categories = get_the_category();
-										if (!empty($post_categories)) :
-										?>
-											<span class="post-categories">
-												<?php
-												foreach ($post_categories as $cat) {
-													echo '<a href="' . esc_url(get_category_link($cat->term_id)) . '">' . esc_html($cat->name) . '</a>';
-												}
-												?>
-											</span>
-										<?php endif; ?>
-									<?php endif; ?>
-
-									<?php if ($post_type === 'post' && $show_tags) : ?>
-										<?php
-										$post_tags = get_the_tags();
-										if (!empty($post_tags)) :
-										?>
-											<span class="post-tags">
-												<?php
-												foreach ($post_tags as $tag) {
-													echo '<a href="' . esc_url(get_tag_link($tag->term_id)) . '">' . esc_html($tag->name) . '</a>';
-												}
-												?>
-											</span>
-										<?php endif; ?>
-									<?php endif; ?>
-								</div>
-							<?php endif; ?>
-
-							<?php if ($show_excerpt) : ?>
-								<div class="post-excerpt">
-									<?php
-									$excerpt = get_the_excerpt();
-									$excerpt = wp_trim_words($excerpt, $excerpt_length, '...');
-									echo wp_kses_post($excerpt);
-									?>
-								</div>
-							<?php endif; ?>
-
-							<?php if ($show_read_more) : ?>
-								<div class="post-read-more">
-									<a href="<?php echo esc_url(get_permalink()); ?>" class="read-more-link">
-										<?php echo esc_html($read_more_text); ?>
-										<span class="screen-reader-text"><?php the_title(); ?></span>
-									</a>
-								</div>
-							<?php endif; ?>
-						</div>
-					<?php endif; ?>
-
-				<?php if ($enable_carousel) : ?>
-					</swiper-slide>
-				<?php else : ?>
-					</article>
-				<?php endif; ?>
-			<?php endwhile; ?>
+				echo prolific_query_posts_render_item(get_the_ID(), $attributes, $enable_carousel);
+			endwhile;
+		?>
 
 		<?php if ($enable_carousel) : ?>
 			</swiper-container>
@@ -1084,10 +1028,11 @@ echo $custom_css;
 				</button>
 			</div>
 		<?php elseif ($attributes['enablePagination'] ?? false) : ?>
-			<div class="pagination-wrapper">
+			<div class="pagination-wrapper" data-max-pages="<?php echo esc_attr($query->max_num_pages); ?>" data-current-page="<?php echo esc_attr($paged); ?>">
 				<?php
 				echo paginate_links([
-					'total' => $query->max_num_pages,
+					'total'     => $query->max_num_pages,
+					'current'   => $paged,
 					'prev_text' => __('&laquo; Previous', 'prolific-blocks'),
 					'next_text' => __('Next &raquo;', 'prolific-blocks'),
 				]);

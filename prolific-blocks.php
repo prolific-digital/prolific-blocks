@@ -33,6 +33,7 @@ $myUpdateChecker = PucFactory::buildUpdateChecker(
 $myUpdateChecker->getVcsApi()->enableReleaseAssets();
 
 require_once plugin_dir_path(__FILE__) . 'inc/helpers.php';
+require_once plugin_dir_path(__FILE__) . 'inc/query-posts-ajax.php';
 
 /**
  * Register custom block category for Prolific blocks
