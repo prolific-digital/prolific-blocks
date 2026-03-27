@@ -421,6 +421,16 @@ $display_mode = $attributes['displayMode'] ?? 'grid';
 $enable_carousel = $attributes['enableCarousel'] ?? false;
 $filter_display_mode = $attributes['filterDisplayMode'] ?? 'dropdown';
 $ajax_pagination = $attributes['ajaxPagination'] ?? false;
+$show_taxonomy_filter = $attributes['showTaxonomyFilter'] ?? false;
+$show_category_filter = $attributes['showCategoryFilter'] ?? false;
+$show_tag_filter = $attributes['showTagFilter'] ?? false;
+$taxonomy_filter_slug = '';
+
+// Pre-compute taxonomy filter slug for data attributes
+$taxonomy_filters = $attributes['taxonomyFilters'] ?? [];
+if ($post_type !== 'post' && $show_taxonomy_filter && !empty($taxonomy_filters) && is_array($taxonomy_filters)) {
+	$taxonomy_filter_slug = $taxonomy_filters['taxonomy'] ?? '';
+}
 
 // Carousel control attributes
 $has_navigation = ($attributes['carouselNavigation'] ?? true) && $enable_carousel;
@@ -486,9 +496,10 @@ if ($sticky_posts === 'exclude') {
 // Handle taxonomy filters
 $tax_query = [];
 
-// New dynamic taxonomy filtering (works for any post type)
+// Dynamic taxonomy filtering (CPTs only — posts use legacy categories/tags below)
+// Skip initial query restriction when taxonomy filter UI is active — pills handle it
 $taxonomy_filters = $attributes['taxonomyFilters'] ?? [];
-if (!empty($taxonomy_filters) && is_array($taxonomy_filters)) {
+if ($post_type !== 'post' && !$show_taxonomy_filter && !empty($taxonomy_filters) && is_array($taxonomy_filters)) {
 	$selected_taxonomy = $taxonomy_filters['taxonomy'] ?? '';
 	$selected_terms = $taxonomy_filters['terms'] ?? [];
 
@@ -503,8 +514,9 @@ if (!empty($taxonomy_filters) && is_array($taxonomy_filters)) {
 }
 
 // Legacy category/tag filtering for backward compatibility
+// Skip initial query restriction when filter UI is active — pills/dropdowns handle it
 if ($post_type === 'post') {
-	if (!empty($categories) && is_array($categories)) {
+	if (!empty($categories) && is_array($categories) && !$show_category_filter) {
 		$tax_query[] = [
 			'taxonomy' => 'category',
 			'field' => 'term_id',
@@ -512,7 +524,7 @@ if ($post_type === 'post') {
 		];
 	}
 
-	if (!empty($tags) && is_array($tags)) {
+	if (!empty($tags) && is_array($tags) && !$show_tag_filter) {
 		$tax_query[] = [
 			'taxonomy' => 'post_tag',
 			'field' => 'term_id',
@@ -594,6 +606,8 @@ $data_attrs = [
 	'data-image-position' => $attributes['imagePosition'] ?? 'top',
 	'data-ajax-pagination' => $ajax_pagination ? 'true' : 'false',
 	'data-filter-display-mode' => $filter_display_mode,
+	'data-show-taxonomy-filter' => $show_taxonomy_filter ? 'true' : 'false',
+	'data-taxonomy-slug' => $taxonomy_filter_slug,
 	'data-order-by' => $order_by,
 	'data-order' => $order,
 	'data-post-status' => $post_status,
@@ -708,8 +722,6 @@ echo $custom_css;
 	<?php
 	// Render search and filter controls if enabled
 	$show_search = $attributes['showSearch'] ?? false;
-	$show_category_filter = $attributes['showCategoryFilter'] ?? false;
-	$show_tag_filter = $attributes['showTagFilter'] ?? false;
 	$show_date_filter = $attributes['showDateFilter'] ?? false;
 	$show_sort_dropdown = $attributes['showSortDropdown'] ?? false;
 
@@ -717,16 +729,48 @@ echo $custom_css;
 	$all_categories = [];
 	$all_tags = [];
 	if ($post_type === 'post' && $show_category_filter) {
-		$all_categories = get_categories(['hide_empty' => true]);
+		if (!empty($categories) && is_array($categories)) {
+			// Only show editor-selected categories as filter options
+			$all_categories = array_filter(array_map(function($term_id) {
+				return get_term(intval($term_id), 'category');
+			}, $categories), function($term) {
+				return $term && !is_wp_error($term);
+			});
+		} else {
+			$all_categories = get_categories(['hide_empty' => true]);
+		}
 	}
 	if ($post_type === 'post' && $show_tag_filter) {
-		$all_tags = get_tags(['hide_empty' => true]);
-		if (!is_array($all_tags)) {
-			$all_tags = [];
+		if (!empty($tags) && is_array($tags)) {
+			// Only show editor-selected tags as filter options
+			$all_tags = array_filter(array_map(function($term_id) {
+				return get_term(intval($term_id), 'post_tag');
+			}, $tags), function($term) {
+				return $term && !is_wp_error($term);
+			});
+		} else {
+			$all_tags = get_tags(['hide_empty' => true]);
+			if (!is_array($all_tags)) {
+				$all_tags = [];
+			}
 		}
 	}
 
-	if ($show_search || $show_category_filter || $show_tag_filter || $show_date_filter || $show_sort_dropdown) :
+	// Fetch taxonomy filter terms for CPT pill/dropdown rendering
+	$taxonomy_filter_terms = [];
+	if ($post_type !== 'post' && $show_taxonomy_filter && !empty($taxonomy_filter_slug)) {
+		$selected_filter_terms = $taxonomy_filters['terms'] ?? [];
+
+		if (!empty($taxonomy_filter_slug) && !empty($selected_filter_terms) && is_array($selected_filter_terms)) {
+			$taxonomy_filter_terms = array_filter(array_map(function($term_id) use ($taxonomy_filter_slug) {
+				return get_term(intval($term_id), $taxonomy_filter_slug);
+			}, $selected_filter_terms), function($term) {
+				return $term && !is_wp_error($term);
+			});
+		}
+	}
+
+	if ($show_search || $show_category_filter || $show_tag_filter || $show_taxonomy_filter || $show_date_filter || $show_sort_dropdown) :
 	?>
 		<div class="query-controls">
 			<?php if ($show_search) : ?>
@@ -789,6 +833,38 @@ echo $custom_css;
 							<?php foreach ($all_tags as $tag_item) : ?>
 								<option value="<?php echo esc_attr($tag_item->term_id); ?>">
 									<?php echo esc_html($tag_item->name); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+				<?php endif; ?>
+			<?php endif; ?>
+
+			<?php if ($post_type !== 'post' && $show_taxonomy_filter && !empty($taxonomy_filter_terms)) : ?>
+				<?php
+				$tax_object = get_taxonomy($taxonomy_filter_slug);
+				$tax_label = $tax_object ? $tax_object->labels->name : __('Terms', 'prolific-blocks');
+				?>
+				<?php if ($filter_display_mode === 'pills') : ?>
+					<div class="filter-pills-control">
+						<div class="filter-pills taxonomy-pills" data-taxonomy="<?php echo esc_attr($taxonomy_filter_slug); ?>">
+							<button class="filter-pill active" data-term-id="" aria-pressed="true" type="button">
+								<?php echo esc_html__('All', 'prolific-blocks'); ?>
+							</button>
+							<?php foreach ($taxonomy_filter_terms as $tax_term) : ?>
+								<button class="filter-pill" data-term-id="<?php echo esc_attr($tax_term->term_id); ?>" aria-pressed="false" type="button">
+									<?php echo esc_html($tax_term->name); ?>
+								</button>
+							<?php endforeach; ?>
+						</div>
+					</div>
+				<?php else : ?>
+					<div class="taxonomy-filter-control">
+						<select class="taxonomy-filter" data-taxonomy="<?php echo esc_attr($taxonomy_filter_slug); ?>" aria-label="<?php echo esc_attr(sprintf(__('Filter by %s', 'prolific-blocks'), $tax_label)); ?>">
+							<option value=""><?php echo esc_html(sprintf(__('All %s', 'prolific-blocks'), $tax_label)); ?></option>
+							<?php foreach ($taxonomy_filter_terms as $tax_term) : ?>
+								<option value="<?php echo esc_attr($tax_term->term_id); ?>">
+									<?php echo esc_html($tax_term->name); ?>
 								</option>
 							<?php endforeach; ?>
 						</select>

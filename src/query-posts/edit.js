@@ -161,6 +161,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		noResultsText,
 		ajaxPagination,
 		filterDisplayMode,
+		showTaxonomyFilter,
 	} = attributes;
 
 	// Generate unique block ID
@@ -184,6 +185,13 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		}
 		prevPostTypeRef.current = postType;
 	}, [postType]);
+
+	// Clean up stale taxonomyFilters for post type (posts use legacy categories/tags)
+	useEffect(() => {
+		if (postType === 'post' && attributes.taxonomyFilters && Object.keys(attributes.taxonomyFilters).length > 0) {
+			setAttributes({ taxonomyFilters: {} });
+		}
+	}, []);
 
 	// Fetch available post types (public + show_in_rest, excluding attachment)
 	const postTypes = useSelect((select) => {
@@ -452,8 +460,8 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 						help={__('Comma-separated list of post IDs to exclude', 'prolific-blocks')}
 					/>
 
-					{/* Dynamic Taxonomy/Term Filtering */}
-					{availableTaxonomies.length > 0 && (
+					{/* Dynamic Taxonomy/Term Filtering (CPTs only — posts use legacy Categories/Tags below) */}
+					{availableTaxonomies.length > 0 && postType !== 'post' && (
 						<>
 							<hr />
 							{availableTaxonomies.length > 1 && (
@@ -1271,7 +1279,17 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 						/>
 					)}
 
-					{(showCategoryFilter || showTagFilter) && postType === 'post' && (
+					{postType !== 'post' && attributes.taxonomyFilters?.terms?.length > 0 && (
+						<ToggleControl
+							label={__('Show Taxonomy Filter', 'prolific-blocks')}
+							checked={showTaxonomyFilter}
+							onChange={(value) => setAttributes({ showTaxonomyFilter: value })}
+							help={__('Allow visitors to filter by taxonomy terms on the frontend', 'prolific-blocks')}
+						/>
+					)}
+
+					{(((showCategoryFilter || showTagFilter) && postType === 'post') ||
+						(showTaxonomyFilter && postType !== 'post' && attributes.taxonomyFilters?.terms?.length > 0)) && (
 						<SelectControl
 							label={__('Filter Display', 'prolific-blocks')}
 							value={filterDisplayMode}

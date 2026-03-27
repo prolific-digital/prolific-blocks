@@ -669,6 +669,18 @@
 	}
 
 	/**
+	 * Initialize dynamic taxonomy filter dropdown (for CPTs)
+	 */
+	function initTaxonomyFilter(blockElement) {
+		const taxonomySelect = blockElement.querySelector('.taxonomy-filter');
+		if (!taxonomySelect) return;
+
+		taxonomySelect.addEventListener('change', function () {
+			filterPosts(blockElement);
+		});
+	}
+
+	/**
 	 * Initialize date filter
 	 */
 	function initDateFilter(blockElement) {
@@ -722,6 +734,22 @@
 	function getPillFilterValues(blockElement, taxonomy) {
 		const className = taxonomy === 'category' ? 'category-pills' : 'tag-pills';
 		const container = blockElement.querySelector('.' + className);
+		if (!container) return '';
+
+		return Array.from(
+			container.querySelectorAll('.filter-pill.active[data-term-id]:not([data-term-id=""])')
+		)
+			.map((p) => p.dataset.termId)
+			.join(',');
+	}
+
+	/**
+	 * Get active term IDs from dynamic taxonomy pill filters (for CPTs).
+	 */
+	function getDynamicPillFilterValues(blockElement, taxonomySlug) {
+		const container = blockElement.querySelector(
+			`.filter-pills[data-taxonomy="${taxonomySlug}"]`
+		);
 		if (!container) return '';
 
 		return Array.from(
@@ -794,6 +822,18 @@
 			orderBy: currentOrderBy,
 			order: currentOrder,
 		};
+
+		// Add dynamic taxonomy filter for CPTs
+		const taxonomySlug = blockElement.dataset.taxonomySlug;
+		if (taxonomySlug) {
+			const taxonomyTerms = hasPills
+				? getDynamicPillFilterValues(blockElement, taxonomySlug)
+				: blockElement.querySelector('.taxonomy-filter')?.value || '';
+			if (taxonomyTerms) {
+				currentFilters.taxonomy = taxonomySlug;
+				currentFilters.terms = taxonomyTerms;
+			}
+		}
 
 		// Merge with new filters
 		const allFilters = { ...currentFilters, ...filters };
@@ -1049,8 +1089,6 @@
 				}
 
 				// Trigger filtering
-				const filterKey =
-					taxonomy === 'category' ? 'category' : 'tag';
 				const activeTermIds = Array.from(
 					container.querySelectorAll(
 						'.filter-pill.active[data-term-id]:not([data-term-id=""])'
@@ -1059,7 +1097,20 @@
 					.map((p) => p.dataset.termId)
 					.join(',');
 
-				filterPosts(blockElement, { [filterKey]: activeTermIds });
+				// Route to correct AJAX params based on taxonomy type
+				let filterPayload;
+				if (taxonomy === 'category') {
+					filterPayload = { category: activeTermIds };
+				} else if (taxonomy === 'post_tag') {
+					filterPayload = { tag: activeTermIds };
+				} else {
+					// CPT taxonomy — use dynamic taxonomy/terms params
+					filterPayload = activeTermIds
+						? { taxonomy: taxonomy, terms: activeTermIds }
+						: { taxonomy: '', terms: '' };
+				}
+
+				filterPosts(blockElement, filterPayload);
 			});
 		});
 	}
@@ -1139,6 +1190,10 @@
 
 				if (block.dataset.showTagFilter === 'true') {
 					initTagFilter(block);
+				}
+
+				if (block.dataset.showTaxonomyFilter === 'true') {
+					initTaxonomyFilter(block);
 				}
 			}
 

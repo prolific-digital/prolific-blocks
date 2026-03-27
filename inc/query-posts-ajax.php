@@ -265,6 +265,22 @@ if (!function_exists('prolific_query_posts_build_query_args')) {
 			}
 		}
 
+		// Dynamic taxonomy filter (for CPTs)
+		$dynamic_taxonomy = sanitize_text_field($_GET['taxonomy'] ?? '');
+		$dynamic_terms = sanitize_text_field($_GET['terms'] ?? '');
+
+		if (!empty($dynamic_taxonomy) && !empty($dynamic_terms) && taxonomy_exists($dynamic_taxonomy)) {
+			$term_ids = array_map('intval', array_filter(explode(',', $dynamic_terms)));
+			if (!empty($term_ids)) {
+				$tax_query[] = [
+					'taxonomy' => $dynamic_taxonomy,
+					'field'    => 'term_id',
+					'terms'    => $term_ids,
+					'operator' => 'IN',
+				];
+			}
+		}
+
 		if (!empty($tax_query)) {
 			if (count($tax_query) > 1) {
 				$query_args['tax_query'] = array_merge(['relation' => 'AND'], $tax_query);
