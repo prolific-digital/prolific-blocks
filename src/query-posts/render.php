@@ -611,6 +611,7 @@ $data_attrs = [
 	'data-order-by' => $order_by,
 	'data-order' => $order,
 	'data-post-status' => $post_status,
+	'data-no-results-text' => esc_attr($attributes['noResultsText'] ?? __('No posts found.', 'prolific-blocks')),
 ];
 
 if ($enable_carousel) {
