@@ -732,11 +732,10 @@
 
 	// No Results
 	.no-posts-found {
+		grid-column: 1 / -1;
+		width: 100%;
 		padding: 3em 2em;
 		text-align: center;
-		background: #f9f9f9;
-		border: 1px dashed #ddd;
-		border-radius: 8px;
 		color: #757575;
 
 		p {
@@ -890,8 +889,6 @@
 		}
 
 		.no-posts-found {
-			background: #1e1e1e;
-			border-color: #333;
 			color: #aaa;
 		}
 	}
