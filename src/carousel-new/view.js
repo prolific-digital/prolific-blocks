@@ -20,6 +20,82 @@
 	const carouselStates = new Map();
 
 	/**
+	 * Selector for focusable elements that should be removed from tab order
+	 * when their parent slide is aria-hidden.
+	 */
+	const FOCUSABLE_SELECTOR =
+		'a[href], area[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+	/**
+	 * Manage focusability of interactive elements within a slide.
+	 * When a slide is hidden (aria-hidden="true"), all focusable children
+	 * get tabindex="-1" to remove them from tab order (WCAG 4.1.2).
+	 * When visible, original tabindex values are restored.
+	 *
+	 * @param {HTMLElement} slide - The slide element.
+	 * @param {boolean} isHidden - Whether the slide is hidden from assistive tech.
+	 */
+	function manageSlideFocusability(slide, isHidden) {
+		slide.setAttribute('aria-hidden', isHidden ? 'true' : 'false');
+
+		const focusableElements = slide.querySelectorAll(FOCUSABLE_SELECTOR);
+		focusableElements.forEach(function (el) {
+			if (isHidden) {
+				// Store original tabindex before overriding
+				if (!el.hasAttribute('data-original-tabindex')) {
+					if (el.hasAttribute('tabindex')) {
+						el.setAttribute(
+							'data-original-tabindex',
+							el.getAttribute('tabindex')
+						);
+					} else {
+						el.setAttribute('data-original-tabindex', '__none__');
+					}
+				}
+				el.setAttribute('tabindex', '-1');
+			} else {
+				// Restore original tabindex
+				const originalTabindex = el.getAttribute(
+					'data-original-tabindex'
+				);
+				if (originalTabindex !== null) {
+					if (originalTabindex === '__none__') {
+						el.removeAttribute('tabindex');
+					} else {
+						el.setAttribute('tabindex', originalTabindex);
+					}
+					el.removeAttribute('data-original-tabindex');
+				}
+			}
+		});
+	}
+
+	/**
+	 * Get the set of visible slide indices based on Swiper's physical position.
+	 * Reads slidesPerView dynamically so it responds to breakpoint changes.
+	 *
+	 * @param {Object} swiper - The Swiper instance.
+	 * @param {number} totalSlides - Total number of original (non-duplicate) slides.
+	 * @returns {Set<number>} Set of visible slide indices.
+	 */
+	function getVisibleSlideIndices(swiper, totalSlides) {
+		const physicalIndex =
+			swiper.realIndex !== undefined
+				? swiper.realIndex
+				: swiper.activeIndex;
+		const slidesPerView =
+			Math.floor(swiper.params.slidesPerView) || 1;
+		const visibleIndices = new Set();
+
+		for (let i = 0; i < slidesPerView; i++) {
+			const index = (physicalIndex + i) % totalSlides;
+			visibleIndices.add(index);
+		}
+
+		return visibleIndices;
+	}
+
+	/**
 	 * Initialize all carousel instances when DOM is ready.
 	 */
 	function initCarousels() {
@@ -131,7 +207,10 @@
 
 		const { virtualActiveIndex, actualSlideCount } = state;
 
-		// Update slide active classes
+		// Compute which slides are currently visible on screen
+		const visibleIndices = getVisibleSlideIndices(swiper, actualSlideCount);
+
+		// Update slide active classes and focusability
 		const swiperContainer = carousel.querySelector('swiper-container');
 		if (swiperContainer) {
 			const slides = swiperContainer.querySelectorAll('swiper-slide:not(.swiper-slide-duplicate)');
@@ -141,7 +220,27 @@
 				} else {
 					slide.classList.remove('swiper-slide-active');
 				}
+
+				// Manage aria-hidden and child tabindex for WCAG 4.1.2
+				manageSlideFocusability(slide, !visibleIndices.has(index));
 			});
+
+			// Also manage duplicate slides in loop mode
+			if (swiper.params.loop) {
+				const duplicateSlides = swiperContainer.querySelectorAll(
+					'swiper-slide.swiper-slide-duplicate'
+				);
+				duplicateSlides.forEach(function (slide) {
+					const originalIndex = parseInt(
+						slide.getAttribute('data-swiper-slide-index'),
+						10
+					);
+					const isHidden =
+						isNaN(originalIndex) ||
+						!visibleIndices.has(originalIndex);
+					manageSlideFocusability(slide, isHidden);
+				});
+			}
 		}
 
 		// Update bullet active states
@@ -412,16 +511,13 @@
 	 * @param {Object} swiper - The Swiper instance.
 	 */
 	function setupFocusManagement(swiper) {
-		let lastActiveIndex = swiper.activeIndex;
-
 		swiper.on('slideChangeTransitionEnd', function () {
 			const activeSlide = swiper.slides[swiper.activeIndex];
 			if (!activeSlide) return;
 
 			// Find focusable elements in the active slide
-			const focusableElements = activeSlide.querySelectorAll(
-				'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-			);
+			const focusableElements =
+				activeSlide.querySelectorAll(FOCUSABLE_SELECTOR);
 
 			if (focusableElements.length > 0) {
 				// Focus the first interactive element
@@ -432,17 +528,7 @@
 				activeSlide.focus();
 			}
 
-			// Update ARIA attributes
-			activeSlide.setAttribute('aria-hidden', 'false');
-
-			if (swiper.slides[lastActiveIndex]) {
-				swiper.slides[lastActiveIndex].setAttribute(
-					'aria-hidden',
-					'true'
-				);
-			}
-
-			lastActiveIndex = swiper.activeIndex;
+			// Note: aria-hidden and child tabindex are managed by updateActiveStates()
 		});
 	}
 
@@ -455,15 +541,12 @@
 		if (!swiper.slides || !swiper.slides.length) return;
 
 		// Add role and labels to slides
+		// Note: aria-hidden and child tabindex are managed by updateActiveStates()
 		swiper.slides.forEach((slide, index) => {
 			slide.setAttribute('role', 'group');
 			slide.setAttribute(
 				'aria-label',
 				'Slide ' + (index + 1) + ' of ' + swiper.slides.length
-			);
-			slide.setAttribute(
-				'aria-hidden',
-				index === swiper.activeIndex ? 'false' : 'true'
 			);
 		});
 

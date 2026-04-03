@@ -12,6 +12,181 @@
 	const carouselStates = new Map();
 
 	/**
+	 * Selector for focusable elements that should be removed from tab order
+	 * when their parent slide is aria-hidden.
+	 */
+	const FOCUSABLE_SELECTOR =
+		'a[href], area[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+	/**
+	 * Manage focusability of interactive elements within a slide.
+	 * When a slide is hidden (aria-hidden="true"), all focusable children
+	 * get tabindex="-1" to remove them from tab order (WCAG 4.1.2).
+	 * When visible, original tabindex values are restored.
+	 *
+	 * @param {HTMLElement} slide - The slide element.
+	 * @param {boolean} isHidden - Whether the slide is hidden from assistive tech.
+	 */
+	function manageSlideFocusability(slide, isHidden) {
+		slide.setAttribute('aria-hidden', isHidden ? 'true' : 'false');
+
+		const focusableElements = slide.querySelectorAll(FOCUSABLE_SELECTOR);
+		focusableElements.forEach(function (el) {
+			if (isHidden) {
+				// Store original tabindex before overriding
+				if (!el.hasAttribute('data-original-tabindex')) {
+					if (el.hasAttribute('tabindex')) {
+						el.setAttribute(
+							'data-original-tabindex',
+							el.getAttribute('tabindex')
+						);
+					} else {
+						el.setAttribute('data-original-tabindex', '__none__');
+					}
+				}
+				el.setAttribute('tabindex', '-1');
+			} else {
+				// Restore original tabindex
+				const originalTabindex = el.getAttribute(
+					'data-original-tabindex'
+				);
+				if (originalTabindex !== null) {
+					if (originalTabindex === '__none__') {
+						el.removeAttribute('tabindex');
+					} else {
+						el.setAttribute('tabindex', originalTabindex);
+					}
+					el.removeAttribute('data-original-tabindex');
+				}
+			}
+		});
+	}
+
+	/**
+	 * Get the set of visible slide indices based on Swiper's physical position.
+	 * Reads slidesPerView dynamically so it responds to breakpoint changes.
+	 *
+	 * @param {Object} swiper - The Swiper instance.
+	 * @param {number} totalSlides - Total number of original (non-duplicate) slides.
+	 * @returns {Set<number>} Set of visible slide indices.
+	 */
+	function getVisibleSlideIndices(swiper, totalSlides) {
+		const physicalIndex =
+			swiper.realIndex !== undefined
+				? swiper.realIndex
+				: swiper.activeIndex;
+		const slidesPerView =
+			Math.floor(swiper.params.slidesPerView) || 1;
+		const visibleIndices = new Set();
+
+		for (let i = 0; i < slidesPerView; i++) {
+			const index = (physicalIndex + i) % totalSlides;
+			visibleIndices.add(index);
+		}
+
+		return visibleIndices;
+	}
+
+	/**
+	 * Set up accessibility attributes for the query posts carousel.
+	 *
+	 * @param {HTMLElement} blockElement - The block container element.
+	 * @param {Object} swiper - The Swiper instance.
+	 */
+	function setupA11yAttributes(blockElement, swiper) {
+		const swiperContainer = blockElement.querySelector('swiper-container');
+		if (!swiperContainer) return;
+
+		const originalSlides = swiperContainer.querySelectorAll(
+			'swiper-slide:not(.swiper-slide-duplicate)'
+		);
+		if (!originalSlides.length) return;
+
+		// Add role and labels to slides
+		originalSlides.forEach(function (slide, index) {
+			slide.setAttribute('role', 'group');
+			slide.setAttribute(
+				'aria-label',
+				'Slide ' + (index + 1) + ' of ' + originalSlides.length
+			);
+		});
+
+		// Also label duplicate slides in loop mode
+		if (swiper.params.loop) {
+			const duplicateSlides = swiperContainer.querySelectorAll(
+				'swiper-slide.swiper-slide-duplicate'
+			);
+			duplicateSlides.forEach(function (slide) {
+				const originalIndex = parseInt(
+					slide.getAttribute('data-swiper-slide-index'),
+					10
+				);
+				if (!isNaN(originalIndex)) {
+					slide.setAttribute('role', 'group');
+					slide.setAttribute(
+						'aria-label',
+						'Slide ' +
+							(originalIndex + 1) +
+							' of ' +
+							originalSlides.length
+					);
+				}
+			});
+		}
+
+		// Announce slide changes to screen readers
+		swiper.on('slideChange', function () {
+			let liveRegion = document.getElementById(
+				'swiper-notification-' + (blockElement.id || 'query-posts')
+			);
+
+			if (!liveRegion) {
+				liveRegion = document.createElement('div');
+				liveRegion.id =
+					'swiper-notification-' +
+					(blockElement.id || 'query-posts');
+				liveRegion.setAttribute('aria-live', 'polite');
+				liveRegion.setAttribute('aria-atomic', 'true');
+				liveRegion.className = 'screen-reader-text';
+				document.body.appendChild(liveRegion);
+			}
+
+			const realIndex =
+				swiper.realIndex !== undefined
+					? swiper.realIndex
+					: swiper.activeIndex;
+			liveRegion.textContent =
+				'Slide ' +
+				(realIndex + 1) +
+				' of ' +
+				originalSlides.length;
+		});
+	}
+
+	/**
+	 * Set up focus management for query posts carousel slides.
+	 *
+	 * @param {Object} swiper - The Swiper instance.
+	 */
+	function setupFocusManagement(swiper) {
+		swiper.on('slideChangeTransitionEnd', function () {
+			const activeSlide = swiper.slides[swiper.activeIndex];
+			if (!activeSlide) return;
+
+			// Find focusable elements in the active slide
+			const focusableElements =
+				activeSlide.querySelectorAll(FOCUSABLE_SELECTOR);
+
+			if (focusableElements.length > 0) {
+				focusableElements[0].focus();
+			} else {
+				activeSlide.setAttribute('tabindex', '-1');
+				activeSlide.focus();
+			}
+		});
+	}
+
+	/**
 	 * Initialize carousel for a query posts block using Swiper Element
 	 */
 	function initCarousel(blockElement) {
@@ -314,6 +489,10 @@
 
 		// Set up virtual pagination
 		setupVirtualPagination(blockElement, swiper);
+
+		// Set up accessibility attributes and focus management
+		setupA11yAttributes(blockElement, swiper);
+		setupFocusManagement(swiper);
 	}
 
 	/**
@@ -377,6 +556,55 @@
 		swiper.on('reachBeginning', updateButtonStates);
 		swiper.on('reachEnd', updateButtonStates);
 		updateButtonStates();
+
+		// Set up accessibility for standard navigation mode
+		setupA11yAttributes(blockElement, swiper);
+		setupFocusManagement(swiper);
+
+		// Manage slide focusability on transitions (no virtual index in this path)
+		function updateSlideFocusability() {
+			const swiperContainer =
+				blockElement.querySelector('swiper-container');
+			if (!swiperContainer) return;
+
+			const slidesPerView =
+				Math.floor(swiper.params.slidesPerView) || 1;
+			const slides = swiperContainer.querySelectorAll(
+				'swiper-slide:not(.swiper-slide-duplicate)'
+			);
+			const physicalIndex =
+				swiper.realIndex !== undefined
+					? swiper.realIndex
+					: swiper.activeIndex;
+
+			slides.forEach(function (slide, index) {
+				const isHidden =
+					index < physicalIndex ||
+					index >= physicalIndex + slidesPerView;
+				manageSlideFocusability(slide, isHidden);
+			});
+
+			// Handle loop duplicates
+			if (swiper.params.loop) {
+				const duplicateSlides = swiperContainer.querySelectorAll(
+					'swiper-slide.swiper-slide-duplicate'
+				);
+				duplicateSlides.forEach(function (slide) {
+					const originalIndex = parseInt(
+						slide.getAttribute('data-swiper-slide-index'),
+						10
+					);
+					const isHidden =
+						isNaN(originalIndex) ||
+						originalIndex < physicalIndex ||
+						originalIndex >= physicalIndex + slidesPerView;
+					manageSlideFocusability(slide, isHidden);
+				});
+			}
+		}
+
+		swiper.on('slideChangeTransitionEnd', updateSlideFocusability);
+		updateSlideFocusability(); // Set initial state
 	}
 
 	/**
@@ -386,9 +614,12 @@
 		const state = carouselStates.get(blockElement.id);
 		if (!state) return;
 
-		const { virtualActiveIndex } = state;
+		const { virtualActiveIndex, actualSlideCount } = state;
 
-		// Update slide active classes
+		// Compute which slides are currently visible on screen
+		const visibleIndices = getVisibleSlideIndices(swiper, actualSlideCount);
+
+		// Update slide active classes and focusability
 		const swiperContainer = blockElement.querySelector('swiper-container');
 		if (swiperContainer) {
 			const slides = swiperContainer.querySelectorAll(
@@ -400,7 +631,27 @@
 				} else {
 					slide.classList.remove('swiper-slide-active');
 				}
+
+				// Manage aria-hidden and child tabindex for WCAG 4.1.2
+				manageSlideFocusability(slide, !visibleIndices.has(index));
 			});
+
+			// Also manage duplicate slides in loop mode
+			if (swiper.params.loop) {
+				const duplicateSlides = swiperContainer.querySelectorAll(
+					'swiper-slide.swiper-slide-duplicate'
+				);
+				duplicateSlides.forEach(function (slide) {
+					const originalIndex = parseInt(
+						slide.getAttribute('data-swiper-slide-index'),
+						10
+					);
+					const isHidden =
+						isNaN(originalIndex) ||
+						!visibleIndices.has(originalIndex);
+					manageSlideFocusability(slide, isHidden);
+				});
+			}
 		}
 
 		// Update bullet active states
