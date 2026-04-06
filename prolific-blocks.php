@@ -202,6 +202,46 @@ function prolific_register_third_party_block_attributes($args, $block_type) {
 }
 add_filter('register_block_type_args', 'prolific_register_third_party_block_attributes', 10, 2);
 
+/**
+ * Move aria-label from wrapper div to inner anchor tag on core/button blocks.
+ *
+ * The Global Custom HTML Attributes feature applies attributes to the block wrapper element,
+ * but for core/button the aria-label belongs on the interactive <a> element. This filter
+ * also injects a screen-reader-text span inside the anchor with the label text.
+ *
+ * @param string $block_content The block's rendered HTML.
+ * @param array  $parsed_block  The parsed block data.
+ * @return string Modified HTML.
+ */
+function prolific_button_move_aria_label($block_content, $parsed_block) {
+	// Check if the wrapper div has an aria-label attribute
+	if (!preg_match('/<div\b[^>]*\saria-label="([^"]*)"[^>]*>/i', $block_content, $matches)) {
+		return $block_content;
+	}
+
+	$aria_label = $matches[1];
+
+	// Remove aria-label from the wrapper div
+	$block_content = preg_replace(
+		'/(<div\b[^>]*)\s+aria-label="[^"]*"([^>]*>)/i',
+		'$1$2',
+		$block_content,
+		1
+	);
+
+	// Add aria-label to the <a> tag and prepend a screen-reader-text span inside it
+	$sr_span = '<span class="screen-reader-text">' . esc_html($aria_label) . '</span>';
+	$block_content = preg_replace(
+		'/(<a\b[^>]*)(>)/i',
+		'$1 aria-label="' . esc_attr($aria_label) . '"$2' . $sr_span,
+		$block_content,
+		1
+	);
+
+	return $block_content;
+}
+add_filter('render_block_core/button', 'prolific_button_move_aria_label', 10, 2);
+
 function allow_json_uploads($mime_types) {
 	$mime_types['json'] = 'application/json'; // Adding .json extension to allowed mime types
 	return $mime_types;
