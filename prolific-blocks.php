@@ -203,36 +203,49 @@ function prolific_register_third_party_block_attributes($args, $block_type) {
 add_filter('register_block_type_args', 'prolific_register_third_party_block_attributes', 10, 2);
 
 /**
- * Move aria-label from wrapper div to inner anchor tag on core/button blocks.
+ * Move aria-label from non-interactive wrapper elements to the first interactive
+ * child element (<a> or <button>) inside the block.
  *
  * The Global Custom HTML Attributes feature applies attributes to the block wrapper element,
- * but for core/button the aria-label belongs on the interactive <a> element. This filter
- * also injects a screen-reader-text span inside the anchor with the label text.
+ * but aria-label belongs on the interactive element, not a container like <div> or <figure>.
+ * This filter relocates aria-label at render time and injects a screen-reader-text span.
+ *
+ * Skips landmark/semantic elements where aria-label is valid on the wrapper itself:
+ * nav, section, aside, article, header, footer, main, form, and headings (h1-h6).
  *
  * @param string $block_content The block's rendered HTML.
  * @param array  $parsed_block  The parsed block data.
  * @return string Modified HTML.
  */
-function prolific_button_move_aria_label($block_content, $parsed_block) {
-	// Check if the wrapper div has an aria-label attribute
-	if (!preg_match('/<div\b[^>]*\saria-label="([^"]*)"[^>]*>/i', $block_content, $matches)) {
+function prolific_move_aria_label_to_interactive($block_content, $parsed_block) {
+	// Non-interactive wrapper tags where aria-label should be relocated
+	$wrapper_tags = 'div|figure|span|li|p|dd|dt';
+
+	// Check if the outermost element is a non-interactive wrapper with aria-label
+	if (!preg_match('/^\s*<(' . $wrapper_tags . ')\b[^>]*\saria-label="([^"]*)"[^>]*>/i', $block_content, $matches)) {
 		return $block_content;
 	}
 
-	$aria_label = $matches[1];
+	$wrapper_tag = $matches[1];
+	$aria_label  = $matches[2];
 
-	// Remove aria-label from the wrapper div
+	// Only proceed if there's an interactive element (<a> or <button>) inside
+	if (!preg_match('/<(a|button)\b/i', $block_content)) {
+		return $block_content;
+	}
+
+	// Remove aria-label from the wrapper element
 	$block_content = preg_replace(
-		'/(<div\b[^>]*)\s+aria-label="[^"]*"([^>]*>)/i',
+		'/^(\s*<' . preg_quote($wrapper_tag, '/') . '\b[^>]*)\s+aria-label="[^"]*"([^>]*>)/i',
 		'$1$2',
 		$block_content,
 		1
 	);
 
-	// Add aria-label to the <a> tag and prepend a screen-reader-text span inside it
+	// Add aria-label to the first <a> or <button> and prepend a screen-reader-text span
 	$sr_span = '<span class="screen-reader-text">' . esc_html($aria_label) . '</span>';
 	$block_content = preg_replace(
-		'/(<a\b[^>]*)(>)/i',
+		'/(<(?:a|button)\b[^>]*)(>)/i',
 		'$1 aria-label="' . esc_attr($aria_label) . '"$2' . $sr_span,
 		$block_content,
 		1
@@ -240,7 +253,7 @@ function prolific_button_move_aria_label($block_content, $parsed_block) {
 
 	return $block_content;
 }
-add_filter('render_block_core/button', 'prolific_button_move_aria_label', 10, 2);
+add_filter('render_block', 'prolific_move_aria_label_to_interactive', 10, 2);
 
 function allow_json_uploads($mime_types) {
 	$mime_types['json'] = 'application/json'; // Adding .json extension to allowed mime types
