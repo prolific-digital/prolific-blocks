@@ -369,6 +369,17 @@ function prolific_filter_query_posts_handler() {
 			'prev_text' => __('&laquo; Previous', 'prolific-blocks'),
 			'next_text' => __('Next &raquo;', 'prolific-blocks'),
 		]);
+
+		// paginate_links() auto-merges query params from the current request URL
+		// into every link. In admin-ajax context that leaks the entire AJAX payload
+		// (action, nonce, post_type, etc.) into the hrefs. Strip them.
+		if ($pagination_html) {
+			$pagination_html = preg_replace(
+				'/(<a\s[^>]*href=["\'][^"\'?]*)(\?[^"\']*)?(["\'])/',
+				'$1$3',
+				$pagination_html
+			);
+		}
 	}
 
 	wp_send_json_success([

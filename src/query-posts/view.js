@@ -1447,14 +1447,22 @@
 				ajax_pagination: 'true',
 			});
 
-			// Update browser URL for bookmarkability and back/forward support
-			if (href && href !== '#') {
-				window.history.pushState(
-					{ prolificPage: page },
-					'',
-					href
-				);
-			}
+			// Build clean URL for browser history from the block's base URL
+			const baseUrl = (
+				blockElement.dataset.pageUrl ||
+				window.location.origin + window.location.pathname
+			)
+				.replace(/\/page\/\d+\/?$/, '')
+				.replace(/\/$/, '');
+			const cleanUrl =
+				page > 1
+					? baseUrl + '/page/' + page + '/'
+					: baseUrl + '/';
+			window.history.pushState(
+				{ prolificPage: page },
+				'',
+				cleanUrl
+			);
 		});
 	}
 
