@@ -351,12 +351,23 @@ function prolific_filter_query_posts_handler() {
 	// Build pagination HTML if AJAX pagination is requested
 	$pagination_html = '';
 	if ($ajax_pagination === 'true' && $query->max_num_pages > 1) {
+		// Use the originating page URL to generate real, crawlable pagination links
+		$page_url = esc_url_raw($_GET['page_url'] ?? '');
+		if (empty($page_url)) {
+			$page_url = home_url('/');
+		}
+
+		// Strip any existing /page/N/ or ?paged=N so we have a clean base
+		$clean_url = preg_replace('/\/page\/\d+\/?/', '/', $page_url);
+		$clean_url = remove_query_arg('paged', $clean_url);
+
 		$pagination_html = paginate_links([
+			'base'      => trailingslashit($clean_url) . '%_%',
+			'format'    => 'page/%#%/',
 			'total'     => $query->max_num_pages,
 			'current'   => $page,
 			'prev_text' => __('&laquo; Previous', 'prolific-blocks'),
 			'next_text' => __('Next &raquo;', 'prolific-blocks'),
-			'format'    => '?paged=%#%',
 		]);
 	}
 

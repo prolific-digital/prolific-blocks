@@ -605,6 +605,7 @@ $data_attrs = [
 	'data-read-more-text' => $attributes['readMoreText'] ?? __('Read More', 'prolific-blocks'),
 	'data-image-position' => $attributes['imagePosition'] ?? 'top',
 	'data-ajax-pagination' => $ajax_pagination ? 'true' : 'false',
+	'data-page-url' => esc_url(get_pagenum_link(1)),
 	'data-filter-display-mode' => $filter_display_mode,
 	'data-show-taxonomy-filter' => $show_taxonomy_filter ? 'true' : 'false',
 	'data-taxonomy-slug' => $taxonomy_filter_slug,
@@ -1108,6 +1109,8 @@ echo $custom_css;
 			<div class="pagination-wrapper" data-max-pages="<?php echo esc_attr($query->max_num_pages); ?>" data-current-page="<?php echo esc_attr($paged); ?>">
 				<?php
 				echo paginate_links([
+					'base'      => str_replace( 999999999, '%#%', esc_url( get_pagenum_link( 999999999 ) ) ),
+					'format'    => '',
 					'total'     => $query->max_num_pages,
 					'current'   => $paged,
 					'prev_text' => __('&laquo; Previous', 'prolific-blocks'),

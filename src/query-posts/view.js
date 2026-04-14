@@ -1110,6 +1110,9 @@
 			nonce: prolific_query_posts.nonce,
 			block_id: blockId,
 			post_type: postType,
+			page_url:
+				blockElement.dataset.pageUrl ||
+				window.location.origin + window.location.pathname,
 			...displayAttrs,
 			...allFilters,
 		});
@@ -1443,8 +1446,34 @@
 				page: page,
 				ajax_pagination: 'true',
 			});
+
+			// Update browser URL for bookmarkability and back/forward support
+			if (href && href !== '#') {
+				window.history.pushState(
+					{ prolificPage: page },
+					'',
+					href
+				);
+			}
 		});
 	}
+
+	/**
+	 * Handle browser back/forward navigation for AJAX pagination.
+	 */
+	window.addEventListener('popstate', function (e) {
+		if (e.state && e.state.prolificPage) {
+			const blocks = document.querySelectorAll(
+				'.prolific-query-posts[data-ajax-pagination="true"]'
+			);
+			blocks.forEach((block) => {
+				filterPosts(block, {
+					page: e.state.prolificPage,
+					ajax_pagination: 'true',
+				});
+			});
+		}
+	});
 
 	/**
 	 * Initialize all query posts blocks
