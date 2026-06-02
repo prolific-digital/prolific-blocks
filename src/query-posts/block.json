@@ -68,6 +68,10 @@
       "type": "string",
       "default": ""
     },
+    "excludeMostRecent": {
+      "type": "boolean",
+      "default": false
+    },
     "categories": {
       "type": "array",
       "default": []

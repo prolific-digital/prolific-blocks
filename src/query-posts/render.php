@@ -412,6 +412,7 @@ $order = $attributes['order'] ?? 'desc';
 $offset = $attributes['offset'] ?? 0;
 $include_ids = $attributes['includeIds'] ?? '';
 $exclude_ids = $attributes['excludeIds'] ?? '';
+$exclude_most_recent = $attributes['excludeMostRecent'] ?? false;
 $categories = $attributes['categories'] ?? [];
 $tags = $attributes['tags'] ?? [];
 $author_ids = $attributes['authorIds'] ?? [];
@@ -548,6 +549,31 @@ if (!empty($author_ids) && is_array($author_ids)) {
 	$query_args['author__in'] = $author_ids;
 }
 
+// Exclude the most recent matching post (if toggled).
+// Run a minimal pre-query with the same filters but posts_per_page=1,
+// then merge the resulting ID into post__not_in so the exclusion
+// applies across every page and pagination counts stay correct.
+if ($exclude_most_recent) {
+	$pre_query_args = array_merge($query_args, [
+		'posts_per_page'         => 1,
+		'fields'                 => 'ids',
+		'no_found_rows'          => true,
+		'update_post_meta_cache' => false,
+		'update_post_term_cache' => false,
+		'ignore_sticky_posts'    => true,
+	]);
+	// Don't let offset/paged skew the "most recent" lookup
+	unset($pre_query_args['offset'], $pre_query_args['paged']);
+
+	$most_recent_ids = get_posts($pre_query_args);
+	if (!empty($most_recent_ids)) {
+		$query_args['post__not_in'] = array_merge(
+			$query_args['post__not_in'] ?? [],
+			$most_recent_ids
+		);
+	}
+}
+
 // Execute query
 $query = new WP_Query($query_args);
 
@@ -590,6 +616,7 @@ $data_attrs = [
 	'data-enable-load-more' => ($attributes['enableLoadMore'] ?? false) ? 'true' : 'false',
 	'data-posts-per-page' => $posts_per_page,
 	'data-offset' => $offset,
+	'data-exclude-most-recent' => $exclude_most_recent ? 'true' : 'false',
 	'data-show-featured-image' => ($attributes['showFeaturedImage'] ?? true) ? 'true' : 'false',
 	'data-image-size-slug' => $attributes['imageSizeSlug'] ?? 'large',
 	'data-show-title' => ($attributes['showTitle'] ?? true) ? 'true' : 'false',

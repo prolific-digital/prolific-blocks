@@ -299,6 +299,30 @@ if (!function_exists('prolific_query_posts_build_query_args')) {
 			}
 		}
 
+		// Exclude most recent matching post (mirrors SSR behavior in render.php).
+		// Runs a minimal pre-query with the same filters so the exclusion applies
+		// across every page and composes with other post__not_in entries.
+		$exclude_most_recent = sanitize_text_field($_GET['exclude_most_recent'] ?? 'false') === 'true';
+		if ($exclude_most_recent) {
+			$pre_query_args = array_merge($query_args, [
+				'posts_per_page'         => 1,
+				'fields'                 => 'ids',
+				'no_found_rows'          => true,
+				'update_post_meta_cache' => false,
+				'update_post_term_cache' => false,
+				'ignore_sticky_posts'    => true,
+			]);
+			unset($pre_query_args['offset'], $pre_query_args['paged']);
+
+			$most_recent_ids = get_posts($pre_query_args);
+			if (!empty($most_recent_ids)) {
+				$query_args['post__not_in'] = array_merge(
+					$query_args['post__not_in'] ?? [],
+					$most_recent_ids
+				);
+			}
+		}
+
 		return $query_args;
 	}
 }

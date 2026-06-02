@@ -93,6 +93,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		offset,
 		includeIds,
 		excludeIds,
+		excludeMostRecent,
 		categories,
 		tags,
 		authorIds,
@@ -441,6 +442,13 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 						]}
 						onChange={(value) => setAttributes({ stickyPosts: value })}
 						help={__('How to handle sticky posts', 'prolific-blocks')}
+					/>
+
+					<ToggleControl
+						label={__('Exclude most recent post', 'prolific-blocks')}
+						checked={excludeMostRecent}
+						onChange={(value) => setAttributes({ excludeMostRecent: value })}
+						help={__('Hide the first post in the query result — useful when a featured post is already displayed above this block.', 'prolific-blocks')}
 					/>
 				</PanelBody>
 
