@@ -459,6 +459,13 @@ $query_args = [
 	'ignore_sticky_posts' => false,
 ];
 
+// For event post types, order by the real event start date (_EventStartDate)
+// instead of post_date, so the Order (ASC/DESC) control reflects event
+// chronology. Defined in inc/query-posts-ajax.php (loaded globally).
+if (function_exists('prolific_query_posts_apply_event_ordering')) {
+	$query_args = prolific_query_posts_apply_event_ordering($query_args, $post_type, $order_by);
+}
+
 // Handle offset + paged interaction
 // WP_Query ignores 'paged' when 'offset' is set, so we calculate manually
 if ($offset > 0) {

@@ -195,6 +195,50 @@ if (!function_exists('prolific_query_posts_build_ajax_attributes')) {
 }
 
 /**
+ * Order event queries by their real start date.
+ *
+ * The Events Calendar stores an event's start date in the `_EventStartDate`
+ * postmeta, not in `post_date`. A plain WP_Query ordered by 'date' therefore
+ * sorts `tribe_events` by publish date — unrelated to when the event occurs —
+ * so the Order (ASC/DESC) control appears to have no effect on event order.
+ *
+ * When the queried post type is The Events Calendar's event type and the user
+ * is ordering by "date", switch the query to order by the `_EventStartDate`
+ * meta value (cast to DATETIME) so ascending/descending follow the real event
+ * chronology. The user-selected direction in $query_args['order'] is preserved.
+ *
+ * @param array  $query_args Existing WP_Query args.
+ * @param string $post_type  Queried post type slug.
+ * @param string $order_by   Requested orderby field.
+ * @return array Possibly-modified WP_Query args.
+ */
+if (!function_exists('prolific_query_posts_apply_event_ordering')) {
+	function prolific_query_posts_apply_event_ordering($query_args, $post_type, $order_by) {
+		// Only applies to The Events Calendar events ordered by date.
+		if ($post_type !== 'tribe_events' || $order_by !== 'date') {
+			return $query_args;
+		}
+
+		// Bail gracefully if The Events Calendar isn't active.
+		if (!function_exists('tribe_get_start_date')) {
+			return $query_args;
+		}
+
+		// Order by the event start date stored in postmeta. Casting to
+		// DATETIME ensures chronological (not lexical) sorting.
+		$query_args['meta_key']  = '_EventStartDate';
+		$query_args['orderby']   = 'meta_value';
+		$query_args['meta_type'] = 'DATETIME';
+
+		// Prevent The Events Calendar from re-imposing its own ordering via
+		// its pre_get_posts hook, so our explicit ordering is authoritative.
+		$query_args['tribe_suppress_query_filters'] = true;
+
+		return $query_args;
+	}
+}
+
+/**
  * Build WP_Query arguments from AJAX request parameters.
  *
  * @param string $post_type     Post type slug.
@@ -222,6 +266,9 @@ if (!function_exists('prolific_query_posts_build_query_args')) {
 			'post_status'    => $post_status,
 			'ignore_sticky_posts' => false,
 		];
+
+		// For event post types, order by the real event start date.
+		$query_args = prolific_query_posts_apply_event_ordering($query_args, $post_type, $order_by);
 
 		// Handle offset + paged interaction
 		if ($offset > 0) {
