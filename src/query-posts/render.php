@@ -413,6 +413,7 @@ $offset = $attributes['offset'] ?? 0;
 $include_ids = $attributes['includeIds'] ?? '';
 $exclude_ids = $attributes['excludeIds'] ?? '';
 $exclude_most_recent = $attributes['excludeMostRecent'] ?? false;
+$events_upcoming_only = $attributes['eventsUpcomingOnly'] ?? true;
 $categories = $attributes['categories'] ?? [];
 $tags = $attributes['tags'] ?? [];
 $author_ids = $attributes['authorIds'] ?? [];
@@ -461,9 +462,10 @@ $query_args = [
 
 // For event post types, order by the real event start date (_EventStartDate)
 // instead of post_date, so the Order (ASC/DESC) control reflects event
-// chronology. Defined in inc/query-posts-ajax.php (loaded globally).
+// chronology, and optionally restrict to upcoming (not-yet-ended) events.
+// Defined in inc/query-posts-ajax.php (loaded globally).
 if (function_exists('prolific_query_posts_apply_event_ordering')) {
-	$query_args = prolific_query_posts_apply_event_ordering($query_args, $post_type, $order_by);
+	$query_args = prolific_query_posts_apply_event_ordering($query_args, $post_type, $order_by, $events_upcoming_only);
 }
 
 // Handle offset + paged interaction
@@ -624,6 +626,7 @@ $data_attrs = [
 	'data-posts-per-page' => $posts_per_page,
 	'data-offset' => $offset,
 	'data-exclude-most-recent' => $exclude_most_recent ? 'true' : 'false',
+	'data-events-upcoming-only' => $events_upcoming_only ? 'true' : 'false',
 	'data-show-featured-image' => ($attributes['showFeaturedImage'] ?? true) ? 'true' : 'false',
 	'data-image-size-slug' => $attributes['imageSizeSlug'] ?? 'large',
 	'data-show-title' => ($attributes['showTitle'] ?? true) ? 'true' : 'false',

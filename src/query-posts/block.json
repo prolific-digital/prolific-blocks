@@ -72,6 +72,10 @@
       "type": "boolean",
       "default": false
     },
+    "eventsUpcomingOnly": {
+      "type": "boolean",
+      "default": true
+    },
     "categories": {
       "type": "array",
       "default": []

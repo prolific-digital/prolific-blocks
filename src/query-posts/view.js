@@ -1018,6 +1018,7 @@
 			posts_per_page: blockElement.dataset.postsPerPage || '10',
 			offset: blockElement.dataset.offset || '0',
 			exclude_most_recent: blockElement.dataset.excludeMostRecent || 'false',
+			events_upcoming_only: blockElement.dataset.eventsUpcomingOnly || 'true',
 			show_featured_image: blockElement.dataset.showFeaturedImage || 'true',
 			image_size_slug: blockElement.dataset.imageSizeSlug || 'large',
 			show_title: blockElement.dataset.showTitle || 'true',

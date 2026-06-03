@@ -195,27 +195,32 @@ if (!function_exists('prolific_query_posts_build_ajax_attributes')) {
 }
 
 /**
- * Order event queries by their real start date.
+ * Apply event-aware ordering and upcoming-only filtering to event queries.
  *
- * The Events Calendar stores an event's start date in the `_EventStartDate`
- * postmeta, not in `post_date`. A plain WP_Query ordered by 'date' therefore
- * sorts `tribe_events` by publish date — unrelated to when the event occurs —
- * so the Order (ASC/DESC) control appears to have no effect on event order.
+ * The Events Calendar stores an event's dates in the `_EventStartDate` /
+ * `_EventEndDate` postmeta, not in `post_date`. Two consequences:
  *
- * When the queried post type is The Events Calendar's event type and the user
- * is ordering by "date", switch the query to order by the `_EventStartDate`
- * meta value (cast to DATETIME) so ascending/descending follow the real event
- * chronology. The user-selected direction in $query_args['order'] is preserved.
+ *  1. Ordering by "date" via a plain WP_Query sorts `tribe_events` by publish
+ *     date — unrelated to when the event occurs — so the Order (ASC/DESC)
+ *     control appears to have no effect. We instead order by `_EventStartDate`.
+ *  2. To show only events that have not yet finished, we filter on
+ *     `_EventEndDate >= now` (end date, so in-progress events still show).
  *
- * @param array  $query_args Existing WP_Query args.
- * @param string $post_type  Queried post type slug.
- * @param string $order_by   Requested orderby field.
+ * Both are expressed as named meta_query clauses so they compose cleanly
+ * (avoiding the meta_key + meta_query double-join pitfall). The Events Calendar
+ * transparently maps these meta keys onto its custom occurrences table, so this
+ * also works correctly for recurring events.
+ *
+ * @param array  $query_args    Existing WP_Query args.
+ * @param string $post_type     Queried post type slug.
+ * @param string $order_by      Requested orderby field.
+ * @param bool   $upcoming_only When true, exclude events whose end date passed.
  * @return array Possibly-modified WP_Query args.
  */
 if (!function_exists('prolific_query_posts_apply_event_ordering')) {
-	function prolific_query_posts_apply_event_ordering($query_args, $post_type, $order_by) {
-		// Only applies to The Events Calendar events ordered by date.
-		if ($post_type !== 'tribe_events' || $order_by !== 'date') {
+	function prolific_query_posts_apply_event_ordering($query_args, $post_type, $order_by, $upcoming_only = false) {
+		// Only applies to The Events Calendar events.
+		if ($post_type !== 'tribe_events') {
 			return $query_args;
 		}
 
@@ -224,15 +229,56 @@ if (!function_exists('prolific_query_posts_apply_event_ordering')) {
 			return $query_args;
 		}
 
-		// Order by the event start date stored in postmeta. Casting to
-		// DATETIME ensures chronological (not lexical) sorting.
-		$query_args['meta_key']  = '_EventStartDate';
-		$query_args['orderby']   = 'meta_value';
-		$query_args['meta_type'] = 'DATETIME';
+		$order_by_date = ($order_by === 'date');
 
-		// Prevent The Events Calendar from re-imposing its own ordering via
-		// its pre_get_posts hook, so our explicit ordering is authoritative.
-		$query_args['tribe_suppress_query_filters'] = true;
+		// Nothing to do if we're neither ordering by date nor filtering.
+		if (!$order_by_date && !$upcoming_only) {
+			return $query_args;
+		}
+
+		$meta_query = (isset($query_args['meta_query']) && is_array($query_args['meta_query']))
+			? $query_args['meta_query']
+			: [];
+
+		// Ordering clause: order by the event start date (cast to DATETIME).
+		if ($order_by_date) {
+			$meta_query['event_start_clause'] = [
+				'key'     => '_EventStartDate',
+				'compare' => 'EXISTS',
+				'type'    => 'DATETIME',
+			];
+		}
+
+		// Upcoming filter: keep only events that have not yet ended.
+		if ($upcoming_only) {
+			$meta_query['event_upcoming_clause'] = [
+				'key'     => '_EventEndDate',
+				'value'   => current_time('mysql'),
+				'compare' => '>=',
+				'type'    => 'DATETIME',
+			];
+		}
+
+		// Add an explicit AND relation when more than one clause is present.
+		$clause_count = 0;
+		foreach (array_keys($meta_query) as $clause_key) {
+			if ($clause_key !== 'relation') {
+				$clause_count++;
+			}
+		}
+		if ($clause_count > 1 && !isset($meta_query['relation'])) {
+			$meta_query['relation'] = 'AND';
+		}
+
+		$query_args['meta_query'] = $meta_query;
+
+		// Order by the named start-date clause, preserving the chosen direction.
+		if ($order_by_date) {
+			$direction = strtoupper($query_args['order'] ?? 'DESC');
+			$query_args['orderby'] = [
+				'event_start_clause' => ($direction === 'ASC' ? 'ASC' : 'DESC'),
+			];
+		}
 
 		return $query_args;
 	}
@@ -267,8 +313,10 @@ if (!function_exists('prolific_query_posts_build_query_args')) {
 			'ignore_sticky_posts' => false,
 		];
 
-		// For event post types, order by the real event start date.
-		$query_args = prolific_query_posts_apply_event_ordering($query_args, $post_type, $order_by);
+		// For event post types, order by the real event start date and
+		// optionally restrict the query to upcoming (not-yet-ended) events.
+		$events_upcoming_only = sanitize_text_field($_GET['events_upcoming_only'] ?? 'true') === 'true';
+		$query_args = prolific_query_posts_apply_event_ordering($query_args, $post_type, $order_by, $events_upcoming_only);
 
 		// Handle offset + paged interaction
 		if ($offset > 0) {

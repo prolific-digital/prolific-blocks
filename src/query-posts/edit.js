@@ -94,6 +94,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		includeIds,
 		excludeIds,
 		excludeMostRecent,
+		eventsUpcomingOnly,
 		categories,
 		tags,
 		authorIds,
@@ -450,6 +451,15 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 						onChange={(value) => setAttributes({ excludeMostRecent: value })}
 						help={__('Hide the first post in the query result — useful when a featured post is already displayed above this block.', 'prolific-blocks')}
 					/>
+
+					{postType === 'tribe_events' && (
+						<ToggleControl
+							label={__('Show only upcoming events', 'prolific-blocks')}
+							checked={eventsUpcomingOnly}
+							onChange={(value) => setAttributes({ eventsUpcomingOnly: value })}
+							help={__('Hide events that have already ended, so only current and future events appear.', 'prolific-blocks')}
+						/>
+					)}
 				</PanelBody>
 
 				{/* Filters Panel */}
