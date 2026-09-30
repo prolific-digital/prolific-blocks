@@ -113,3 +113,5 @@ We're constantly improving Prolific Blocks and plan to introduce more block type
 ## License
 
 Prolific Blocks is licensed under GPL-2.0-or-later.
+
+Made by [Prolific Digital](https://prolificdigital.com).

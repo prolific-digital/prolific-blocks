@@ -3,7 +3,7 @@
 /**
  * Plugin Name:       Prolific Blocks
  * Plugin URI:				https://prolificdigital.com/
- * Author URI:        https://prolificdigital.com/
+ * Author URI:        https://prolificdigital.com
  * Description:       A collection of advanced blocks to enhance your website's functionality and design.
  * Requires at least: 6.3
  * Requires PHP:      7.4
