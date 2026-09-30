@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
 // Create id attribute allowing for custom "anchor" value.
 $id = 'prolific-tabs-' . $attributes['blockId'];
 if (!empty($attributes['anchor'])) {

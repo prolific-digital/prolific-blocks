@@ -1,6 +1,6 @@
 {
   "name": "prolific-blocks",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A collection of advanced blocks to enhance your website's functionality and design.",
   "author": "Prolific Digital",
   "license": "GPL-2.0-or-later",
@@ -12,7 +12,10 @@
     "readme.txt",
     "README.md",
     "includes",
-    "vendor"
+    "vendor",
+    "languages",
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "wp-scripts build",
