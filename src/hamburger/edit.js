@@ -105,20 +105,20 @@ export default function Edit({ attributes, setAttributes }) {
   return (
     <>
       <InspectorControls>
-        <PanelBody title={__("Hamburger Settings", "text-domain")}>
+        <PanelBody title={__("Hamburger Settings", "prolific-blocks")}>
           <SelectControl
-            label={__("Select Hamburger Style", "text-domain")}
+            label={__("Select Hamburger Style", "prolific-blocks")}
             value={hamburgerClass}
             options={hamburgerOptions}
             onChange={(value) => setAttributes({ hamburgerClass: value })}
           />
           <TextControl
-            label={__("Aria Controls ID", "text-domain")}
+            label={__("Aria Controls ID", "prolific-blocks")}
             value={ariaControls}
             onChange={(value) => setAttributes({ ariaControls: value })}
             help={__(
               "Enter the ID of the element this button controls.",
-              "text-domain"
+              "prolific-blocks"
             )}
           />
         </PanelBody>
