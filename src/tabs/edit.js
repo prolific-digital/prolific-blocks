@@ -145,11 +145,11 @@ export default function Edit({ attributes, setAttributes }) {
       </div>
 
       <InspectorControls>
-        <PanelBody title={__("Tab Settings", "text-domain")}>
+        <PanelBody title={__("Tab Settings", "prolific-blocks")}>
           {tabs.map((tab, index) => (
             <div key={index} style={{ marginBottom: "20px" }}>
               <TextControl
-                label={__("Tab Label", "text-domain")}
+                label={__("Tab Label", "prolific-blocks")}
                 value={tab.label}
                 onChange={(label) => handleTabChange(index, label)}
               />
@@ -158,12 +158,12 @@ export default function Edit({ attributes, setAttributes }) {
                 variant="secondary"
                 onClick={() => handleRemoveTab(index)}
               >
-                {__("Remove Tab", "text-domain")}
+                {__("Remove Tab", "prolific-blocks")}
               </Button>
             </div>
           ))}
           <Button variant="primary" onClick={handleAddTab}>
-            {__("Add Tab", "text-domain")}
+            {__("Add Tab", "prolific-blocks")}
           </Button>
         </PanelBody>
       </InspectorControls>

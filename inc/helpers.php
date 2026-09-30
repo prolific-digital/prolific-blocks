@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Add SVG support to the list of allowed mime types for uploads.
  *

@@ -1,10 +1,10 @@
 === Prolific Blocks ===
-Contributors:      Prolific Digital
+Contributors:      prolificdigital
 Tags:              block, gutenberg, carousel, hamburger, lottie, animation, timeline, tabs
-Tested up to:      6.7
-Stable tag:        1.0.0
-Requires at least: 6.3
-Requires PHP:      7.4
+Requires at least: 6.5
+Tested up to:      7.1
+Requires PHP:      8.4
+Stable tag:        1.1.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -50,13 +50,15 @@ Prolific Blocks is a WordPress plugin designed to expand the functionality of th
 
 = Automatic Updates =
 
-Prolific Blocks is configured to receive automatic update notifications in your WordPress dashboard when new versions are released on GitHub.
+Updates are served by the Prolific Digital license server. Add your license key to `wp-config.php` (see Installation) to receive them.
 
 == Installation ==
 
 1. Upload the plugin files to the `/wp-content/plugins/prolific-blocks` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress
 3. Use the blocks in the WordPress block editor by searching for "Prolific" in the block inserter
+4. To receive automatic updates, add your license key to `wp-config.php`:
+   `define( 'PROLIFIC_LICENSE_KEY_PROLIFIC_BLOCKS', 'your-key' );`
 
 == Frequently Asked Questions ==
 
@@ -86,6 +88,15 @@ Each block comes with its own set of controls in the block editor sidebar, allow
 
 == Changelog ==
 
+= 1.1.0 =
+* Updates now come from the Prolific Digital license server instead of GitHub. Define `PROLIFIC_LICENSE_KEY_PROLIFIC_BLOCKS` to receive them.
+* plugin-update-checker is installed with Composer instead of bundled in the plugin.
+* Tabs and Hamburger editor strings now use the `prolific-blocks` text domain.
+* Requires WordPress 6.5+ and PHP 8.4+.
+
+= 1.0.1 =
+* Build workflow fix.
+
 = 1.0.0 =
 * Initial release with Hamburger, Carousel, Lottie, Timeline, and Tabs blocks
 * Support for ARIA controls in hamburger block
@@ -93,6 +104,9 @@ Each block comes with its own set of controls in the block editor sidebar, allow
 * Optimized block loading and rendering
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+Requires PHP 8.4+. Updates now need a license key constant in wp-config.php.
 
 = 1.0.0 =
 Initial release of Prolific Blocks with multiple customizable blocks.

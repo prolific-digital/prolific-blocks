@@ -1,36 +1,46 @@
 <?php
-
 /**
  * Plugin Name:       Prolific Blocks
- * Plugin URI:				https://prolificdigital.com/
- * Author URI:        https://prolificdigital.com/
+ * Plugin URI:        https://prolificdigital.com
  * Description:       A collection of advanced blocks to enhance your website's functionality and design.
- * Requires at least: 6.3
- * Requires PHP:      7.4
- * Version:           1.0.0
+ * Version:           1.1.0
+ * Requires at least: 6.5
+ * Requires PHP:      8.4
  * Author:            Prolific Digital
+ * Author URI:        https://prolificdigital.com
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       prolific-blocks
+ * Domain Path:       /languages
+ * Update URI:        https://api.prolificdigital.io/api/update?plugin=prolific-blocks
  *
- * @package CreateBlock
+ * @package ProlificBlocks
  */
 
-if (!defined('ABSPATH')) {
-	exit; // Exit if accessed directly.
+defined( 'ABSPATH' ) || exit;
+
+define( 'PROLIFIC_BLOCKS_VERSION', '1.1.0' );
+
+define( 'PROLIFIC_BLOCKS_PLUGIN_FILE', __FILE__ );
+define( 'PROLIFIC_BLOCKS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+
+// Composer dependencies (plugin-update-checker). Present in release zips;
+// in a git checkout run `composer install` first.
+if ( is_readable( PROLIFIC_BLOCKS_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
+	require_once PROLIFIC_BLOCKS_PLUGIN_DIR . 'vendor/autoload.php';
 }
 
-require 'updater/plugin-update-checker.php';
+require_once PROLIFIC_BLOCKS_PLUGIN_DIR . 'includes/update-checker.php';
 
-use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
-
-$myUpdateChecker = PucFactory::buildUpdateChecker(
-	'https://github.com/prolific-digital/prolific-blocks/',
-	__FILE__,
-	'prolific-blocks'
+/**
+ * Load bundled translations from /languages (the header's Domain Path).
+ */
+add_action(
+	'init',
+	static function () {
+		load_plugin_textdomain( 'prolific-blocks', false, dirname( plugin_basename( PROLIFIC_BLOCKS_PLUGIN_FILE ) ) . '/languages' );
+	}
 );
-
-$myUpdateChecker->getVcsApi()->enableReleaseAssets();
 
 require_once plugin_dir_path(__FILE__) . 'inc/helpers.php';
 

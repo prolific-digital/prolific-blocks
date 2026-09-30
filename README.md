@@ -46,7 +46,7 @@ Prolific Blocks is a WordPress plugin designed to expand the functionality of th
 
 ### Step 1: Download the Plugin
 
-Download the latest release of the Prolific Blocks plugin from the WordPress plugin repository or directly from this GitHub repository.
+Download `prolific-blocks.zip` from the latest [GitHub release](https://github.com/prolific-digital/prolific-blocks/releases).
 
 ### Step 2: Install the Plugin
 
@@ -98,13 +98,43 @@ After activation, you can start using the available blocks in the WordPress bloc
 2. Insert Tab Panel blocks within it to organize your content.
 3. Customize the appearance and behavior of the tabs.
 
+## Requirements
+
+WordPress 6.5+, PHP 8.4+. Text domain `prolific-blocks`.
+
 ## Automatic Updates
 
-Prolific Blocks is configured to receive automatic update notifications in your WordPress dashboard when new versions are released on GitHub.
+Updates are served by the Prolific Digital license server. Add the site's license key to `wp-config.php`:
 
-## Version
+```php
+define( 'PROLIFIC_LICENSE_KEY_PROLIFIC_BLOCKS', 'your-key' );
+```
 
-Current version: 1.0.0
+You can also supply the key with the `prolific_license_key` filter, which receives `( $key, 'prolific-blocks' )`.
+
+## Stored data
+
+None. The plugin stores no options or tables.
+
+## Development
+
+`build/` is not committed. Build it from `src/` with `@wordpress/scripts`:
+
+```sh
+npm ci
+npm run build        # or: npm start
+ddev exec -d /var/www/html/wp-content/plugins/prolific-blocks composer install
+ddev exec -d /var/www/html/wp-content/plugins/prolific-blocks composer lint
+ddev exec -d /var/www/html/wp-content/plugins/prolific-blocks composer phpcs
+```
+
+`vendor/` is not committed either. A git checkout needs `composer install` before the updater loads (the plugin still runs without it).
+
+## Releasing
+
+1. Bump the version in the plugin header, `PROLIFIC_BLOCKS_VERSION`, `readme.txt` `Stable tag`, `package.json` and `package-lock.json`.
+2. Add a `## [x.y.z] - YYYY-MM-DD` section to `CHANGELOG.md` and a `= x.y.z =` entry to `readme.txt`.
+3. Merge to `main`, then push a `vx.y.z` tag. The shared release workflow runs `composer install --no-dev` and `npm ci && npm run build`, then builds `prolific-blocks.zip` (honoring `.distignore`, which keeps `build/` and drops `src/`) and attaches it to a GitHub Release.
 
 ## Upcoming Features
 
