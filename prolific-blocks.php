@@ -20,17 +20,16 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
-require 'updater/plugin-update-checker.php';
+define( 'PROLIFIC_BLOCKS_PLUGIN_FILE', __FILE__ );
+define( 'PROLIFIC_BLOCKS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
-use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+// Composer dependencies (plugin-update-checker). Present in release zips;
+// in a git checkout run `composer install` first.
+if ( is_readable( PROLIFIC_BLOCKS_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
+	require_once PROLIFIC_BLOCKS_PLUGIN_DIR . 'vendor/autoload.php';
+}
 
-$myUpdateChecker = PucFactory::buildUpdateChecker(
-	'https://github.com/prolific-digital/prolific-blocks/',
-	__FILE__,
-	'prolific-blocks'
-);
-
-$myUpdateChecker->getVcsApi()->enableReleaseAssets();
+require_once PROLIFIC_BLOCKS_PLUGIN_DIR . 'includes/update-checker.php';
 
 require_once plugin_dir_path(__FILE__) . 'inc/helpers.php';
 

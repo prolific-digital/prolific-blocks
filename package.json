@@ -11,7 +11,8 @@
     "prolific-blocks.php",
     "readme.txt",
     "README.md",
-    "updater"
+    "includes",
+    "vendor"
   ],
   "scripts": {
     "build": "wp-scripts build",
