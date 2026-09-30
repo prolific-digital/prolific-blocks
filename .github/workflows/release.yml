@@ -1,32 +1,7 @@
-name: Build and Release Plugin
-
-on:
-  release:
-    types: [published]
-
+name: Release
+on: { push: { tags: ['v*'] } }
+permissions: { contents: write }
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "23"
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build plugin
-        run: npm run build
-
-      - name: Create plugin zip
-        run: npm run plugin-zip
-
-      - name: Upload zip to release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: ./prolific-blocks.zip
+  release:
+    uses: prolific-digital/.github/.github/workflows/wp-plugin-release.yml@main
+    with: { slug: prolific-blocks }
